@@ -3,6 +3,7 @@ SET(SOURCE
   Object.cpp
   Camera.cpp
   PerspectiveCamera.cpp
+  Renderer.cpp
 
   Vector3.cpp
   Matrix4.cpp
