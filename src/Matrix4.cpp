@@ -56,6 +56,36 @@ namespace three {
     m[15] = m33;
   }
   
+  void Matrix4::set(float m00, float m01, float m02, float m03,
+                    float m10, float m11, float m12, float m13,
+                    float m20, float m21, float m22, float m23,
+                    float m30, float m31, float m32, float m33)
+  {
+    // Column 0
+    m[ 0] = m00;
+    m[ 1] = m10;
+    m[ 2] = m20;
+    m[ 3] = m30;
+    
+    // Column 1
+    m[ 4] = m01;
+    m[ 5] = m11;
+    m[ 6] = m21;
+    m[ 7] = m31;
+    
+    // Column 2
+    m[ 8] = m02;
+    m[ 9] = m12;
+    m[10] = m22;
+    m[11] = m32;
+    
+    // Column 3
+    m[12] = m03;
+    m[13] = m13;
+    m[14] = m23;
+    m[15] = m33;
+  }
+  
   void Matrix4::identity()
   {
     memcpy(m, IDENTITY, sizeof(float) * 16);
@@ -67,15 +97,23 @@ namespace three {
     m[_13] = pos.y;
     m[_23] = pos.z;
   }
-  
-  void Matrix4::scale(Vector3 const& scale)
+
+  Vector3 Matrix4::getPosition() const
   {
-    m[_00] = scale.x;
-    m[_11] = scale.y;
-    m[_22] = scale.z;
+    return Vector3(m[_03], m[_13], m[_23]);
   }
   
-  void Matrix4::perspective(float fov, float aspect, float near, float far)
+  Matrix4 & Matrix4::scale(Vector3 const& scale)
+  {
+    m[_00] *= scale.x; m[_01] *= scale.y; m[_02] *= scale.z;
+    m[_10] *= scale.x; m[_11] *= scale.y; m[_12] *= scale.z;
+    m[_20] *= scale.x; m[_21] *= scale.y; m[_22] *= scale.z;
+    m[_30] *= scale.x; m[_31] *= scale.y; m[_32] *= scale.z;
+
+    return *this;
+  }
+  
+  void Matrix4::setPerspective(float fov, float aspect, float near, float far)
   {
     float xymax = near * tan(degToRad(fov * 0.5f));
     float ymin = -xymax;
@@ -105,14 +143,34 @@ namespace three {
     m[8]  = 0;
     m[9]  = 0;
     m[10] = q;
-    m[11] = -1;
+    m[11] = -1; 
 
     m[12] = 0;
     m[13] = 0;
     m[14] = qn;
     m[15] = 0;
   }
-  
+
+
+  void Matrix4::setRotationFromEuler(Vector3 const& rotation)
+  {
+    float a = std::cos(rotation.x), b = std::sin(rotation.x);
+    float c = std::cos(rotation.y), d = std::sin(rotation.y);
+    float e = std::cos(rotation.z), f = std::sin(rotation.z);
+    
+    float ce = c * e, cf = c * f, de = d * e, df = d * f;
+    
+    m[0] = ce + df * b;
+    m[4] = de * b - cf;
+    m[8] = a * d;
+    m[1] = a * f;
+    m[5] = a * e;
+    m[9] = - b;
+    m[2] = cf * b - de;
+    m[6] = df + ce * b;
+    m[10] = a * c;
+  }
+
   Matrix4 Matrix4::operator * (Matrix4 const& mat) const
   {
     Matrix4 result;

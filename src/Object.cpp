@@ -1,5 +1,6 @@
 
 #include "Object.h"
+#include "Math.h"
 
 #include <algorithm>
 
@@ -10,8 +11,12 @@ namespace three {
       position(),
       rotation(),
       scale(1.0f, 1.0f, 1.0f),
-      boundRadius(1.0f),
-      visible(true)
+      boundRadius(0.0f),
+      boundRadiusScale(1.0f),
+      visible(true),
+      castShadow(false),
+      receiveShadow(false),
+      matrixWorldMatrixNeedsUpdate(true)
   {
   }
 
@@ -36,6 +41,13 @@ namespace three {
   void Object::updateMatrix()
   {
     matrix.setPosition(position);
+    matrix.setRotationFromEuler(rotation);
+
+    if (!equal(scale.x, 1.0f) || !equal(scale.y, 1.0f) || !equal(scale.z, 1.0f))
+    {
+      matrix.scale(scale);
+      boundRadiusScale = scale.max();
+    }
   }
 
 }

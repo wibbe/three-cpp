@@ -35,12 +35,21 @@ namespace three {
               float m10, float m11, float m12, float m13,
               float m20, float m21, float m22, float m23,
               float m30, float m31, float m32, float m33);
+
+      void set(float m00, float m01, float m02, float m03,
+               float m10, float m11, float m12, float m13,
+               float m20, float m21, float m22, float m23,
+               float m30, float m31, float m32, float m33);
       
       void identity();
       
       void setPosition(Vector3 const& pos);
-      void scale(Vector3 const& scale);
-      void perspective(float fov, float aspect, float near, float far);
+      Vector3 getPosition() const;
+
+      void setRotationFromEuler(Vector3 const& rotation);
+      void setPerspective(float fov, float aspect, float near, float far);
+
+      Matrix4 & scale(Vector3 const& scale);
       
       Matrix4 operator * (Matrix4 const& mat) const;
       

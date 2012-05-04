@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <cmath>
+#include "Math.h"
 
 namespace three {
   
@@ -95,6 +95,18 @@ namespace three {
       {
         float len = 1.0f / length();
         return Vector3(x * len, y * len, z * len);
+      }
+
+      /// Returns the largest of the three elements
+      float max() const
+      {
+        return three::max(x, three::max(y, z));
+      }
+
+      /// Returns the smallest of the three elements
+      float min() const
+      {
+        return three::min(x, three::min(y, z));
       }
       
     public:
