@@ -52,6 +52,7 @@ namespace three {
       Matrix4 & scale(Vector3 const& scale);
       
       Matrix4 operator * (Matrix4 const& mat) const;
+      Matrix4 & operator =  (Matrix4 const& copy);
       
       inline float operator [] (int index) const { return m[index]; }
       

@@ -187,5 +187,11 @@ namespace three {
     
     return result;
   }
+
+  Matrix4 & Matrix4::operator =  (Matrix4 const& copy)
+  {
+    memcpy(m, copy.m, sizeof(float) * 16);
+    return *this;
+  }
   
 }
