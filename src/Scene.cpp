@@ -1,6 +1,7 @@
 
 #include "Scene.h"
 #include "Camera.h"
+#include "Light.h"
 
 #include <algorithm>
 
@@ -14,8 +15,11 @@ namespace three {
 
   void Scene::__addObject(Object * object)
   {
-    // TODO: Check if it is a lighto
-    if (!dynamic_cast<Camera *>(object))
+    if (dynamic_cast<Light *>(object))
+    {
+      lights.push_back(object);
+    }
+    else if (!dynamic_cast<Camera *>(object))
     {
       objects.push_back(object);
       objectsAdded.push_back(object);
@@ -29,7 +33,11 @@ namespace three {
 
   void Scene::__removeObject(Object * object)
   {
-    if (!dynamic_cast<Camera *>(object))
+    if (dynamic_cast<Light *>(object))
+    {
+        lights.erase(std::remove(lights.begin(), lights.end(), object), lights.end());
+    }
+    else if (!dynamic_cast<Camera *>(object))
     {
       std::vector<Object *>::iterator result = std::find(objectsRemoved.begin(), objectsRemoved.end(), object);
       if (result != objectsRemoved.end())
