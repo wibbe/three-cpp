@@ -12,11 +12,17 @@ namespace three {
   {
     return (PI / 180.0) * angle;
   }
+
+  template <typename T>
+  inline T abs(T const& a)
+  {
+    return a < 0 ? -a : a;
+  }
   
   template <typename T>
   inline bool equal(T const& a, T const& b)
   {
-    return std::abs(a - b) < EPSILON;
+    return abs(a - b) < EPSILON;
   }
 
   template <typename T>

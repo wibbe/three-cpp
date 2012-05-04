@@ -22,9 +22,12 @@
 
 #pragma once
 
-#include "Math.h"
+#include "MathUtils.h"
 #include "Vector3.h"
 #include "Matrix4.h"
+
+#include <stddef.h>
+#include <stdint.h>
 
 namespace three {
   
