@@ -22,7 +22,10 @@ namespace three {
       autoClear(true),
       autoClearColor(true),
       autoClearDepth(true),
-      autoClearStencil(false)
+      autoClearStencil(false),
+      oldDepthTest(true),
+      oldDepthWrite(true),
+      oldBlending(AlphaBlending)
   {
     if (!g_renderer)
     {
