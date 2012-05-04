@@ -1,8 +1,12 @@
 
 #include "Renderer.h"
+#include "Scene.h"
+#include "Camera.h"
+#include "RenderPlugin.h"
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <cassert>
 
 #include <GL/glew.h>
 #include <GL/glfw.h>
@@ -13,6 +17,12 @@ namespace three {
   static Renderer * g_renderer = 0;
 
   Renderer::Renderer(int windowWidth, int windowHeight, bool fullscreen)
+    : autoUpdateScene(true),
+      autoUpdateObjects(true),
+      autoClear(true),
+      autoClearColor(true),
+      autoClearDepth(true),
+      autoClearStencil(false)
   {
     if (!g_renderer)
     {
@@ -55,6 +65,71 @@ namespace three {
     glViewport(x, y, width, height);
   }
 
+  void Renderer::setDepthTest(bool enabled)
+  {
+    if (oldDepthTest != enabled)
+    {
+      if (enabled)
+        glEnable(GL_DEPTH_TEST);
+      else
+        glDisable(GL_DEPTH_TEST);
+
+      oldDepthTest = enabled;
+    }
+  }
+
+  void Renderer::setDepthWrite(bool enabled)
+  {
+    if (oldDepthWrite != enabled)
+    {
+      glDepthMask(enabled);
+      oldDepthWrite = enabled;
+    }
+  }
+
+  void Renderer::setBlending(Blending blending)
+  {
+    if (oldBlending != blending)
+    {
+      switch (blending)
+      {
+        case NoBlending:
+          glDisable(GL_BLEND);
+          break;
+
+        case AdditiveBlending:
+          glEnable(GL_BLEND);
+          glBlendEquation(GL_FUNC_ADD);
+          glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+          break;
+      
+        case SubstractiveBlending:
+          glEnable(GL_BLEND);
+          glBlendEquation(GL_FUNC_ADD);
+          glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
+          break;
+
+        case MultiplyBlending:
+          glEnable(GL_BLEND);
+          glBlendEquation(GL_FUNC_ADD);
+          glBlendFunc(GL_ZERO, GL_SRC_COLOR);
+          break;
+
+        case AlphaBlending:
+          glEnable(GL_BLEND);
+          glBlendEquation(GL_FUNC_ADD);
+          glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+          break;
+      }
+
+      oldBlending = blending;
+    }
+  }
+
+  void Renderer::setRenderTarget(RenderTarget * renderTarget)
+  {
+  }
+
   void Renderer::clear(bool color, bool depth, bool stencil)
   {
     int bits = 0;
@@ -79,7 +154,36 @@ namespace three {
     glEnable(GL_CULL_FACE);
 
     glEnable(GL_BLEND);
+    glBlendEquation(GL_FUNC_ADD);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  }
+
+  void Renderer::addPrePlugin(RenderPlugin * plugin)
+  {
+    plugin->init(this);
+    renderPluginsPre.push_back(plugin);
+  }
+
+  void Renderer::addPostPlugin(RenderPlugin * plugin)
+  {
+    plugin->init(this);
+    renderPluginsPost.push_back(plugin);
+  }
+  
+  void Renderer::render(Scene * scene, Camera * camera, RenderTarget * renderTarget, bool forceClear)
+  {
+    assert(scene && camera);
+
+    if (autoUpdateScene)
+      scene->updateWorldMatrix();
+
+    setRenderTarget(renderTarget);
+
+    if (autoClear || forceClear)
+      clear(autoClearColor, autoClearDepth, autoClearStencil);
+
+    setDepthTest(true);
+    setDepthWrite(true);
   }
 
 }
