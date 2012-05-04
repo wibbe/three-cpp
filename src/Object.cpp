@@ -8,6 +8,8 @@ namespace three {
 
   Object::Object()
     : parent(0),
+      name(""),
+      up(0.0f, 1.0f, 0.0f),
       position(),
       rotation(),
       scale(1.0f, 1.0f, 1.0f),
@@ -37,6 +39,27 @@ namespace three {
   void Object::remove(Object * object)
   {
     children.erase(std::remove(children.begin(), children.end(), object), children.end());
+  }
+
+  Object * Object::getChildByName(std::string const& name, bool recursive)
+  {
+    for (std::vector<Object *>::iterator it = children.begin(), end = children.end(); it != end; ++it)
+    {
+      Object * child = *it;
+
+      if (child->name == name)
+        return child;
+
+      if (recursive)
+      {
+        child = child->getChildByName(name, recursive);
+
+        if (child)
+          return child;
+      }
+    }
+
+    return 0;
   }
 
   void Object::updateMatrix()

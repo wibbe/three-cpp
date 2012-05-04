@@ -26,6 +26,7 @@
 #include "Matrix4.h"
 
 #include <vector>
+#include <string>
 
 namespace three {
 
@@ -41,12 +42,18 @@ namespace three {
       void add(Object * object);
       void remove(Object * object);
 
+      Object * getChildByName(std::string const& name, bool recursive = false);
+
       void updateMatrix();
       void updateWorldMatrix(bool force = false);
 
     public:
       Object * parent;
       std::vector<Object *> children;
+
+      std::string name;
+
+      Vector3 up;
 
       Vector3 position;
       Vector3 rotation;
