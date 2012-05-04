@@ -53,6 +53,8 @@ namespace three {
 
       std::string name;
 
+      float z;
+
       Vector3 up;
 
       Vector3 position;

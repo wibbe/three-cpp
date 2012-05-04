@@ -10,6 +10,7 @@ namespace three {
   Object::Object()
     : parent(0),
       name(""),
+      z(1.0f),
       up(0.0f, 1.0f, 0.0f),
       position(),
       rotation(),
