@@ -42,12 +42,14 @@ namespace three {
                float m30, float m31, float m32, float m33);
       
       void identity();
+
+      void lookAt(Vector3 const& eye, Vector3 const& target, Vector3 const& up);
       
       void setPosition(Vector3 const& pos);
       Vector3 getPosition() const;
 
       void setRotationFromEuler(Vector3 const& rotation);
-      void setPerspective(float fov, float aspect, float near, float far);
+      void makePerspective(float fov, float aspect, float near, float far);
 
       Matrix4 & scale(Vector3 const& scale);
       

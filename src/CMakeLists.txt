@@ -1,14 +1,19 @@
 
 SET(SOURCE
   Object.cpp
-  Quaternion.cpp
+  Camera.cpp
+  PerspectiveCamera.cpp
+
+  Vector3.cpp
   Matrix4.cpp
+  Quaternion.cpp
 )
 
 SET(LIBRARIES
     ${OPENGL_LIBRARIES}
     ${EXTRA_LIBRARIES}
     SOIL
+    GLEW
     glfw
 )
 

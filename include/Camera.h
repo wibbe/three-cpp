@@ -22,57 +22,21 @@
 
 #pragma once
 
-#include "Vector3.h"
-#include "Matrix4.h"
-
-#include <vector>
-#include <string>
+#include "Object.h"
 
 namespace three {
 
-  /**
-   * Base class for all objects in Three++
-   */
-  class Object
+  class Camera : public Object
   {
     public:
-      Object();
-      virtual ~Object();
+      Camera();
 
-      void add(Object * object);
-      void remove(Object * object);
-
-      Object * getChildByName(std::string const& name, bool recursive = false);
-
-      void updateMatrix();
-      void updateWorldMatrix(bool force = false);
+      void lookAt(Vector3 const& target);
 
     public:
-      Object * parent;
-      std::vector<Object *> children;
-
-      std::string name;
-
-      Vector3 up;
-
-      Vector3 position;
-      Vector3 rotation;
-      Vector3 scale;
-
-      Matrix4 matrix;
-      Matrix4 matrixWorld;
-
-      float boundRadius;
-      float boundRadiusScale;
-
-      bool visible;
-      bool castShadow;
-      bool receiveShadow;
-
-      bool rotationAutoUpdate;
-
-      bool matrixAutoUpdate;
-      bool matrixWorldMatrixNeedsUpdate;
+      Matrix4 matrixWorldInverse;
+      Matrix4 projectionMatrix;
+      Matrix4 projectionMatrixInverse;
   };
 
 }

@@ -25,6 +25,9 @@
 #include "MathUtils.h"
 
 namespace three {
+
+  // Forward declarations
+  class Matrix4;
   
   class Vector3
   {
@@ -70,6 +73,16 @@ namespace three {
         z -= vec.z;
         return *this;
       }
+
+      inline Vector3 operator + (Vector3 const& vec) const
+      {
+        return Vector3(x + vec.x, y + vec.y, z + vec.z);
+      }
+      
+      inline Vector3 operator - (Vector3 const& vec) const
+      {
+        return Vector3(x - vec.x, y - vec.y, z - vec.z);
+      }
       
       inline Vector3 operator - () const
       {
@@ -97,6 +110,8 @@ namespace three {
         return Vector3(x * len, y * len, z * len);
       }
 
+      void getRotationFromMatrix(Matrix4 const& mat, float scale = 1.0f);
+
       /// Returns the largest of the three elements
       float max() const
       {
@@ -118,6 +133,13 @@ namespace three {
   inline float dot(Vector3 const& a, Vector3 const b)
   {
     return a.x * b.x + a.y * b.y + a.z * b.z;
+  }
+
+  inline Vector3 cross(Vector3 const& a, Vector3 const& b)
+  {
+    return Vector3(a.y * b.z - a.z * b.y,
+		               a.z * b.x - a.x * b.z,
+		               a.x * b.y - a.y * b.x);
   }
   
 }

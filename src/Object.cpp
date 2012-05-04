@@ -18,6 +18,7 @@ namespace three {
       visible(true),
       castShadow(false),
       receiveShadow(false),
+      rotationAutoUpdate(true),
       matrixAutoUpdate(true),
       matrixWorldMatrixNeedsUpdate(true)
   {

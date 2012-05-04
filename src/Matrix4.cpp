@@ -90,6 +90,27 @@ namespace three {
   {
     memcpy(m, IDENTITY, sizeof(float) * 16);
   }
+
+  void Matrix4::lookAt(Vector3 const& eye, Vector3 const& target, Vector3 const& up)
+  {
+    Vector3 z = (eye - target).normalized();
+    if (equal(z.length(), 0.0f))
+      z.z = 1.0f;
+
+    Vector3 x = cross(up, z).normalized();
+
+    if (equal(x.length(), 0.0f))
+    {
+      z.x += 0.0001f;
+      x = cross(up, z).normalized();
+    }
+
+    Vector3 y = cross(z, x);
+
+    m[_00] = x.x; m[_01] = y.x; m[_02] = z.x;
+    m[_10] = x.y; m[_11] = y.y; m[_12] = z.y;
+    m[_20] = x.z; m[_21] = y.z; m[_22] = z.z;
+  }
   
   void Matrix4::setPosition(Vector3 const& pos)
   {
@@ -113,7 +134,7 @@ namespace three {
     return *this;
   }
   
-  void Matrix4::setPerspective(float fov, float aspect, float near, float far)
+  void Matrix4::makePerspective(float fov, float aspect, float near, float far)
   {
     float xymax = near * tan(degToRad(fov * 0.5f));
     float ymin = -xymax;
@@ -130,25 +151,10 @@ namespace three {
     w = w / aspect;
     float h = 2.0f * near / height;
 
-    m[0]  = w;
-    m[1]  = 0;
-    m[2]  = 0;
-    m[3]  = 0;
-
-    m[4]  = 0;
-    m[5]  = h;
-    m[6]  = 0;
-    m[7]  = 0;
-
-    m[8]  = 0;
-    m[9]  = 0;
-    m[10] = q;
-    m[11] = -1; 
-
-    m[12] = 0;
-    m[13] = 0;
-    m[14] = qn;
-    m[15] = 0;
+    m[0]  = w; m[4]  = 0; m[ 8] =  0; m[12] = 0;
+    m[1]  = 0; m[5]  = h; m[ 9] =  0; m[13] = 0;
+    m[2]  = 0; m[6]  = 0; m[10] =  q; m[14] = qn;
+    m[3]  = 0; m[7]  = 0; m[11] = -1; m[15] = 0;
   }
 
 
