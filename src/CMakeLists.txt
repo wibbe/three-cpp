@@ -1,6 +1,7 @@
 
 SET(SOURCE
   Object.cpp
+  Scene.cpp
   Camera.cpp
   PerspectiveCamera.cpp
   Renderer.cpp

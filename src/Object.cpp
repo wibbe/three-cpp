@@ -1,5 +1,6 @@
 
 #include "Object.h"
+#include "Scene.h"
 #include "Math.h"
 
 #include <algorithm>
@@ -35,11 +36,25 @@ namespace three {
 
     object->parent = this;
     children.push_back(object);
+
+    Object * root = this;
+    while (root->parent)
+      root = root->parent;
+
+    if (Scene * scene = dynamic_cast<Scene *>(root))
+      scene->__addObject(object);
   }
 
   void Object::remove(Object * object)
   {
     children.erase(std::remove(children.begin(), children.end(), object), children.end());
+
+    Object * root = this;
+    while (root->parent)
+      root = root->parent;
+
+    if (Scene * scene = dynamic_cast<Scene *>(root))
+      scene->__removeObject(object);
   }
 
   Object * Object::getChildByName(std::string const& name, bool recursive)
