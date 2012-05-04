@@ -42,6 +42,7 @@ namespace three {
       void remove(Object * object);
 
       void updateMatrix();
+      void updateWorldMatrix(bool force = false);
 
     public:
       Object * parent;
@@ -61,6 +62,7 @@ namespace three {
       bool castShadow;
       bool receiveShadow;
 
+      bool matrixAutoUpdate;
       bool matrixWorldMatrixNeedsUpdate;
   };
 

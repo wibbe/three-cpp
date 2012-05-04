@@ -16,6 +16,7 @@ namespace three {
       visible(true),
       castShadow(false),
       receiveShadow(false),
+      matrixAutoUpdate(true),
       matrixWorldMatrixNeedsUpdate(true)
   {
   }
@@ -48,6 +49,26 @@ namespace three {
       matrix.scale(scale);
       boundRadiusScale = scale.max();
     }
+  }
+
+  void Object::updateWorldMatrix(bool force)
+  {
+    if (matrixAutoUpdate)
+      updateMatrix();
+
+    if (matrixWorldMatrixNeedsUpdate || force)
+    {
+      if (parent)
+        matrixWorld = parent->matrixWorld * matrix;
+      else
+        matrixWorld = matrix;
+
+      matrixWorldMatrixNeedsUpdate = false;
+      force = true;
+    }
+
+    for (std::vector<Object *>::iterator it = children.begin(), end = children.end(); it != end; ++it)
+      (*it)->updateWorldMatrix(force);
   }
 
 }
