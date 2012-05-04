@@ -33,7 +33,7 @@ namespace three {
   {
     public:
       virtual void init(Renderer * renderer) = 0;
-      virtual void render(Scene * scene, Camera * camera, int width, int height) = 0;
+      virtual void render(Scene * scene, Camera * camera, int viewportWidth, int viewportHeight) = 0;
   };
 }
 
