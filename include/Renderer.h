@@ -71,6 +71,9 @@ namespace three {
 
     private:
       void setDefaultGLState();
+      void resetCache();
+
+      void renderPlugins(std::vector<RenderPlugin *> & plugins, Scene * scene, Camera * camera);
 
     private:
       int viewportX;

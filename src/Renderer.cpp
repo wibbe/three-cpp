@@ -42,6 +42,8 @@ namespace three {
 
       setDefaultGLState();
       setViewport(0, 0, windowWidth, windowHeight);
+
+      resetCache();
     }
     else
     {
@@ -161,6 +163,13 @@ namespace three {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   }
 
+  void Renderer::resetCache()
+  {
+    oldDepthTest = true;
+    oldDepthWrite = true;
+    oldBlending = AlphaBlending;
+  }
+
   void Renderer::addPrePlugin(RenderPlugin * plugin)
   {
     plugin->init(this);
@@ -172,6 +181,16 @@ namespace three {
     plugin->init(this);
     renderPluginsPost.push_back(plugin);
   }
+
+  void Renderer::renderPlugins(std::vector<RenderPlugin *> & plugins, Scene * scene, Camera * camera)
+  {
+    for (std::vector<RenderPlugin *>::iterator it = plugins.begin(), end = plugins.end(); it != end; ++it)
+    {
+      resetCache();
+      (*it)->render(scene, camera, 0, 0);
+      resetCache();
+    }
+  }
   
   void Renderer::render(Scene * scene, Camera * camera, RenderTarget * renderTarget, bool forceClear)
   {
@@ -180,10 +199,14 @@ namespace three {
     if (autoUpdateScene)
       scene->updateWorldMatrix();
 
+    renderPlugins(renderPluginsPost, scene, camera);
+
     setRenderTarget(renderTarget);
 
     if (autoClear || forceClear)
       clear(autoClearColor, autoClearDepth, autoClearStencil);
+
+    renderPlugins(renderPluginsPost, scene, camera);
 
     setDepthTest(true);
     setDepthWrite(true);
