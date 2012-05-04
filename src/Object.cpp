@@ -1,6 +1,8 @@
 
 #include "Object.h"
 
+#include <algorithm>
+
 namespace three {
 
   Object::Object()
@@ -15,6 +17,25 @@ namespace three {
 
   Object::~Object()
   {
+  }
+
+  void Object::add(Object * object)
+  {
+    if (object->parent != 0)
+      object->parent->remove(object);
+
+    object->parent = this;
+    children.push_back(object);
+  }
+
+  void Object::remove(Object * object)
+  {
+    children.erase(std::remove(children.begin(), children.end(), object), children.end());
+  }
+
+  void Object::updateMatrix()
+  {
+    matrix.setPosition(position);
   }
 
 }

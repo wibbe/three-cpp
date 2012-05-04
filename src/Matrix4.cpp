@@ -61,7 +61,7 @@ namespace three {
     memcpy(m, IDENTITY, sizeof(float) * 16);
   }
   
-  void Matrix4::translate(Vector3 const& pos)
+  void Matrix4::setPosition(Vector3 const& pos)
   {
     m[_03] = pos.x;
     m[_13] = pos.y;

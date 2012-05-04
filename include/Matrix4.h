@@ -38,7 +38,7 @@ namespace three {
       
       void identity();
       
-      void translate(Vector3 const& pos);
+      void setPosition(Vector3 const& pos);
       void scale(Vector3 const& scale);
       void perspective(float fov, float aspect, float near, float far);
       

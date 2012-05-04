@@ -17,6 +17,11 @@ namespace three {
       Object();
       virtual ~Object();
 
+      void add(Object * object);
+      void remove(Object * object);
+
+      void updateMatrix();
+
     public:
       Object * parent;
       std::vector<Object *> children;
@@ -31,6 +36,8 @@ namespace three {
       float boundRadius;
 
       bool visible;
+      bool castShadow;
+      bool receiveShadow;
   };
 
 }
