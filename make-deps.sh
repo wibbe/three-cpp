@@ -41,7 +41,7 @@ elif [ "$OS" = "Linux" ] ; then
   # Build GLFW
   (cd third-party/glfw && make x11)
   (cd third-party/glfw && PREFIX=$BUILD_TEMP make x11-install)
-  (cd third-party/glfw && make x11-clean)
+  (cd third-party/glfw && make x11-dist-clean)
 
   # Some cleanup
   mv $BUILD_TEMP/lib64/libGLEW.a $BUILD_TEMP/lib
