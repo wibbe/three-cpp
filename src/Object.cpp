@@ -1,7 +1,6 @@
 
 #include "Object.h"
 #include "Scene.h"
-#include "Math.h"
 
 #include <algorithm>
 

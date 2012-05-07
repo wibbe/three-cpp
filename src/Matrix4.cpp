@@ -1,6 +1,5 @@
 
 #include "Matrix4.h"
-#include "Math.h"
 
 #include <string.h>
 

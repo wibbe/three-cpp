@@ -5,6 +5,7 @@ SET(SOURCE
   Camera.cpp
   PerspectiveCamera.cpp
   Renderer.cpp
+  Geometry.cpp
 
   Vector3.cpp
   Matrix4.cpp
