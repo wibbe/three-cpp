@@ -20,9 +20,9 @@
  * THE SOFTWARE.
  */
 
-
 #pragma once
 
+#include "Defines.h"
 #include <vector>
 
 namespace three {
@@ -32,15 +32,6 @@ namespace three {
   class Camera;
   class RenderTarget;
   class RenderPlugin;
-
-  enum Blending
-  {
-    NoBlending,
-    AdditiveBlending,
-    SubstractiveBlending,
-    MultiplyBlending,
-    AlphaBlending
-  };
 
   class Renderer
   {

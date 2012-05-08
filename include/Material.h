@@ -22,37 +22,40 @@
 
 #pragma once
 
-#include "Vector3.h"
-#include "Color.h"
-#include "Face.h"
-
-#include <vector>
+#include "Defines.h"
+#include <string>
 
 namespace three {
 
-  class Geometry
+  class Material
   {
     public:
-      typedef std::vector<Vector3> VertexArray;
-      typedef std::vector<Color> ColorArray;
-      typedef std::vector<Face> FaceArray;
+      Material()
+        : name(""),
+          opacity(1.0f),
+          transparent(false),
+          blending(NormaBlending),
+          depthTest(true),
+          depthWrite(true),
+          alphaTest(0),
+          visible(true),
+          needsUpdate(true)
+      { }
 
     public:
-      Geometry();
+      std::string name;
+      float opacity;
+      bool transparent;
 
-      void computeCentroids();
-      void computeBoundingSphere();
+      Blending blending;
 
-    public:
-      VertexArray vertices;
-      ColorArray colors;
+      bool depthTest;
+      bool depthWrite;
 
-      FaceArray faces;
+      unsigned char alphaTest;
 
-      bool hasTangents;
-      bool dynamic;
-
-      float boundingSphereRadius;
+      bool visible;
+      bool needsUpdate;
   };
 
 }

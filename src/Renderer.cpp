@@ -25,7 +25,7 @@ namespace three {
       autoClearStencil(false),
       oldDepthTest(true),
       oldDepthWrite(true),
-      oldBlending(AlphaBlending)
+      oldBlending(NormalBlending)
   {
     if (!g_renderer)
     {
@@ -120,7 +120,7 @@ namespace three {
           glBlendFunc(GL_ZERO, GL_SRC_COLOR);
           break;
 
-        case AlphaBlending:
+        case NormalBlending:
           glEnable(GL_BLEND);
           glBlendEquation(GL_FUNC_ADD);
           glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -167,7 +167,7 @@ namespace three {
   {
     oldDepthTest = true;
     oldDepthWrite = true;
-    oldBlending = AlphaBlending;
+    oldBlending = NormalBlending;
   }
 
   void Renderer::addPrePlugin(RenderPlugin * plugin)

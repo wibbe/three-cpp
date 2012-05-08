@@ -22,37 +22,15 @@
 
 #pragma once
 
-#include "Vector3.h"
-#include "Color.h"
-#include "Face.h"
-
-#include <vector>
-
 namespace three {
 
-  class Geometry
+  enum Blending
   {
-    public:
-      typedef std::vector<Vector3> VertexArray;
-      typedef std::vector<Color> ColorArray;
-      typedef std::vector<Face> FaceArray;
-
-    public:
-      Geometry();
-
-      void computeCentroids();
-      void computeBoundingSphere();
-
-    public:
-      VertexArray vertices;
-      ColorArray colors;
-
-      FaceArray faces;
-
-      bool hasTangents;
-      bool dynamic;
-
-      float boundingSphereRadius;
+    NoBlending,
+    AdditiveBlending,
+    SubstractiveBlending,
+    MultiplyBlending,
+    NormalBlending
   };
 
 }
