@@ -6,6 +6,7 @@ SET(SOURCE
   PerspectiveCamera.cpp
   Renderer.cpp
   Geometry.cpp
+  Mesh.cpp
 
   Vector3.cpp
   Matrix4.cpp
