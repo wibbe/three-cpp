@@ -7,6 +7,7 @@ SET(SOURCE
   Renderer.cpp
   Geometry.cpp
   Mesh.cpp
+  GLObject.cpp
 
   Vector3.cpp
   Matrix4.cpp

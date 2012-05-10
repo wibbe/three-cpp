@@ -16,6 +16,7 @@ namespace three {
         : a(_a),
           b(_b),
           c(_c),
+          materialIndex(-1),
           normal(_normal)
       { }
 
@@ -38,6 +39,7 @@ namespace three {
 
     public:
       unsigned short a, b, c;
+      int materialIndex;
 
       Vector3 normal;
       //Vector3 vertexNormals[3];

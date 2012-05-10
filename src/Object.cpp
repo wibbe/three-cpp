@@ -21,7 +21,8 @@ namespace three {
       receiveShadow(false),
       rotationAutoUpdate(true),
       matrixAutoUpdate(true),
-      matrixWorldMatrixNeedsUpdate(true)
+      matrixWorldMatrixNeedsUpdate(true),
+      __renderObject(0)
   {
   }
 

@@ -30,20 +30,11 @@ namespace three {
   class Material
   {
     public:
-      Material()
-        : name(""),
-          opacity(1.0f),
-          transparent(false),
-          blending(NormaBlending),
-          depthTest(true),
-          depthWrite(true),
-          alphaTest(0),
-          visible(true),
-          needsUpdate(true)
-      { }
+      Material();
 
     public:
       std::string name;
+      int materialIndex;
       float opacity;
       bool transparent;
 

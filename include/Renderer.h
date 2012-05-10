@@ -28,6 +28,7 @@
 namespace three {
 
   // Forward declarations
+  class Object;
   class Scene;
   class Camera;
   class RenderTarget;
@@ -65,6 +66,10 @@ namespace three {
       void resetCache();
 
       void renderPlugins(std::vector<RenderPlugin *> & plugins, Scene * scene, Camera * camera);
+
+      void updateGLObjects(Scene * scene);
+      void addObject(Object * object, Scene * scene);
+      void removeObject(Object * object, Scene * scene);
 
     private:
       int viewportX;

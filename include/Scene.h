@@ -37,7 +37,6 @@ namespace three {
     public:
       bool matrixAutoUpdate;
       
-    private:
       std::vector<Object *> objects;
       std::vector<Object *> lights;
       

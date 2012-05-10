@@ -75,6 +75,9 @@ namespace three {
 
       bool matrixAutoUpdate;
       bool matrixWorldMatrixNeedsUpdate;
+
+      // Only for internal use by the renderer
+      void * __renderObject;
   };
 
 }

@@ -2,7 +2,9 @@
 #include "Renderer.h"
 #include "Scene.h"
 #include "Camera.h"
+#include "GLObject.h"
 #include "RenderPlugin.h"
+#include "Mesh.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -199,6 +201,9 @@ namespace three {
     if (autoUpdateScene)
       scene->updateWorldMatrix();
 
+    if (autoUpdateObjects)
+      updateGLObjects(scene);
+
     renderPlugins(renderPluginsPost, scene, camera);
 
     setRenderTarget(renderTarget);
@@ -210,6 +215,34 @@ namespace three {
 
     setDepthTest(true);
     setDepthWrite(true);
+  }
+
+  void Renderer::updateGLObjects(Scene * scene)
+  {
+    for (std::vector<Object *>::iterator it = scene->objectsAdded.begin(), end = scene->objectsAdded.end(); it != end; ++it)
+      addObject(*it, scene);
+
+    for (std::vector<Object *>::iterator it = scene->objectsRemoved.begin(), end = scene->objectsRemoved.end(); it != end; ++it)
+      removeObject(*it, scene);
+  }
+
+  void Renderer::addObject(Object * object, Scene * scene)
+  {
+    if (!object->__renderObject)
+    {
+      GLObject * glObj = new GLObject(object);
+
+      if (Mesh * mesh = dynamic_cast<Mesh *>(object))
+      {
+        if (mesh->geometry && mesh->material)
+        {
+        }
+      }
+    }
+  }
+
+  void Renderer::removeObject(Object * object, Scene * scene)
+  {
   }
 
 }
