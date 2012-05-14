@@ -9,6 +9,7 @@ SET(SOURCE
   Mesh.cpp
   GLObject.cpp
   GLGeometry.cpp
+	GLRenderer.cpp
 
   Vector3.cpp
   Matrix4.cpp

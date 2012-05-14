@@ -22,54 +22,50 @@
 
 #pragma once
 
-#include "Defines.h"
+#include "Renderer.h"
 #include <vector>
 
 namespace three {
 
-  // Forward declarations
-  class Object;
-  class Mesh;
-  class Scene;
-  class Camera;
-  class Geometry;
-  class RenderTarget;
-  class RenderPlugin;
-
-  class Renderer
+  class GLRenderer : public Renderer
   {
     public:
-      Renderer();
-      virtual ~Renderer();
+      GLRenderer(int windowWidth = 1024, int windowHeight = 768, bool fullscreen = false);
+      ~GLRenderer();
 
-      virtual void setViewport(int x, int y, int width, int height) = 0;
-      virtual void setRenderTarget(RenderTarget * renderTarget) = 0;
-      virtual void setDepthTest(bool enabled) = 0;
-      virtual void setDepthWrite(bool enabled) = 0;
-      virtual void setBlending(Blending blending) = 0;
+      void setViewport(int x, int y, int width, int height);
+      void setRenderTarget(RenderTarget * renderTarget);
+      void setDepthTest(bool enabled);
+      void setDepthWrite(bool enabled);
+      void setBlending(Blending blending);
 
-      virtual void clear(bool color, bool depth, bool stencil = false) = 0;
+      void clear(bool color, bool depth, bool stencil = false);
+      void render(Scene * scene, Camera * camera, RenderTarget * renderTarget = 0, bool forceClear = false);
 
-      virtual void render(Scene * scene, Camera * camera, RenderTarget * renderTarget = 0, bool forceClear = false) = 0;
+    private:
+      void setDefaultGLState();
+      void resetCache();
 
-      void addPrePlugin(RenderPlugin * plugin);
-      void addPostPlugin(RenderPlugin * plugin);
+      void updateGLObjects(Scene * scene);
+      void addObject(Object * object, Scene * scene);
+      void removeObject(Object * object, Scene * scene);
+      void updateObject(Object * object);
 
-    public:
-      bool autoUpdateScene;
-      bool autoUpdateObjects;
-      bool autoClear;
-      bool autoClearColor;
-      bool autoClearDepth;
-      bool autoClearStencil;
+      void createMeshBuffers(Geometry * geometry);
 
-    protected:
-      virtual void resetCache() = 0;
-      void renderPlugins(std::vector<RenderPlugin *> & plugins, Scene * scene, Camera * camera);
+    private:
+      int viewportX;
+      int viewportY;
+      int viewportWidth;
+      int viewportHeight;
 
-    protected:
       std::vector<RenderPlugin *> renderPluginsPre;
       std::vector<RenderPlugin *> renderPluginsPost;
+
+      bool oldDepthTest;
+      bool oldDepthWrite;
+
+      Blending oldBlending;
   };
 
 }
