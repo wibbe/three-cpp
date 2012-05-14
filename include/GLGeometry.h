@@ -27,18 +27,15 @@
 namespace three {
 
   // Forward declarations
-  class Object;
+  class Geometry;
 
-  class GLObject
+  class GLGeometry
   {
     public:
-      GLObject(Object * source);
+      GLGeometry(Geometry * source);
 
     public:
-      Object * sourceObject;
-
-      Matrix4 modelViewMatrix;
-      Matrix4 normalMatrix;
+      Geometry * sourceGeometry;
 
       unsigned int vertexBuffer;
       unsigned int normalBuffer;

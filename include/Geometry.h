@@ -40,11 +40,11 @@ namespace three {
     public:
       Geometry();
 
-      void computeCentroids();
       void computeBoundingSphere();
 
     public:
       VertexArray vertices;
+      VertexArray normals;
       ColorArray colors;
 
       FaceArray faces;
@@ -52,7 +52,14 @@ namespace three {
       bool hasTangents;
       bool dynamic;
 
+      bool verticesNeedUpdate;
+      bool normalsNeedUpdate;
+      bool elementsNeedUpdate;
+
       float boundingSphereRadius;
+
+      // Only for internal use by the renderer
+      void * __renderObject;
   };
 
 }

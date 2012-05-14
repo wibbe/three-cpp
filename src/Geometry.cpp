@@ -6,18 +6,11 @@ namespace three {
   Geometry::Geometry()
     : hasTangents(false),
       dynamic(false),
-      boundingSphereRadius(-1.0f)
+      boundingSphereRadius(-1.0f),
+      verticesNeedUpdate(false),
+      normalsNeedUpdate(false),
+      elementsNeedUpdate(false)
   {
-  }
-
-  void Geometry::computeCentroids()
-  {
-    for (FaceArray::iterator it = faces.begin(), end = faces.end(); it != end; ++it)
-    {
-      Face & face = *it;
-
-      face.centroid = (vertices[face.a] + vertices[face.b] + vertices[face.c]) * 0.333333f;
-    }
   }
 
   void Geometry::computeBoundingSphere()

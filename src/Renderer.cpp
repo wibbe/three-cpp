@@ -2,9 +2,11 @@
 #include "Renderer.h"
 #include "Scene.h"
 #include "Camera.h"
-#include "GLObject.h"
 #include "RenderPlugin.h"
 #include "Mesh.h"
+#include "Geometry.h"
+#include "GLObject.h"
+#include "GLGeometry.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -228,16 +230,14 @@ namespace three {
 
   void Renderer::addObject(Object * object, Scene * scene)
   {
-    if (!object->__renderObject)
+    if (Mesh * mesh = dynamic_cast<Mesh *>(object))
     {
-      GLObject * glObj = new GLObject(object);
+      if (!object->__renderObject)
+        new GLObject(object);
 
-      if (Mesh * mesh = dynamic_cast<Mesh *>(object))
-      {
-        if (mesh->geometry && mesh->material)
-        {
-        }
-      }
+      assert(mesh->geometry);
+
+      createMeshBuffers(mesh->geometry);
     }
   }
 
@@ -245,4 +245,28 @@ namespace three {
   {
   }
 
+  void Renderer::updateObject(Object * object)
+  {
+    if (Mesh * mesh = dynamic_cast<Mesh *>(object))
+    {
+    }
+  }
+
+  void Renderer::createMeshBuffers(Geometry * geometry)
+  {
+    if (geometry->__renderObject)
+      return;
+
+    GLGeometry * geom = new GLGeometry(geometry);
+
+    glGenBuffers(1, &geom->vertexBuffer);
+    glGenBuffers(1, &geom->normalBuffer);
+    glGenBuffers(1, &geom->indexBuffer);
+
+    geometry->verticesNeedUpdate = true;
+    geometry->normalsNeedUpdate = true;
+    geometry->elementsNeedUpdate = true;
+  }
+
 }
+

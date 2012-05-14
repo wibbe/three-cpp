@@ -29,8 +29,10 @@ namespace three {
 
   // Forward declarations
   class Object;
+  class Mesh;
   class Scene;
   class Camera;
+  class Geometry;
   class RenderTarget;
   class RenderPlugin;
 
@@ -70,6 +72,9 @@ namespace three {
       void updateGLObjects(Scene * scene);
       void addObject(Object * object, Scene * scene);
       void removeObject(Object * object, Scene * scene);
+      void updateObject(Object * object);
+
+      void createMeshBuffers(Geometry * geometry);
 
     private:
       int viewportX;

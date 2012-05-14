@@ -8,6 +8,7 @@ SET(SOURCE
   Geometry.cpp
   Mesh.cpp
   GLObject.cpp
+  GLGeometry.cpp
 
   Vector3.cpp
   Matrix4.cpp
