@@ -23,26 +23,26 @@
 #pragma once
 
 #include "Matrix4.h"
+#include "RenderObject.h"
 
 namespace three {
 
-  // Forward declarations
-  class Object;
-
-  class GLObject
+  class GLObject : public RenderObject
   {
     public:
       GLObject(Object * source);
 
     public:
-      Object * sourceObject;
-
       Matrix4 modelViewMatrix;
       Matrix4 normalMatrix;
 
       unsigned int vertexBuffer;
       unsigned int normalBuffer;
       unsigned int indexBuffer;
+
+      float z;
+
+      bool render;
   };
 
 }

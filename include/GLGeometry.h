@@ -23,20 +23,16 @@
 #pragma once
 
 #include "Matrix4.h"
+#include "RenderGeometry.h"
 
 namespace three {
 
-  // Forward declarations
-  class Geometry;
-
-  class GLGeometry
+  class GLGeometry : public RenderGeometry
   {
     public:
       GLGeometry(Geometry * source);
 
     public:
-      Geometry * sourceGeometry;
-
       unsigned int vertexBuffer;
       unsigned int normalBuffer;
       unsigned int indexBuffer;

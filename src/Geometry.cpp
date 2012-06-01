@@ -9,7 +9,8 @@ namespace three {
       boundingSphereRadius(-1.0f),
       verticesNeedUpdate(false),
       normalsNeedUpdate(false),
-      elementsNeedUpdate(false)
+      elementsNeedUpdate(false),
+      __renderGeometry(0)
   {
   }
 

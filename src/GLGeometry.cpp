@@ -5,9 +5,9 @@
 namespace three {
 
   GLGeometry::GLGeometry(Geometry * source)
-    : sourceGeometry(source)
+    : RenderGeometry(source)
   {
-    sourceGeometry->__renderObject = this;
+    sourceGeometry->__renderGeometry = this;
   }
 
 }

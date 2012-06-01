@@ -23,7 +23,10 @@
 #pragma once
 
 #include "Renderer.h"
+#include "RenderObject.h"
+#include "Matrix4.h"
 #include <vector>
+#include <string>
 
 namespace three {
 
@@ -46,12 +49,16 @@ namespace three {
       void setDefaultGLState();
       void resetCache();
 
+      void renderObjects(std::vector<RenderObject *> const& renderList, bool reverse, std::string materialType, Camera * camera, /* lights, fog, */ bool useBlending, Material * overrideMaterial);
+
       void updateGLObjects(Scene * scene);
       void addObject(Object * object, Scene * scene);
       void removeObject(Object * object, Scene * scene);
       void updateObject(Object * object);
 
       void createMeshBuffers(Geometry * geometry);
+
+      void setupMatrices(Object * object, Camera * camera);
 
     private:
       int viewportX;
@@ -61,6 +68,9 @@ namespace three {
 
       std::vector<RenderPlugin *> renderPluginsPre;
       std::vector<RenderPlugin *> renderPluginsPost;
+
+      Matrix4 projScreenMatrix;
+      Matrix4 projScreenMatrixPS;
 
       bool oldDepthTest;
       bool oldDepthWrite;

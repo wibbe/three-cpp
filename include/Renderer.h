@@ -32,6 +32,7 @@ namespace three {
   class Mesh;
   class Scene;
   class Camera;
+  class Material;
   class Geometry;
   class RenderTarget;
   class RenderPlugin;
@@ -62,6 +63,9 @@ namespace three {
       bool autoClearColor;
       bool autoClearDepth;
       bool autoClearStencil;
+      bool sortObjects;
+
+      Material * overrideMaterial;
 
     protected:
       virtual void resetCache() = 0;

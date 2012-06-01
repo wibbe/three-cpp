@@ -30,6 +30,9 @@
 
 namespace three {
 
+  // Forward declarations
+  class RenderObject;
+
   /**
    * Base class for all objects in Three++
    */
@@ -77,7 +80,7 @@ namespace three {
       bool matrixWorldMatrixNeedsUpdate;
 
       // Only for internal use by the renderer
-      void * __renderObject;
+      RenderObject * __renderObject;
   };
 
 }

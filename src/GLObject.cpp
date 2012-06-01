@@ -5,7 +5,8 @@
 namespace three {
 
   GLObject::GLObject(Object * source)
-    : sourceObject(source)
+    : RenderObject(source),
+      render(false)
   {
     source->__renderObject = this;
   }

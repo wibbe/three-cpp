@@ -26,7 +26,9 @@ namespace three {
       autoClear(true),
       autoClearColor(true),
       autoClearDepth(true),
-      autoClearStencil(false)
+      autoClearStencil(false),
+      sortObjects(true),
+      overrideMaterial(0)
   {
     if (!g_renderer)
     {

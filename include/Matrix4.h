@@ -52,8 +52,16 @@ namespace three {
       void makePerspective(float fov, float aspect, float near, float far);
 
       Matrix4 & scale(Vector3 const& scale);
+
+      Matrix4 inverse() const;
+      float determinant() const;
+
+      Matrix4 & transpose();
       
       Matrix4 operator * (Matrix4 const& mat) const;
+      Vector3 operator * (Vector3 const& vector) const;
+
+      Matrix4 & operator *= (float scalar);
       Matrix4 & operator =  (Matrix4 const& copy);
       
       inline float operator [] (int index) const { return m[index]; }

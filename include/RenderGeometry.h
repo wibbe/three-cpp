@@ -22,28 +22,25 @@
 
 #pragma once
 
-#include "Object.h"
-
 namespace three {
-	
-	class Scene : public Object
-	{
-    public:
-      Scene();
 
-      void __addObject(Object * object);
-      void __removeObject(Object * object);
-      
-    public:
-      bool matrixAutoUpdate;
-      
-      std::vector<Object *> objects;
-      std::vector<Object *> lights;
-      
-      std::vector<Object *> objectsAdded;
-      std::vector<Object *> objectsRemoved;
+  // Forward declarations
+  class Geometry;
 
-      // Only for internal use by the renderer
-      std::vector<RenderObject *> __renderObjects;
+  class RenderGeometry
+  {
+    public:
+      RenderGeometry(Geometry * geometry)
+        : sourceGeometry(geometry)
+      { }
+
+      virtual ~RenderGeometry()
+      { }
+
+    public:
+      Geometry * sourceGeometry;
   };
+
 }
+
+

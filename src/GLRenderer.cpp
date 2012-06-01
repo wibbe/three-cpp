@@ -3,6 +3,7 @@
 #include "Scene.h"
 #include "Camera.h"
 #include "RenderPlugin.h"
+#include "Material.h"
 #include "Mesh.h"
 #include "Geometry.h"
 #include "GLObject.h"
@@ -11,11 +12,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <cassert>
+#include <algorithm>
 
 #include <GL/glew.h>
 #include <GL/glfw.h>
 
 namespace three {
+
+  static inline bool painterSort(RenderObject * obj1, RenderObject * obj2)
+  {
+    return static_cast<GLObject *>(obj1)->z > static_cast<GLObject *>(obj2)->z;
+  }
 
   GLRenderer::GLRenderer(int windowWidth, int windowHeight, bool fullscreen)
     : Renderer(),
@@ -160,6 +167,9 @@ namespace three {
     if (autoUpdateScene)
       scene->updateWorldMatrix();
 
+    camera->matrixWorldInverse = camera->matrixWorld.inverse();
+    projScreenMatrix = camera->projectionMatrix * camera->matrixWorldInverse;
+
     if (autoUpdateObjects)
       updateGLObjects(scene);
 
@@ -170,10 +180,59 @@ namespace three {
     if (autoClear || forceClear)
       clear(autoClearColor, autoClearDepth, autoClearStencil);
 
+    // Setup matrices for regular objects
+    for (std::vector<RenderObject *>::iterator it = scene->__renderObjects.begin(), end = scene->__renderObjects.end(); it != end; ++it)
+    {
+      GLObject * glObject = static_cast<GLObject *>(*it);
+      Object * object = glObject->sourceObject;
+
+      setupMatrices(object, camera);
+
+      glObject->render = false;
+
+      if (object->visible)
+      {
+        glObject->render = true;
+
+        if (sortObjects)
+        {
+          Vector3 position = projScreenMatrix * object->matrixWorld.getPosition();
+          glObject->z = position.z;
+        }
+      }
+    }
+
+    // Sort objects according to depth
+    std::sort(scene->__renderObjects.begin(), scene->__renderObjects.end(), painterSort);
+
+    // Draw all objects
+    if (overrideMaterial)
+    {
+      setBlending(overrideMaterial->blending);
+      setDepthTest(overrideMaterial->depthTest);
+      setDepthWrite(overrideMaterial->depthWrite);
+
+      renderObjects(scene->__renderObjects, false, "", camera, /* lights, fog, */ true, overrideMaterial);
+    }
+    else
+    {
+      // opaque pass (front-to-back order)
+      setBlending(NormalBlending);
+
+      renderObjects(scene->__renderObjects, true, "opaque", camera, /* lights, fog, */ false, 0);
+
+      // transparent pass (back-to-front order)
+      renderObjects(scene->__renderObjects, false, "transparent", camera, /* lights, fog, */ true, 0);
+    }
+
     renderPlugins(renderPluginsPost, scene, camera);
 
     setDepthTest(true);
     setDepthWrite(true);
+  }
+
+  void GLRenderer::renderObjects(std::vector<RenderObject *> const& renderList, bool reverse, std::string materialType, Camera * camera, /* lights, fog, */ bool useBlending, Material * overrideMaterial)
+  {
   }
 
   void GLRenderer::updateGLObjects(Scene * scene)
@@ -183,6 +242,13 @@ namespace three {
 
     for (std::vector<Object *>::iterator it = scene->objectsRemoved.begin(), end = scene->objectsRemoved.end(); it != end; ++it)
       removeObject(*it, scene);
+
+    scene->objectsAdded.clear();
+    scene->objectsRemoved.clear();
+
+    for (std::vector<RenderObject *>::iterator it = scene->__renderObjects.begin(), end = scene->__renderObjects.end(); it != end; ++it)
+      updateObject((*it)->sourceObject);
+
   }
 
   void GLRenderer::addObject(Object * object, Scene * scene)
@@ -190,7 +256,10 @@ namespace three {
     if (Mesh * mesh = dynamic_cast<Mesh *>(object))
     {
       if (!object->__renderObject)
-        new GLObject(object);
+      {
+        GLObject * glObject = new GLObject(object);
+        scene->__renderObjects.push_back(glObject);
+      }
 
       assert(mesh->geometry);
 
@@ -206,12 +275,35 @@ namespace three {
   {
     if (Mesh * mesh = dynamic_cast<Mesh *>(object))
     {
+      Geometry * geom = mesh->geometry;
+      GLGeometry * glGeom = static_cast<GLGeometry *>(geom->__renderGeometry);
+
+      if (geom->verticesNeedUpdate)
+      {
+        glBindBuffer(GL_ARRAY_BUFFER, glGeom->vertexBuffer);
+        glBufferData(GL_ARRAY_BUFFER, geom->vertices.size() * sizeof(Vector3), &geom->vertices[0], geom->dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
+        geom->verticesNeedUpdate = false;
+      }
+
+      if (geom->normalsNeedUpdate)
+      {
+        glBindBuffer(GL_ARRAY_BUFFER, glGeom->normalBuffer);
+        glBufferData(GL_ARRAY_BUFFER, geom->normals.size() * sizeof(Vector3), &geom->normals[0], geom->dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
+        geom->normalsNeedUpdate = false;
+      }
+
+      if (geom->elementsNeedUpdate)
+      {
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, glGeom->indexBuffer);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, geom->faces.size() * sizeof(Face), &geom->faces[0], geom->dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
+        geom->elementsNeedUpdate = false;
+      }
     }
   }
 
   void GLRenderer::createMeshBuffers(Geometry * geometry)
   {
-    if (geometry->__renderObject)
+    if (geometry->__renderGeometry)
       return;
 
     GLGeometry * geom = new GLGeometry(geometry);
@@ -223,6 +315,15 @@ namespace three {
     geometry->verticesNeedUpdate = true;
     geometry->normalsNeedUpdate = true;
     geometry->elementsNeedUpdate = true;
+  }
+
+  void GLRenderer::setupMatrices(Object * object, Camera * camera)
+  {
+    GLObject * glObject = static_cast<GLObject *>(object->__renderObject);
+
+    glObject->modelViewMatrix = camera->matrixWorldInverse * object->matrixWorld;
+    glObject->normalMatrix = glObject->modelViewMatrix.inverse();
+    glObject->normalMatrix.transpose();
   }
 
 }

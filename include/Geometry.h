@@ -30,6 +30,9 @@
 
 namespace three {
 
+  // Forward declarations
+  class RenderGeometry;
+
   class Geometry
   {
     public:
@@ -59,7 +62,7 @@ namespace three {
       float boundingSphereRadius;
 
       // Only for internal use by the renderer
-      void * __renderObject;
+      RenderGeometry * __renderGeometry;
   };
 
 }
