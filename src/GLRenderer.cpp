@@ -15,7 +15,6 @@
 #include <algorithm>
 
 #include <GL/glew.h>
-#include <GL/glfw.h>
 
 namespace three {
 
@@ -30,15 +29,6 @@ namespace three {
       oldDepthWrite(true),
       oldBlending(NormalBlending)
   {
-    glfwInit();
-    glfwOpenWindowHint(GLFW_FSAA_SAMPLES, 4);
-    glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 2);
-    glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 0);
-
-    glfwOpenWindow(windowWidth, windowHeight, 8, 8, 8, 8, 24, 0, fullscreen ? GLFW_FULLSCREEN : GLFW_WINDOW);
-
-    glewInit();
-
     setDefaultGLState();
     setViewport(0, 0, windowWidth, windowHeight);
 
@@ -47,7 +37,11 @@ namespace three {
 
   GLRenderer::~GLRenderer()
   {
-    glfwTerminate();
+  }
+
+  void GLRenderer::setSize(int width, int height)
+  {
+    setViewport(0, 0, width, height);
   }
 
   void GLRenderer::setViewport(int x, int y, int width, int height)

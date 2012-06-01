@@ -43,6 +43,7 @@ namespace three {
       Renderer();
       virtual ~Renderer();
 
+      virtual void setSize(int width, int height) = 0;
       virtual void setViewport(int x, int y, int width, int height) = 0;
       virtual void setRenderTarget(RenderTarget * renderTarget) = 0;
       virtual void setDepthTest(bool enabled) = 0;

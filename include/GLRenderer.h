@@ -40,6 +40,7 @@ namespace three {
       GLRenderer(int windowWidth = 1024, int windowHeight = 768, bool fullscreen = false);
       ~GLRenderer();
 
+      void setSize(int width, int height);
       void setViewport(int x, int y, int width, int height);
       void setRenderTarget(RenderTarget * renderTarget);
       void setDepthTest(bool enabled);
