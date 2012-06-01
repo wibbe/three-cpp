@@ -12,6 +12,8 @@ SET(SOURCE
   GLGeometry.cpp
 	GLRenderer.cpp
 
+  CubeGeometry.cpp
+
   Vector3.cpp
   Matrix4.cpp
   Quaternion.cpp
