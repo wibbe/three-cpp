@@ -30,6 +30,10 @@
 
 namespace three {
 
+  // Forward declarations
+  class GLObject;
+  class GLGeometry;
+
   class GLRenderer : public Renderer
   {
     public:
@@ -50,6 +54,7 @@ namespace three {
       void resetCache();
 
       void renderObjects(std::vector<RenderObject *> const& renderList, bool reverse, std::string materialType, Camera * camera, /* lights, fog, */ bool useBlending, Material * overrideMaterial);
+      void renderBuffer(Camera * camera, /* lights, fog, */ Material * material, GLGeometry * geometry, GLObject * object);
 
       void updateGLObjects(Scene * scene);
       void addObject(Object * object, Scene * scene);

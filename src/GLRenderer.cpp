@@ -233,6 +233,29 @@ namespace three {
 
   void GLRenderer::renderObjects(std::vector<RenderObject *> const& renderList, bool reverse, std::string materialType, Camera * camera, /* lights, fog, */ bool useBlending, Material * overrideMaterial)
   {
+    if (reverse)
+    {
+      for (std::vector<RenderObject *>::const_reverse_iterator it = renderList.rbegin(), end = renderList.rend(); it != end; ++it)
+      {
+      }
+    }
+    else
+    {
+      for (std::vector<RenderObject *>::const_iterator it = renderList.begin(), end = renderList.end(); it != end; ++it)
+      {
+      }
+    }
+  }
+
+  void GLRenderer::renderBuffer(Camera * camera, /* lights, fog, */ Material * material, GLGeometry * geometry, GLObject * object)
+  {
+    bool updateBuffers = false;
+    
+    if (updateBuffers)
+    {
+      glBindBuffer(GL_ARRAY_BUFFER, geometry->vertexBuffer);
+      //glVertex
+    }
   }
 
   void GLRenderer::updateGLObjects(Scene * scene)

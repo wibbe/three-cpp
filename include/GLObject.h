@@ -27,6 +27,10 @@
 
 namespace three {
 
+  // Forward declarations
+  class GLGeometry;
+  class Material;
+
   class GLObject : public RenderObject
   {
     public:
@@ -35,6 +39,10 @@ namespace three {
     public:
       Matrix4 modelViewMatrix;
       Matrix4 normalMatrix;
+
+      GLGeometry * buffer;
+      Material * transparentMaterial;
+      Material * opaqueMaterial;
 
       unsigned int vertexBuffer;
       unsigned int normalBuffer;
