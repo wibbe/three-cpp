@@ -6,13 +6,13 @@ SET(SOURCE
   PerspectiveCamera.cpp
   Renderer.cpp
   Geometry.cpp
+  CubeGeometry.cpp
+  Material.cpp
   Mesh.cpp
 	Window.cpp
   GLObject.cpp
   GLGeometry.cpp
 	GLRenderer.cpp
-
-  CubeGeometry.cpp
 
   Vector3.cpp
   Matrix4.cpp

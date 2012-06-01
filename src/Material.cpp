@@ -7,10 +7,10 @@ namespace three {
 
   Material::Material()
     : name(""),
-      id(materialCount++),
+      materialIndex(materialCount++),
       opacity(1.0f),
       transparent(false),
-      blending(NormaBlending),
+      blending(NormalBlending),
       depthTest(true),
       depthWrite(true),
       alphaTest(0),
