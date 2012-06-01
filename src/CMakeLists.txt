@@ -7,6 +7,7 @@ SET(SOURCE
   Renderer.cpp
   Geometry.cpp
   Mesh.cpp
+	Window.cpp
   GLObject.cpp
   GLGeometry.cpp
 	GLRenderer.cpp
