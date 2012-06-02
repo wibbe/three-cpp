@@ -1,7 +1,10 @@
 
 #include "PerspectiveCamera.h"
+#include "StringHash.h"
 
 namespace three {
+
+  unsigned int PerspectiveCamera::Type = StringHash("PerspectiveCamera").hash;
 
   PerspectiveCamera::PerspectiveCamera(float _fov, float _aspect, float _near, float _far)
     : Camera(),

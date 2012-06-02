@@ -32,8 +32,13 @@ namespace three {
   class Mesh : public Object
   {
     public:
+      static unsigned int Type;
+
+    public:
       Mesh();
       Mesh(Geometry * geometry, Material * material);
+
+      unsigned int type() const { return Mesh::Type; }
 
     public:
       Geometry * geometry;

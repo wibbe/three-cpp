@@ -1,7 +1,10 @@
 
 #include "Mesh.h"
+#include "StringHash.h"
 
 namespace three {
+
+  unsigned int Mesh::Type = StringHash("Mesh").hash;
 
   Mesh::Mesh()
     : Object(),

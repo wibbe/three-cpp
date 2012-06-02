@@ -22,29 +22,36 @@
 
 #pragma once
 
-#include "Camera.h"
-
 namespace three {
 
-  class PerspectiveCamera : public Camera
+  template <unsigned int N, unsigned int I>
+  struct FnvHash
+  {
+    inline static unsigned int hash(const char (&str)[N])
+    {
+      return (FnvHash<N, I - 1>::hash(str) ^ str[I - 1]) * 16777619u;
+    }
+  };
+
+  template <unsigned int N>
+  struct FnvHash<N, 1>
+  {
+    inline static unsigned int hash(const char (&str)[N])
+    {
+      return (2166136261u ^ str[0]) * 16777619u;
+    }
+  };
+
+  class StringHash
   {
     public:
-      static unsigned int Type;
+      template <unsigned int N>
+      StringHash(const char (&str)[N])
+        : hash(FnvHash<N, N>::hash(str))
+      { }
 
     public:
-      PerspectiveCamera(float fov = 50.0f, float aspect = 1.0f, float near = 0.1f, float far = 2000.0f);
-
-      unsigned int type() const { return PerspectiveCamera::Type; }
-
-      void setLens(float focalLength, float frameHeight = 24.0f);
-      void updateProjectionMatrix();
-
-    public:
-      float fov;
-      float aspect;
-      float near;
-      float far;
+      unsigned int hash;
   };
 
 }
-

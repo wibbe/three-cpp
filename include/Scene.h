@@ -29,7 +29,12 @@ namespace three {
 	class Scene : public Object
 	{
     public:
+      static unsigned int Type;
+
+    public:
       Scene();
+
+      unsigned int type() const { return Scene::Type; }
 
       void __addObject(Object * object);
       void __removeObject(Object * object);

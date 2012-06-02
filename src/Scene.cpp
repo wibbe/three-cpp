@@ -2,10 +2,13 @@
 #include "Scene.h"
 #include "Camera.h"
 #include "Light.h"
+#include "StringHash.h"
 
 #include <algorithm>
 
 namespace three {
+
+  unsigned int Scene::Type = StringHash("Scene").hash;
   
   Scene::Scene()
     : Object(),
@@ -27,7 +30,7 @@ namespace three {
       objectsRemoved.erase(std::remove(objectsRemoved.begin(), objectsRemoved.end(), object), objectsRemoved.end());
     }
 
-    for (std::vector<Object *>::iterator it = children.begin(), end = children.end(); it != end; ++it)
+    for (std::vector<Object *>::iterator it = object->children.begin(), end = object->children.end(); it != end; ++it)
       __addObject(*it);
   }
 
@@ -49,7 +52,7 @@ namespace three {
       }
     }
 
-    for (std::vector<Object *>::iterator it = children.begin(), end = children.end(); it != end; ++it)
+    for (std::vector<Object *>::iterator it = object->children.begin(), end = object->children.end(); it != end; ++it)
       __removeObject(*it);
   }
   

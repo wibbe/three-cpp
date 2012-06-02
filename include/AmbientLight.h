@@ -29,9 +29,12 @@ namespace three {
   class AmbientLight : public Light
   {
     public:
-      AmbientLight(Color const& _color = Color(1.0f, 1.0f, 1.0f, 1.0f))
-        : AmbientLight(_color)
-      { }
+      static unsigned int Type;
+
+    public:
+      AmbientLight(Color const& _color = Color(1.0f, 1.0f, 1.0f, 1.0f));
+
+      unsigned int type() const { return AmbientLight::Type; }
   };
 
 }

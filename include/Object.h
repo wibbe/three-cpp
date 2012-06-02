@@ -50,6 +50,8 @@ namespace three {
       void updateMatrix();
       void updateWorldMatrix(bool force = false);
 
+      virtual unsigned int type() const = 0;
+
     public:
       Object * parent;
       std::vector<Object *> children;
