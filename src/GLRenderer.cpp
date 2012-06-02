@@ -270,8 +270,10 @@ namespace three {
 
   void GLRenderer::addObject(Object * object, Scene * scene)
   {
-    if (Mesh * mesh = dynamic_cast<Mesh *>(object))
+    if (object->type() == Mesh::Type)
     {
+      Mesh * mesh = dynamic_cast<Mesh *>(object);
+
       if (!object->__renderObject)
       {
         GLObject * glObject = new GLObject(object);
@@ -290,8 +292,10 @@ namespace three {
 
   void GLRenderer::updateObject(Object * object)
   {
-    if (Mesh * mesh = dynamic_cast<Mesh *>(object))
+    if (object->type() == Mesh::Type)
     {
+      Mesh * mesh = dynamic_cast<Mesh *>(object);
+
       Geometry * geom = mesh->geometry;
       GLGeometry * glGeom = static_cast<GLGeometry *>(geom->__renderGeometry);
 
