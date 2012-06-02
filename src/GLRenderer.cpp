@@ -8,6 +8,7 @@
 #include "Geometry.h"
 #include "GLObject.h"
 #include "GLGeometry.h"
+#include "GLShaders.h"
 
 #include <stdio.h>
 #include <stdlib.h>

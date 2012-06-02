@@ -13,7 +13,6 @@ SET(SOURCE
   GLObject.cpp
   GLGeometry.cpp
 	GLRenderer.cpp
-  GLShaders.cpp
 
   Vector3.cpp
   Matrix4.cpp
