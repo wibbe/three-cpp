@@ -22,53 +22,22 @@
 
 #pragma once
 
+#include "Material.h"
+
 namespace three {
 
-  enum Blending
+  class MeshBasicMaterial : public Material
   {
-    NoBlending,
-    AdditiveBlending,
-    SubstractiveBlending,
-    MultiplyBlending,
-    NormalBlending
-  };
+    public:
+      static unsigned int Type;
 
-  enum WarppingMode
-  {
-    RepeatWrapping,
-    ClampToEdgeWrapping,
-    MirroredRepeatWrapping
-  };
+    public:
+      MeshBasicMaterial(std::string const & map = "");
 
-  enum Filter
-  {
-    NearestFilter,
-    NearestMipMapFilter,
-    NearestMipMapLinearFilter,
-    LinearFilter,
-    LinearMipMapFilter,
-    LinearMipMapLinearFilter
-  };
+      unsigned int type() const { return MeshBasicMaterial::Type; }
 
-  enum Type
-  {
-    ByteType,
-    UnsignedByteType,
-    ShortType,
-    UnsignedShortType,
-    IntType,
-    UnsignedIntType,
-    FloatType
-  };
-
-  enum Format
-  {
-    AlphaFormat,
-    RGBFormat,
-    RGBAFormat,
-    LuminanceFormat,
-    LuminanceAlphaFormat
+    public:
+      std::string map;
   };
 
 }
-

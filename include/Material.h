@@ -27,10 +27,15 @@
 
 namespace three {
 
+  // Forward declarations
+  class RenderMaterial;
+
   class Material
   {
     public:
       Material();
+
+      virtual unsigned int type() const = 0;
 
     public:
       std::string name;
@@ -47,6 +52,9 @@ namespace three {
 
       bool visible;
       bool needsUpdate;
+
+      // Only for internal use by the renderer
+      RenderMaterial * __renderMaterial;
   };
 
 }

@@ -24,50 +24,21 @@
 
 namespace three {
 
-  enum Blending
-  {
-    NoBlending,
-    AdditiveBlending,
-    SubstractiveBlending,
-    MultiplyBlending,
-    NormalBlending
-  };
+  // Forward declarations
+  class Material;
 
-  enum WarppingMode
+  class RenderMaterial
   {
-    RepeatWrapping,
-    ClampToEdgeWrapping,
-    MirroredRepeatWrapping
-  };
+    public:
+      RenderMaterial(Material * mat)
+        : sourceMaterial(mat)
+      { }
 
-  enum Filter
-  {
-    NearestFilter,
-    NearestMipMapFilter,
-    NearestMipMapLinearFilter,
-    LinearFilter,
-    LinearMipMapFilter,
-    LinearMipMapLinearFilter
-  };
+      virtual ~RenderMaterial()
+      { }
 
-  enum Type
-  {
-    ByteType,
-    UnsignedByteType,
-    ShortType,
-    UnsignedShortType,
-    IntType,
-    UnsignedIntType,
-    FloatType
-  };
-
-  enum Format
-  {
-    AlphaFormat,
-    RGBFormat,
-    RGBAFormat,
-    LuminanceFormat,
-    LuminanceAlphaFormat
+    public:
+      Material * sourceMaterial;
   };
 
 }

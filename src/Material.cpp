@@ -15,7 +15,8 @@ namespace three {
       depthWrite(true),
       alphaTest(0),
       visible(true),
-      needsUpdate(true)
+      needsUpdate(true),
+      __renderMaterial(0)
   {
   }
 

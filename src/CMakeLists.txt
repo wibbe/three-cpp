@@ -7,12 +7,15 @@ SET(SOURCE
   Renderer.cpp
   Geometry.cpp
   CubeGeometry.cpp
-  Material.cpp
   Mesh.cpp
 	Window.cpp
+
   GLObject.cpp
   GLGeometry.cpp
 	GLRenderer.cpp
+
+  Material.cpp
+  MeshBasicMaterial.cpp
 
   Vector3.cpp
   Matrix4.cpp
