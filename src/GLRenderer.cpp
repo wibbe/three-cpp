@@ -6,8 +6,10 @@
 #include "Material.h"
 #include "Mesh.h"
 #include "Geometry.h"
+#include "Texture.h"
 #include "GLObject.h"
 #include "GLGeometry.h"
+#include "GLTexture.h"
 #include "GLShaders.h"
 
 #include <stdio.h>
@@ -24,12 +26,102 @@ namespace three {
     return static_cast<GLObject *>(obj1)->z > static_cast<GLObject *>(obj2)->z;
   }
 
+  static inline GLenum wrappingToGL(WrappingMode mode)
+  {
+    switch (mode)
+    {
+      case RepeatWrapping:
+        return GL_REPEAT;
+
+      case ClampToEdgeWrapping:
+        return GL_CLAMP_TO_EDGE;
+
+      case MirroredRepeatWrapping:
+        return GL_MIRRORED_REPEAT;
+    }
+
+    return 0;
+  }
+
+  static inline GLenum filterToGL(Filter filter)
+  {
+    switch (filter)
+    {
+      case NearestFilter:
+        return GL_NEAREST;
+      case NearestMipMapFilter:
+        return GL_NEAREST_MIPMAP_NEAREST;
+      case NearestMipMapLinearFilter:
+        return GL_NEAREST_MIPMAP_LINEAR;
+      case LinearFilter:
+        return GL_LINEAR;
+      case LinearMipMapFilter:
+        return GL_LINEAR_MIPMAP_NEAREST;
+      case LinearMipMapLinearFilter:
+        return GL_LINEAR_MIPMAP_LINEAR;
+    }
+
+    return 0;
+  }
+
+  static inline GLenum typeToGL(Type type)
+  {
+    switch (type)
+    {
+      case ByteType:
+        return GL_BYTE;
+      case UnsignedByteType:
+        return GL_UNSIGNED_BYTE;
+      case ShortType:
+        return GL_SHORT;
+      case UnsignedShortType:
+        return GL_UNSIGNED_SHORT;
+      case IntType:
+        return GL_INT;
+      case UnsignedIntType:
+        return GL_UNSIGNED_INT;
+      case FloatType:
+        return GL_FLOAT;
+    }
+    return 0;
+  }
+
+  static inline GLenum formatToGL(Format format)
+  {
+    switch (format)
+    {
+      case AlphaFormat:
+        return GL_ALPHA;
+      case RGBFormat:
+        return GL_RGB;
+      case RGBAFormat:
+        return GL_RGBA;
+      case LuminanceFormat:
+        return GL_LUMINANCE;
+      case LuminanceAlphaFormat:
+        return GL_LUMINANCE_ALPHA;
+    }
+
+    return 0;
+  }
+
+  static inline bool isPowerOfTwo(int value)
+  {
+    return (value & (value - 1)) == 0;
+  }
+
   GLRenderer::GLRenderer(int windowWidth, int windowHeight, bool fullscreen)
     : Renderer(),
       oldDepthTest(true),
       oldDepthWrite(true),
       oldBlending(NormalBlending)
   {
+    if (!GLEW_ARB_framebuffer_object)
+    {
+      fprintf(stderr, "OpenGL Error: ARB_framebuffer_object not supported\n");
+      return;
+    }
+
     setDefaultGLState();
     setViewport(0, 0, windowWidth, windowHeight);
 
@@ -113,6 +205,49 @@ namespace three {
       }
 
       oldBlending = blending;
+    }
+  }
+
+  void GLRenderer::setTexture(Texture * texture, int slot)
+  {
+    assert(texture);
+
+    GLTexture * glTex = static_cast<GLTexture *>(texture->__renderTexture);
+
+    if (texture->needsUpdate)
+    {
+      if (!glTex)
+      {
+        glTex = new GLTexture(texture);
+        glGenTextures(1, &glTex->id);
+      }
+
+      glActiveTexture(GL_TEXTURE0 + slot);
+      glBindTexture(GL_TEXTURE_2D, glTex->id);
+
+  	  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterToGL(texture->minFilter));
+  	  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterToGL(texture->magFilter));
+  	  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrappingToGL(texture->wrapS));
+  	  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrappingToGL(texture->wrapT));
+
+  	  glTexImage2D(GL_TEXTURE_2D, 0, 
+  	               formatToGL(texture->format), 
+  	               texture->width, texture->height, 0, 
+  	               formatToGL(texture->format), 
+  	               typeToGL(texture->type), texture->image);
+
+      bool isImagePowerOfTwo = isPowerOfTwo(texture->width) && isPowerOfTwo(texture->height);
+
+      if (texture->generateMipmaps && isImagePowerOfTwo)
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+      texture->needsUpdate = false;
+    }
+    else
+    {
+      glActiveTexture(GL_TEXTURE0 + slot);
+      glBindTexture(GL_TEXTURE_2D, glTex->id);
+
     }
   }
 
@@ -207,17 +342,17 @@ namespace three {
       setDepthTest(overrideMaterial->depthTest);
       setDepthWrite(overrideMaterial->depthWrite);
 
-      renderObjects(scene->__renderObjects, false, "", camera, /* lights, fog, */ true, overrideMaterial);
+      renderObjects(scene->__renderObjects, false, "", camera, scene->lights, /* fog, */ true, overrideMaterial);
     }
     else
     {
       // opaque pass (front-to-back order)
       setBlending(NormalBlending);
 
-      renderObjects(scene->__renderObjects, true, "opaque", camera, /* lights, fog, */ false, 0);
+      renderObjects(scene->__renderObjects, true, "opaque", camera, scene->lights, /* fog, */ false, 0);
 
       // transparent pass (back-to-front order)
-      renderObjects(scene->__renderObjects, false, "transparent", camera, /* lights, fog, */ true, 0);
+      renderObjects(scene->__renderObjects, false, "transparent", camera, scene->lights, /* fog, */ true, 0);
     }
 
     renderPlugins(renderPluginsPost, scene, camera);
@@ -226,7 +361,14 @@ namespace three {
     setDepthWrite(true);
   }
 
-  void GLRenderer::renderObjects(std::vector<RenderObject *> const& renderList, bool reverse, std::string materialType, Camera * camera, /* lights, fog, */ bool useBlending, Material * overrideMaterial)
+  void GLRenderer::renderObjects(std::vector<RenderObject *> const& renderList, 
+                                 bool reverse, 
+                                 std::string materialType, 
+                                 Camera * camera,
+                                 std::vector<Object *> const& lights,
+                                 /* fog, */ 
+                                 bool useBlending, 
+                                 Material * overrideMaterial)
   {
     if (reverse)
     {
@@ -242,8 +384,18 @@ namespace three {
     }
   }
 
-  void GLRenderer::renderBuffer(Camera * camera, /* lights, fog, */ Material * material, GLGeometry * geometry, GLObject * object)
+  void GLRenderer::renderBuffer(Camera * camera, 
+                                std::vector<Object *> const& lights, 
+                                /* fog, */ 
+                                Material * material, 
+                                GLGeometry * geometry, 
+                                GLObject * object)
   {
+    if (!material->visible)
+      return;
+
+    setProgram(camera, lights, /* fog, */ material, object);
+
     bool updateBuffers = false;
     
     if (updateBuffers)
@@ -346,6 +498,27 @@ namespace three {
     glObject->modelViewMatrix = camera->matrixWorldInverse * object->matrixWorld;
     glObject->normalMatrix = glObject->modelViewMatrix.inverse();
     glObject->normalMatrix.transpose();
+  }
+
+  void GLRenderer::setProgram(Camera * camera,
+                              std::vector<Object *> const& lights,
+                              /* fog, */
+                              Material * material,
+                              GLObject * object)
+  {
+    GLMaterial * glMat = static_cast<GLMaterial *>(material->__renderMaterial);
+
+    if (!glMat || material->needsUpdate)
+    {
+      glMat = new GLMaterial(material);
+      setupMaterial(material, object);
+      material->needsUpdate = false;
+    }
+  }
+
+  void GLRenderer::setupMaterial(Material * material, GLObject * object)
+  {
+    GLMaterial * glMat = static_cast<GLMaterial *>(material->__renderMaterial);
   }
 
 }

@@ -46,6 +46,7 @@ namespace three {
       void setDepthTest(bool enabled);
       void setDepthWrite(bool enabled);
       void setBlending(Blending blending);
+      void setTexture(Texture * texture, int slot);
 
       void clear(bool color, bool depth, bool stencil = false);
       void render(Scene * scene, Camera * camera, RenderTarget * renderTarget = 0, bool forceClear = false);
@@ -54,13 +55,32 @@ namespace three {
       void setDefaultGLState();
       void resetCache();
 
-      void renderObjects(std::vector<RenderObject *> const& renderList, bool reverse, std::string materialType, Camera * camera, /* lights, fog, */ bool useBlending, Material * overrideMaterial);
-      void renderBuffer(Camera * camera, /* lights, fog, */ Material * material, GLGeometry * geometry, GLObject * object);
+      void renderObjects(std::vector<RenderObject *> const& renderList, 
+                         bool reverse, 
+                         std::string materialType, 
+                         Camera * camera, 
+                         std::vector<Object *> const& lights,
+                         /* fog, */ 
+                         bool useBlending, 
+                         Material * overrideMaterial);
+
+      void renderBuffer(Camera * camera, 
+                        std::vector<Object *> const& lights, 
+                        /* fog, */ 
+                        Material * material, 
+                        GLGeometry * geometry, 
+                        GLObject * object);
 
       void updateGLObjects(Scene * scene);
       void addObject(Object * object, Scene * scene);
       void removeObject(Object * object, Scene * scene);
       void updateObject(Object * object);
+
+      void setProgram(Camera * camera,
+                      std::vector<Object *> const& lights,
+                      /* fog, */
+                      Material * material,
+                      GLObject * object);
 
       void createMeshBuffers(Geometry * geometry);
 

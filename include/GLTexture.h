@@ -22,36 +22,19 @@
 
 #pragma once
 
-#include "Defines.h"
+#include "RenderTexture.h"
 
 namespace three {
 
-  // Forward declarations
-  class RenderTexture;
-
-  class Texture
+  class GLTexture : public RenderTexture
   {
     public:
-      Texture();
+      GLTexture(Texture * source)
+        : RenderTexture(source)
+      { }
 
     public:
-      unsigned char * image;
-      int width;
-      int height;
-
-      WrappingMode wrapS;
-      WrappingMode wrapT;
-
-      Filter magFilter;
-      Filter minFilter;
-
-      Format format;
-      Type type;
-
-      bool needsUpdate;
-      bool generateMipmaps;
-
-      RenderTexture * __renderTexture;
+      unsigned int id;
   };
 
 }

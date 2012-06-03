@@ -13,7 +13,8 @@ namespace three {
       minFilter(LinearMipMapLinearFilter),
       format(RGBAFormat),
       type(UnsignedByteType),
-      needsUpdate(false)
+      needsUpdate(false),
+      generateMipmaps(true)
   {
   }
 

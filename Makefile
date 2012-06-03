@@ -14,6 +14,9 @@ configure-debug:
 compile: 
 	make -C build
 
+run-cube:
+	(cd build/bin && ./cube)
+
 clean:
 	make -C build clean
 
