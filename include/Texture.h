@@ -22,25 +22,31 @@
 
 #pragma once
 
-#include "Material.h"
+#include "Defines.h"
 
 namespace three {
 
-  // Forward declarations
-  class Texture;
-
-  class MeshBasicMaterial : public Material
+  class Texture
   {
     public:
-      static unsigned int Type;
+      Texture();
 
     public:
-      MeshBasicMaterial(Texture * map);
+      unsigned char * image;
+      int width;
+      int height;
 
-      unsigned int type() const { return MeshBasicMaterial::Type; }
+      WrappingMode wrapS;
+      WrappingMode wrapT;
 
-    public:
-      Texture * map;
+      Filter magFilter;
+      Filter minFilter;
+
+      Format format;
+      Type type;
+
+      bool needsUpdate;
   };
 
 }
+

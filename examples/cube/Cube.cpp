@@ -5,7 +5,9 @@
 #include "Mesh.h"
 #include "Camera.h"
 #include "PerspectiveCamera.h"
-#include "Material.h"
+#include "MeshBasicMaterial.h"
+#include "Texture.h"
+#include "ImageUtils.h"
 #include "CubeGeometry.h"
 #include "GLRenderer.h"
 
@@ -26,7 +28,7 @@ class CubeDemo : public Window
       scene->add(camera);
 
       Geometry * geometry = new CubeGeometry(200, 200, 200);
-      Material * material = 0;
+      MeshBasicMaterial * material = new MeshBasicMaterial(ImageUtils::loadTexture("assets/crate.png"));
 
       mesh = new Mesh(geometry, material);
       scene->add(mesh);

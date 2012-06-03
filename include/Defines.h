@@ -33,7 +33,7 @@ namespace three {
     NormalBlending
   };
 
-  enum WarppingMode
+  enum WrappingMode
   {
     RepeatWrapping,
     ClampToEdgeWrapping,

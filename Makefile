@@ -3,6 +3,8 @@ all: compile
 
 configure:
 	mkdir -p build
+	mkdir -p build/bin
+	(cd build/bin && ln -s ../../examples/assets)
 	(cd build && cmake -DCMAKE_BUILD_TYPE=Release ..)
 
 configure-debug:

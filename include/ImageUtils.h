@@ -22,25 +22,21 @@
 
 #pragma once
 
-#include "Material.h"
+#include "Defines.h"
+#include <string>
 
 namespace three {
 
-  // Forward declarations
+  // Forward declaration
   class Texture;
 
-  class MeshBasicMaterial : public Material
+  class ImageUtils
   {
     public:
-      static unsigned int Type;
+      ImageUtils();
 
-    public:
-      MeshBasicMaterial(Texture * map);
-
-      unsigned int type() const { return MeshBasicMaterial::Type; }
-
-    public:
-      Texture * map;
+      static Texture * loadTexture(std::string const & path, Format format = RGBAFormat);
   };
 
 }
+

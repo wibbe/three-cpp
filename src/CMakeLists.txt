@@ -8,7 +8,9 @@ SET(SOURCE
   Geometry.cpp
   CubeGeometry.cpp
   Mesh.cpp
+  Texture.cpp
 	Window.cpp
+  ImageUtils.cpp
 
   GLObject.cpp
   GLGeometry.cpp
