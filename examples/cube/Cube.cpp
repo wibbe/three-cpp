@@ -51,7 +51,7 @@ class CubeDemo : public Window
     }
 
   private:
-    GLRenderer * renderer;
+    Renderer * renderer;
     Scene * scene;
     Camera * camera;
     Mesh * mesh;
