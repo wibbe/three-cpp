@@ -10,6 +10,7 @@
 #include "GLObject.h"
 #include "GLGeometry.h"
 #include "GLTexture.h"
+#include "GLMaterial.h"
 #include "GLShaders.h"
 
 #include <stdio.h>

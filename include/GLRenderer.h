@@ -85,6 +85,7 @@ namespace three {
       void createMeshBuffers(Geometry * geometry);
 
       void setupMatrices(Object * object, Camera * camera);
+      void setupMaterial(Material * material, GLObject * object);
 
     private:
       int viewportX;

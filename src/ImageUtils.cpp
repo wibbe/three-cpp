@@ -3,6 +3,7 @@
 #include "Texture.h"
 
 #include <cassert>
+#include <stdio.h>
 #include <SOIL.h>
 
 namespace three {

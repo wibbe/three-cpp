@@ -26,7 +26,7 @@
 
 namespace three {
 
-  class GLMaterial
+  class GLMaterial : public RenderMaterial
   {
     public:
       GLMaterial(Material * mat)
