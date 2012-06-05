@@ -17,7 +17,7 @@ class CodeLib
     @target.puts "  static const char * #{name} =" 
 
     text.each do |line|
-      if @snipets.member? line then
+      if @snipets.member? line
         snipet = @snipets[line]
         snipet.each { |l| @target.puts '    "' + __indent(l) + l + '\n"' }
       else
@@ -33,12 +33,12 @@ class CodeLib
   def __indent(line)
     indent = "  " * @level
 
-    if line.start_with? "{" or line.start_with? "#ifdef" then
+    if line.start_with? "{" or line.start_with? "#ifdef"
       @level += 1
-    elsif line.start_with? "}" or line.start_with? "#end" then
+    elsif line.start_with? "}" or line.start_with? "#end"
       @level -= 1
       indent = "  " * @level
-    elsif line.start_with? "#else" then
+    elsif line.start_with? "#else"
       indent = "  " * (@level - 1)
     end
 
