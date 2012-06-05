@@ -1,61 +1,72 @@
 #! /use/bin/ruby
 
-in_file = "src/GLShaders.glsl"
-out_file = "src/GLShaders.h"
 
-has_variable = false
+class CodeLib
+  def initialize(target)
+    @target = target
+    @snipets = {}
+    @level = 0
+  end
 
-current_fragment = ""
-fragments = {}
+  def snipet(name, text)
+    @snipets[name] = text
+  end
 
-File.open(out_file, "w") do |out|
-  out.puts "#pragma once"
-  out.puts ""
-  out.puts "namespace three {"
-  out.puts ""
-  File.open(in_file, "r") do |shader|
-    shader.each do |line|
-      # Start of a new code fragment
-      if (line.start_with? "@")
-        if current_fragment != ""
-          out.puts "    \"\";"
-          out.puts ""
-        end
-        name = line[1..-1].delete "\n"
-        current_fragment = name
+  # Used to generate a shader definition
+  def shader(name, text)
+    @target.puts "  static const char * #{name} =" 
 
-        fragments[name] = []
-
-        out.puts "  static const char * #{name} = "
-      elsif line.lstrip().start_with? "="
-        name = line.lstrip()[1..-1].delete "\n"
-
-        indent = "    \"" + " " * line.rindex("=")
-
-        if fragments.include? name
-          fragments[name].each do |fragment|
-            out.puts indent + fragment[1..-1]
-            if current_fragment != ""
-              fragments[current_fragment] << indent + fragment
-            end
-          end
-        end
-      elsif line.start_with? "//"
-        # Ignore comments
-      elsif current_fragment != "" and line != "\n"
-        code_line = "\"#{line.delete "\n"}\\n\"" 
-        fragments[current_fragment] << code_line
-        out.puts "    " + code_line
+    text.each do |line|
+      if @snipets.member? line then
+        snipet = @snipets[line]
+        snipet.each { |l| @target.puts '    "' + __indent(l) + l + '\n"' }
+      else
+        @target.puts '    "' + __indent(line) + line + '\n"'
       end
     end
+
+    @target.puts "    \"\";"
+    @target.puts ""
   end
 
-  if current_fragment != ""
-    out.puts "    \"\";"
-  end
+  # A really simple "pretty-printer" for indentation
+  def __indent(line)
+    indent = "  " * @level
 
-  out.puts ""
-  out.puts "}"
-  out.puts ""
+    if line.start_with? "{" or line.start_with? "#ifdef" then
+      @level += 1
+    elsif line.start_with? "}" or line.start_with? "#end" then
+      @level -= 1
+      indent = "  " * @level
+    elsif line.start_with? "#else" then
+      indent = "  " * (@level - 1)
+    end
+
+    return indent
+  end
 end
+
+def define(out_file, &block)
+  File.open(out_file, "w") do |file|
+    lib = CodeLib.new(file)
+
+    puts "Generating #{out_file}"
+
+    file.puts "#pragma once"
+    file.puts ""
+    file.puts "namespace three {"
+    file.puts ""
+
+    lib.instance_eval(&block)
+
+    file.puts ""
+    file.puts "}"
+    file.puts ""
+  end
+end
+
+#Evaluate the file
+require 'src/GLShaders.rb'
+
+puts "Done"
 

@@ -14,6 +14,9 @@ configure-debug:
 compile: 
 	make -C build
 
+shaders:
+	ruby make-shaders.rb
+
 run-cube:
 	(cd build/bin && ./cube)
 
