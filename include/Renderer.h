@@ -80,8 +80,5 @@ namespace three {
       std::vector<RenderPlugin *> renderPluginsPost;
   };
 
-  int __dummyCode(int value);
-  static void registerCode(Code * code);
-
 }
 
