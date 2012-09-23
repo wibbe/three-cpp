@@ -23,6 +23,7 @@
 #pragma once
 
 #include "Vector3.h"
+#include <string>
 
 namespace three {
   
@@ -67,6 +68,8 @@ namespace three {
       inline float operator [] (int index) const { return m[index]; }
       
       float const * data() const { return &m[0]; }
+
+      std::string str() const;
       
     private:
       float m[16];

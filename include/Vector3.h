@@ -84,6 +84,11 @@ namespace three {
         return Vector3(x - vec.x, y - vec.y, z - vec.z);
       }
 
+      inline Vector3 operator * (Vector3 const& vec) const
+      {
+        return Vector3(x * vec.x, y * vec.y, z * vec.z);
+      }
+
       inline Vector3 operator * (float scalar) const
       {
         return Vector3(x * scalar, y * scalar, z * scalar);

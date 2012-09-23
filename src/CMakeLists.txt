@@ -14,11 +14,12 @@ SET(SOURCE
   AmbientLight.cpp
   Code.cpp
   Material.cpp
-  MeshBasicMaterial.cpp
-  DefaultGLShaders.cpp
   Vector3.cpp
   Matrix4.cpp
   Quaternion.cpp
+
+  DefaultMaterials.cpp
+  DefaultGLShaders.cpp
 
   opengl/GLObject.cpp
   opengl/GLGeometry.cpp
@@ -32,10 +33,6 @@ SET(LIBRARIES
     GLEW
     glfw
 )
-
-ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/src/DefaultGLShaders.cpp ${CMAKE_CURRENT_SOURCE_DIR}/include/DefaultGLShaders.h
-                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/materials/DefaultGLShaders.rb
-                   COMMAND ruby ${CMAKE_CURRENT_SOURCE_DIR}/scripts/material-generator.rb -p ${CMAKE_CURRENT_SOURCE_DIR}/materials/DefaultGLShaders.rb)
 
 ADD_LIBRARY(three ${SOURCE})
 TARGET_LINK_LIBRARIES(three ${LIBRARIES})

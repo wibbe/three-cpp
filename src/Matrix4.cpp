@@ -270,5 +270,19 @@ namespace three {
     memcpy(m, copy.m, sizeof(float) * 16);
     return *this;
   }
+
+  std::string Matrix4::str() const
+  {
+    char str[1024];
+    snprintf(str, 1024, "[ %3.1f, %3.1f, %3.1f, %3.1f ]\n"
+                        "| %3.1f, %3.1f, %3.1f, %3.1f |\n"
+                        "| %3.1f, %3.1f, %3.1f, %3.1f |\n"
+                        "[ %3.1f, %3.1f, %3.1f, %3.1f ]\n",
+                        m[ 0], m[ 4], m[ 8], m[12],
+                        m[ 1], m[ 5], m[ 9], m[13],
+                        m[ 2], m[ 6], m[10], m[14],
+                        m[ 3], m[ 7], m[11], m[15]);
+    return std::string(str);
+  }
   
 }

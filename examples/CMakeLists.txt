@@ -8,5 +8,7 @@ SET(LIBRARIES
 )
 
 # Simple cube demo
-ADD_EXECUTABLE(cube cube/Cube.cpp)
+ADD_EXECUTABLE(cube Cube.cpp)
+ADD_EXECUTABLE(triangle Triangle.cpp)
 TARGET_LINK_LIBRARIES(cube ${LIBRARIES})
+TARGET_LINK_LIBRARIES(triangle ${LIBRARIES})

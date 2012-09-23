@@ -39,15 +39,15 @@ namespace three {
 
     public:
       uint32_t program;
-      uint32_t * uniforms;
+      int32_t * uniforms;
       uint32_t uniformCount;
 
-      uint32_t objectMatrix;
-      uint32_t modelViewMatrix;
-      uint32_t projectionMatrix;
-      uint32_t viewMatrix;
-      uint32_t normalMatrix;
-      uint32_t cameraPosition;
+      int32_t objectMatrix;
+      int32_t modelViewMatrix;
+      int32_t projectionMatrix;
+      int32_t viewMatrix;
+      int32_t normalMatrix;
+      int32_t cameraPosition;
   };
 
 }

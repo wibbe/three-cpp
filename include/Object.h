@@ -80,7 +80,7 @@ namespace three {
       bool rotationAutoUpdate;
 
       bool matrixAutoUpdate;
-      bool matrixWorldMatrixNeedsUpdate;
+      bool matrixWorldNeedsUpdate;
 
       // Only for internal use by the renderer
       RenderObject * __renderObject;

@@ -44,7 +44,7 @@ namespace three {
 
   static const char * _text_colorFragmentParams[] = {
     "#ifdef USE_COLOR\n",
-    "  varying vec3 vColor;\n",
+    "  varying vec4 vColor;\n",
     "#endif\n",
   };
 
@@ -64,7 +64,7 @@ namespace three {
 
   static const char * _text_colorVertexParams[] = {
     "#ifdef USE_COLOR\n",
-    "  varying vec3 vColor;\n",
+    "  varying vec4 vColor;\n",
     "#endif\n",
   };
 
@@ -99,7 +99,7 @@ namespace three {
     "attribute vec2 uv1;\n",
     "attribute vec3 tangent;\n",
     "#ifdef USE_COLOR\n",
-    "  attribute vec3 color;\n",
+    "  attribute vec4 color;\n",
     "#endif\n",
   };
 
@@ -113,7 +113,7 @@ namespace three {
 
   static const char * _text_colorFragment[] = {
     "#ifdef USE_COLOR\n",
-    "  gl_FragColor = gl_FragColor * vec4( vColor, opacity );\n",
+    "  gl_FragColor = gl_FragColor * vColor;\n",
     "#endif\n",
   };
 
@@ -136,7 +136,24 @@ namespace three {
   three::Code _code_colorFragment("@colorFragment", _text_colorFragment, 3);
   three::Code _code_prefixFragment("@prefixFragment", _text_prefixFragment, 2);
 
-  static const char * _text_basicVertex[] = {
+  static const char * _text_basicVertexShader[] = {
+    "@prefixVertex",
+    "void main()\n",
+    "{\n",
+    "  vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);\n",
+    "@defaultVertex",
+    "}\n",
+  };
+
+  static const char * _text_basicFragmentShader[] = {
+    "uniform vec4 color;\n",
+    "void main()\n",
+    "{\n",
+    "  gl_FragColor = color;\n",
+    "}\n",
+  };
+
+  static const char * _text_defaultVertexShader[] = {
     "@prefixVertex",
     "@mapVertexParams",
     "@colorVertexParams",
@@ -149,22 +166,24 @@ namespace three {
     "}\n",
   };
 
-  static const char * _text_basicFragment[] = {
+  static const char * _text_defaultFragmentShader[] = {
     "@prefixFragment",
-    "uniform vec3 diffuse;\n",
+    "uniform vec4 diffuse;\n",
     "uniform float opacity;\n",
     "@mapFragmentParams",
     "@colorFragmentParams",
     "void main()\n",
     "{\n",
-    "  gl_FragColor = vec4(diffuse, opacity);\n",
+    "  gl_FragColor = vec4(diffuse.xyz, opacity);\n",
     "@colorFragment",
     "@mapFragment",
     "}\n",
   };
 
-  three::Code _code_basicVertex("basicVertex", _text_basicVertex, 10);
-  three::Code _code_basicFragment("basicFragment", _text_basicFragment, 11);
+  three::Code _code_basicVertexShader("basicVertexShader", _text_basicVertexShader, 6);
+  three::Code _code_basicFragmentShader("basicFragmentShader", _text_basicFragmentShader, 5);
+  three::Code _code_defaultVertexShader("defaultVertexShader", _text_defaultVertexShader, 10);
+  three::Code _code_defaultFragmentShader("defaultFragmentShader", _text_defaultFragmentShader, 11);
 
   void initializeDefaultGLShaders()
   {

@@ -21,7 +21,7 @@ namespace three {
       receiveShadow(false),
       rotationAutoUpdate(true),
       matrixAutoUpdate(true),
-      matrixWorldMatrixNeedsUpdate(true),
+      matrixWorldNeedsUpdate(true),
       __renderObject(0)
   {
   }
@@ -96,14 +96,14 @@ namespace three {
     if (matrixAutoUpdate)
       updateMatrix();
 
-    if (matrixWorldMatrixNeedsUpdate || force)
+    if (matrixWorldNeedsUpdate || force)
     {
       if (parent)
         matrixWorld = parent->matrixWorld * matrix;
       else
         matrixWorld = matrix;
 
-      matrixWorldMatrixNeedsUpdate = false;
+      matrixWorldNeedsUpdate = false;
       force = true;
     }
 

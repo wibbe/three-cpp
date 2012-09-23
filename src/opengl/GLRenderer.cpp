@@ -159,6 +159,10 @@ namespace three {
       glDeleteShader(shader);
       return 0;
     }
+    else
+    {
+      fprintf(stderr, "Compiled shader:\n----------------------------\n%s----------------------------\n", code.c_str());
+    }
 
     return shader;
   }
@@ -167,7 +171,7 @@ namespace three {
     : Renderer(),
       oldDepthTest(true),
       oldDepthWrite(true),
-      oldBlending(NormalBlending),
+      _currentBlending(NormalBlending),
       _currentProgram(0),
       _currentVertexBuffer(0),
       _currentNormalBuffer(0),
@@ -231,7 +235,7 @@ namespace three {
 
   void GLRenderer::setBlending(Blending blending)
   {
-    if (oldBlending != blending)
+    if (_currentBlending != blending)
     {
       switch (blending)
       {
@@ -264,13 +268,18 @@ namespace three {
           break;
       }
 
-      oldBlending = blending;
+      _currentBlending = blending;
     }
   }
 
   void GLRenderer::setTexture(Texture * texture, int slot)
   {
-    assert(texture);
+    if (!texture)
+    {
+      glActiveTexture(GL_TEXTURE0 + slot);
+      glBindTexture(GL_TEXTURE_2D, 0);
+      return;
+    }
 
     GLTexture * glTex = static_cast<GLTexture *>(texture->__renderTexture);
 
@@ -336,18 +345,17 @@ namespace three {
     //glFrontFace(GL_CCW);
     //glCullFace(GL_BACK);
     //glEnable(GL_CULL_FACE);
-    glDisable(GL_CULL_FACE);
 
-    //glEnable(GL_BLEND);
-    //glBlendEquation(GL_FUNC_ADD);
-    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
+    glBlendEquation(GL_FUNC_ADD);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   }
 
   void GLRenderer::resetCache()
   {
     oldDepthTest = true;
     oldDepthWrite = true;
-    oldBlending = NormalBlending;
+    _currentBlending = NormalBlending;
   }
   
   void GLRenderer::render(Scene * scene, Camera * camera, RenderTarget * renderTarget, bool forceClear)
@@ -393,7 +401,8 @@ namespace three {
     }
 
     // Sort objects according to depth
-    std::sort(scene->__renderObjects.begin(), scene->__renderObjects.end(), painterSort);
+    if (sortObjects)
+      std::sort(scene->__renderObjects.begin(), scene->__renderObjects.end(), painterSort);
 
     // Draw all objects
     if (overrideMaterial)
@@ -442,7 +451,8 @@ namespace three {
       {
         GLObject * object = static_cast<GLObject *>(*it);
 
-        renderObject(camera, lights, overrideMaterial ? overrideMaterial : object->material, object->geometry, object, useBlending);
+        if (object->render)
+          renderObject(camera, lights, overrideMaterial ? overrideMaterial : object->material, object->geometry, object, useBlending);
       }
     }
   }
@@ -508,8 +518,6 @@ namespace three {
       _currentIndexBuffer = geometry->indexBuffer;
       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _currentIndexBuffer);
     }
-
-    printf("Face count = %d\n", geometry->faceCount);
 
     // Render buffer
     if (_currentIndexBuffer)
@@ -669,14 +677,15 @@ namespace three {
       glGeom->faceCount = geom->faces.size() * 3;
     }
     else if (!glGeom->indexBuffer)
-      glGeom->faceCount = geom->faceCount;
+      glGeom->faceCount = geom->faceCount * 3;
   }
 
   void GLRenderer::updateMatrices(Object * object, Camera * camera)
   {
     GLObject * glObject = static_cast<GLObject *>(object->__renderObject);
 
-    glObject->modelViewMatrix = camera->matrixWorldInverse * object->matrixWorld;
+    glObject->modelViewMatrix = object->matrixWorld * camera->matrixWorldInverse;
+    //glObject->modelViewMatrix = camera->matrixWorldInverse * object->matrixWorld;
     glObject->normalMatrix = glObject->modelViewMatrix.inverse();
     glObject->normalMatrix.transpose();
   }

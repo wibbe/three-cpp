@@ -199,12 +199,20 @@ class Material
     file.puts ""
     file.puts "  std::string #{@name}::vertexShaderCode() const"
     file.puts "  {"
-    file.puts "    return three::Code::generate(\"#{@vertex_shader}\", #{@defines.collect() { |x| "\"#{x}\"" } .join(', ')}, 0);"
+    if @defines.empty?
+      file.puts "    return three::Code::generate(\"#{@vertex_shader}\", 0);"
+    else
+      file.puts "    return three::Code::generate(\"#{@vertex_shader}\", #{@defines.collect() { |x| "\"#{x}\"" } .join(', ')}, 0);"
+    end
     file.puts "  }"
     file.puts ""
     file.puts "  std::string #{@name}::fragmentShaderCode() const"
     file.puts "  {"
-    file.puts "    return three::Code::generate(\"#{@fragment_shader}\", #{@defines.collect() { |x| "\"#{x}\"" } .join(', ')}, 0);"
+    if @defines.empty?
+      file.puts "    return three::Code::generate(\"#{@fragment_shader}\", 0);"
+    else
+      file.puts "    return three::Code::generate(\"#{@fragment_shader}\", #{@defines.collect() { |x| "\"#{x}\"" } .join(', ')}, 0);"
+    end
     file.puts "  }"
     file.puts ""
     file.puts "  const char * #{@name}::textureName(uint32_t slot) const"

@@ -2,6 +2,7 @@
 #include "opengl/GLMaterial.h"
 
 #include <GL/glew.h>
+#include <cassert>
 
 #include "Vector3.h"
 #include "Vector4.h"
@@ -11,14 +12,14 @@ namespace three {
   
   GLMaterial::GLMaterial(uint32_t _uniformCount)
     : program(0),
-      uniforms(new uint32_t[_uniformCount]),
+      uniforms(new int32_t[_uniformCount]),
       uniformCount(_uniformCount),
-      objectMatrix(0),
-      modelViewMatrix(0),
-      projectionMatrix(0),
-      viewMatrix(0),
-      normalMatrix(0),
-      cameraPosition(0)
+      objectMatrix(-1),
+      modelViewMatrix(-1),
+      projectionMatrix(-1),
+      viewMatrix(-1),
+      normalMatrix(-1),
+      cameraPosition(-1)
   {
   }
 
@@ -30,22 +31,26 @@ namespace three {
 
   void GLMaterial::uniform(uint32_t id, float value)
   {
-    glUniform1f(id, value);
+    assert(id < uniformCount);
+    glUniform1f(uniforms[id], value);
   }
 
   void GLMaterial::uniform(uint32_t id, Vector3 const& value)
   {
-    glUniform3f(id, value.x, value.y, value.z);
+    assert(id < uniformCount);
+    glUniform3f(uniforms[id], value.x, value.y, value.z);
   }
 
   void GLMaterial::uniform(uint32_t id, Vector4 const& value)
   {
-    glUniform4f(id, value.x, value.y, value.z, value.w);
+    assert(id < uniformCount);
+    glUniform4f(uniforms[id], value.x, value.y, value.z, value.w);
   }
 
   void GLMaterial::uniform(uint32_t id, Color const& value)
   {
-    glUniform4f(id, value.r, value.g, value.b, value.a);
+    assert(id < uniformCount);
+    glUniform4f(uniforms[id], value.r, value.g, value.b, value.a);
   }
 
 }

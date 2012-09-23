@@ -107,7 +107,7 @@ namespace three {
       bool oldDepthTest;
       bool oldDepthWrite;
 
-      Blending oldBlending;
+      Blending _currentBlending;
 
       uint32_t _currentProgram;
       uint32_t _currentVertexBuffer;

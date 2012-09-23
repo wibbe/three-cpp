@@ -34,7 +34,7 @@ define 'DefaultGLShaders', ['three'] do
     "attribute vec3 tangent;",
 
     "#ifdef USE_COLOR",
-      "attribute vec3 color;",
+      "attribute vec4 color;",
     "#endif",
   ]
 
@@ -110,13 +110,13 @@ define 'DefaultGLShaders', ['three'] do
 
   snipet :colorFragmentParams, [
     "#ifdef USE_COLOR",
-      "varying vec3 vColor;",
+      "varying vec4 vColor;",
     "#endif"
   ]
 
   snipet :colorVertexParams, [
     "#ifdef USE_COLOR",
-      "varying vec3 vColor;",
+      "varying vec4 vColor;",
     "#endif"
   ]
 
@@ -132,12 +132,30 @@ define 'DefaultGLShaders', ['three'] do
 
   snipet :colorFragment, [
     "#ifdef USE_COLOR",
-      "gl_FragColor = gl_FragColor * vec4( vColor, opacity );",
+      "gl_FragColor = gl_FragColor * vColor;",
     "#endif"
   ]
 
+  shader :basicVertexShader, [
+    :prefixVertex,
+    "void main()",
+    "{",
+      "vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);",
+  #    "gl_Position = mvPosition;",
+      :defaultVertex,
+    "}"
+  ]
+
+  shader :basicFragmentShader, [
+    "uniform vec4 color;",
+    "void main()",
+    "{",
+      "gl_FragColor = color;",
+    "}"
+  ]
+
   # Define the shaders
-  shader :basicVertex, [
+  shader :defaultVertexShader, [
     :prefixVertex,
     :mapVertexParams,
     :colorVertexParams,
@@ -151,16 +169,16 @@ define 'DefaultGLShaders', ['three'] do
     "}"
   ]
 
-  shader :basicFragment, [
+  shader :defaultFragmentShader, [
     :prefixFragment,
-    "uniform vec3 diffuse;",
+    "uniform vec4 diffuse;",
     "uniform float opacity;",
     :mapFragmentParams,
     :colorFragmentParams,
 
     "void main()",
     "{",
-      "gl_FragColor = vec4(diffuse, opacity);",
+      "gl_FragColor = vec4(diffuse.xyz, opacity);",
       :colorFragment,
       :mapFragment,
     "}"
