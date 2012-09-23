@@ -49,9 +49,9 @@ class TriangleDemo : public Window
       geometry->faceCount = 2;
 
       MeshBasicMaterial * material = new MeshBasicMaterial();
-      material->map = ImageUtils::loadTexture("assets/crate.png");
-      material->diffuse = Color(1, 0, 0, 1);
-      //material->color = Color(1.0, 0.8, 0.4, 1.0);
+      //material->map = ImageUtils::loadTexture("assets/crate.png");
+      material->diffuse = Color(1, 0.8, 0.4);
+      material->useTextureMap = false;
 
       mesh = new Mesh(geometry, material);
       //mesh->position.y = 0.4;

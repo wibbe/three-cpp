@@ -34,7 +34,7 @@ namespace three {
           a(0.0f)
       { }
 
-      Color(float _r, float _g, float _b, float _a)
+      Color(float _r, float _g, float _b, float _a = 1.0f)
         : r(_r),
           g(_g),
           b(_b),

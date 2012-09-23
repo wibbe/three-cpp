@@ -46,6 +46,7 @@ class CubeDemo : public Window
     {
       mesh->rotation.x += dt * 0.005;
       mesh->rotation.y += dt * 0.01;
+      mesh->matrixWorldNeedsUpdate = true;
 
       return !isKeyDown(Key::Esc);
     }

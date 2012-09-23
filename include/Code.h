@@ -32,7 +32,7 @@ namespace three {
     public:
       Code(const char * name, const char ** code, int rowCount);
 
-      static std::string generate(const char * name, ...);
+      static std::string generate(const char * name, std::vector<std::string> const& defines);
 
       const char * name;
       const char ** code;

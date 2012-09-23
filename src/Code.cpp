@@ -1,7 +1,6 @@
 
 #include "Code.h"
 #include <string.h>
-#include <stdarg.h>
 #include <sstream>
 #include <iostream>
 
@@ -66,7 +65,7 @@ namespace three {
     }
   }
 
-  std::string Code::generate(const char * name, ...)
+  std::string Code::generate(const char * name, std::vector<std::string> const& defines)
   { 
     Code * code = findCode(name);
     if (!code)
@@ -75,19 +74,8 @@ namespace three {
     std::stringstream ss;
 
     // Generate defines
-    va_list argp;
-    va_start(argp, name);
-
-    while (true)
-    {
-      const char * define = va_arg(argp, const char *);
-      if (define)
-        ss << "#define " << define << std::endl;
-      else
-        break;
-    }
-
-    va_end(argp);
+    for (std::vector<std::string>::const_iterator it = defines.begin(), end = defines.end(); it != end; ++it)
+      ss << "#define " << *it << std::endl;
 
     //ss << "#line 0 \"" << name << "\"" << std::endl;
     generateCode(code, ss);

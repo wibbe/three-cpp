@@ -114,6 +114,7 @@ class Material
     @uniforms = []
     @defines = []
     @textures = []
+    @options = []
   end
 
   def float(name, value = 0.0)
@@ -138,6 +139,10 @@ class Material
 
   def define(*names)
     names.each { |x| @defines << x}
+  end
+
+  def option(name, define, default_value)
+    @options << [name, define, default_value]
   end
 
   def vertex_shader(name)
@@ -172,6 +177,8 @@ class Material
     file.puts "    public:"
     @textures.each { |texture| file.puts "      three::Texture * #{texture};" }
     @uniforms.each { |uniform| file.puts "      #{uniform.definition};"}
+    file.puts ""
+    @options.each { |option| file.puts "      bool #{option[0]};" }
     file.puts "  };"
     file.puts ""
   end
@@ -184,6 +191,7 @@ class Material
     file.puts "  {"
     @textures.each { |x| file.puts "    #{x} = 0;"}
     @uniforms.each { |x| file.puts "    #{x.name} = #{x.default_declaration};"}
+    @options.each { |option| file.puts "    #{option[0]} = #{option[2]};" }
     file.puts "  }"
     file.puts ""
     file.puts "  void #{name}::apply(Renderer * renderer)"
@@ -199,20 +207,22 @@ class Material
     file.puts ""
     file.puts "  std::string #{@name}::vertexShaderCode() const"
     file.puts "  {"
-    if @defines.empty?
-      file.puts "    return three::Code::generate(\"#{@vertex_shader}\", 0);"
-    else
-      file.puts "    return three::Code::generate(\"#{@vertex_shader}\", #{@defines.collect() { |x| "\"#{x}\"" } .join(', ')}, 0);"
-    end
+    file.puts "    std::vector<std::string> defines;"
+    @defines.each { |name| file.puts "    defines.push_back(\"#{name}\");" }
+    file.puts ""
+    file.puts "    return three::Code::generate(\"#{@vertex_shader}\", defines);"
     file.puts "  }"
     file.puts ""
     file.puts "  std::string #{@name}::fragmentShaderCode() const"
     file.puts "  {"
-    if @defines.empty?
-      file.puts "    return three::Code::generate(\"#{@fragment_shader}\", 0);"
-    else
-      file.puts "    return three::Code::generate(\"#{@fragment_shader}\", #{@defines.collect() { |x| "\"#{x}\"" } .join(', ')}, 0);"
+    file.puts "    std::vector<std::string> defines;"
+    @defines.each { |name| file.puts "    defines.push_back(\"#{name}\");" }
+    @options.each do |option|
+      file.puts "    if (#{option[0]})"
+      file.puts "      defines.push_back(\"#{option[1]}\");"
     end
+    file.puts ""
+    file.puts "    return three::Code::generate(\"#{@fragment_shader}\", defines);"
     file.puts "  }"
     file.puts ""
     file.puts "  const char * #{@name}::textureName(uint32_t slot) const"

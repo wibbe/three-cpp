@@ -24,12 +24,16 @@ namespace three {
 
   std::string BasicColorMaterial::vertexShaderCode() const
   {
-    return three::Code::generate("basicVertexShader", 0);
+    std::vector<std::string> defines;
+
+    return three::Code::generate("basicVertexShader", defines);
   }
 
   std::string BasicColorMaterial::fragmentShaderCode() const
   {
-    return three::Code::generate("basicFragmentShader", 0);
+    std::vector<std::string> defines;
+
+    return three::Code::generate("basicFragmentShader", defines);
   }
 
   const char * BasicColorMaterial::textureName(uint32_t slot) const
@@ -61,6 +65,8 @@ namespace three {
     offsetRepeat = three::Vector4(0, 0, 1, 1);
     diffuse = three::Color(1, 1, 1, 1);
     opacity = 1;
+    useTextureMap = true;
+    useVertexColor = false;
   }
 
   void MeshBasicMaterial::apply(Renderer * renderer)
@@ -74,12 +80,20 @@ namespace three {
 
   std::string MeshBasicMaterial::vertexShaderCode() const
   {
-    return three::Code::generate("defaultVertexShader", "USE_MAP", 0);
+    std::vector<std::string> defines;
+
+    return three::Code::generate("defaultVertexShader", defines);
   }
 
   std::string MeshBasicMaterial::fragmentShaderCode() const
   {
-    return three::Code::generate("defaultFragmentShader", "USE_MAP", 0);
+    std::vector<std::string> defines;
+    if (useTextureMap)
+      defines.push_back("USE_MAP");
+    if (useVertexColor)
+      defines.push_back("USE_COLOR");
+
+    return three::Code::generate("defaultFragmentShader", defines);
   }
 
   const char * MeshBasicMaterial::textureName(uint32_t slot) const

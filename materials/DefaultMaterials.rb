@@ -30,7 +30,9 @@ define 'DefaultMaterials', ['three'] do
   material 'MeshBasicMaterial' do
     vertex_shader :defaultVertexShader
     fragment_shader :defaultFragmentShader
-    define :USE_MAP
+
+    option :useTextureMap, :USE_MAP, true
+    option :useVertexColor, :USE_COLOR, false
 
     texture :map
     vec4 :offsetRepeat, 0, 0, 1, 1

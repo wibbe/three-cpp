@@ -27,6 +27,7 @@ namespace three {
 
     public:
       three::Color color;
+
   };
 
   class MeshBasicMaterial : public three::Material
@@ -54,6 +55,9 @@ namespace three {
       three::Vector4 offsetRepeat;
       three::Color diffuse;
       float opacity;
+
+      bool useTextureMap;
+      bool useVertexColor;
   };
 
 }
