@@ -539,6 +539,7 @@ namespace three {
     {
       if (!glMat)
       {
+        // TODO: Need to take into account material options here as well!!!
         std::map<uint32_t, GLMaterial *>::iterator result = _cachedMaterials.find(material->type());
         if (result == _cachedMaterials.end())
         {
