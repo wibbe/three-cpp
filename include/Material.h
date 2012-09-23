@@ -42,7 +42,7 @@ namespace three {
 
       virtual uint32_t type() const = 0;
 
-      virtual void apply() = 0;
+      virtual void apply(Renderer * renderer) = 0;
 
       virtual std::string vertexShaderCode() const = 0;
       virtual std::string fragmentShaderCode() const = 0;

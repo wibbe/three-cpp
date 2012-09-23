@@ -27,12 +27,14 @@
 #include "Matrix4.h"
 #include <vector>
 #include <string>
+#include <map>
 
 namespace three {
 
   // Forward declarations
   class GLObject;
   class GLGeometry;
+  class GLMaterial;
 
   class GLRenderer : public Renderer
   {
@@ -103,6 +105,10 @@ namespace three {
       bool oldDepthWrite;
 
       Blending oldBlending;
+
+      uint32_t _oldProgram;
+
+      std::map<uint32_t, GLMaterial *> _cachedMaterials;
   };
 
 }

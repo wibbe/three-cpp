@@ -159,7 +159,7 @@ class Material
     file.puts ""
     file.puts "      uint32_t type() const { return #{@name}::Type; }"
     file.puts ""
-    file.puts "      void apply();"
+    file.puts "      void apply(Renderer * renderer);"
     file.puts ""
     file.puts "      std::string vertexShaderCode() const;"
     file.puts "      std::string fragmentShaderCode() const;"
@@ -186,11 +186,14 @@ class Material
     @uniforms.each { |x| file.puts "    #{x.name} = #{x.default_declaration};"}
     file.puts "  }"
     file.puts ""
-    file.puts "  void #{name}::apply()"
+    file.puts "  void #{name}::apply(Renderer * renderer)"
     file.puts "  {"
-    file.puts "    assert(__renderMaterial);"
+    file.puts "    assert(__renderMaterial && renderer);"
     @uniforms.each_index do |i|
       file.puts "    __renderMaterial->uniform(#{i}, #{@uniforms[i].name});"
+    end
+    @textures.each_index do |i|
+      file.puts "    renderer->setTexture(#{@textures[i]}, #{i});"
     end
     file.puts "  }"
     file.puts ""
@@ -302,6 +305,7 @@ class CodeLib
     file.puts '#include "Code.h"'
     file.puts '#include "RenderMaterial.h"'
     file.puts '#include "StringHash.h"'
+    file.puts '#include "Renderer.h"'
     file.puts '#include <cassert>'
     file.puts ""
     begin_namespace(file)

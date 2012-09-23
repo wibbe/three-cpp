@@ -29,8 +29,8 @@ define 'DefaultGLShaders', ['three'] do
 
     "attribute vec3 position;",
     "attribute vec3 normal;",
-    "attribute vec2 uv;",
-    "attribute vec2 uv2;",
+    "attribute vec2 uv0;",
+    "attribute vec2 uv1;",
 
     "#ifdef USE_COLOR",
       "attribute vec3 color;",
@@ -74,32 +74,35 @@ define 'DefaultGLShaders', ['three'] do
 
   snipet :mapVertexParams, [
     "#ifdef USE_MAP",
-      "varying vec2 vUV;",
+      "varying vec2 vUv0;",
+      "varying vec2 vUv1;",
       "uniform vec4 offsetRepeat;",
     "#endif"
   ]
 
   snipet :mapFragmentParams, [
     "#ifdef USE_MAP",
-      "varying vUv;",
+      "varying vUv0;",
+      "varying vUv1;",
       "uniform sampler2D map;",
     "#endif"
   ]
 
   snipet :mapVertex, [
     "#ifdef USE_MAP",
-      "vUv = uv * offsetRepeat.zw + offsetRepeat.xy;",
+      "vUv0 = uv0 * offsetRepeat.zw + offsetRepeat.xy;",
+      "vUv1 = uv1;",
     "#endif"
   ]
 
   snipet :mapFragment, [
     "#ifdef USE_MAP",
       "#ifdef GAMMA_INPUT",
-        "vec4 texelColor = texture2D(map, vUv);",
+        "vec4 texelColor = texture2D(map, vUv0);",
         "texelColor.xyz *= texelColor.xyz;",
         "gl_FragColor = gl_FragColor * texelColor;",
       "#else",
-        "gl_FragColor = gl_FragColor * texture2D( map, vUv );",
+        "gl_FragColor = gl_FragColor * texture2D(map, vUv0);",
       "#endif",
     "#endif"
   ]

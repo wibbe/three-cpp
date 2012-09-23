@@ -3,6 +3,7 @@
 #include "Code.h"
 #include "RenderMaterial.h"
 #include "StringHash.h"
+#include "Renderer.h"
 #include <cassert>
 
 namespace three {
@@ -16,10 +17,11 @@ namespace three {
     offsetRepeat = three::Vector4(0, 0, 1, 1);
   }
 
-  void MeshBasicMaterial::apply()
+  void MeshBasicMaterial::apply(Renderer * renderer)
   {
-    assert(__renderMaterial);
+    assert(__renderMaterial && renderer);
     __renderMaterial->uniform(0, offsetRepeat);
+    renderer->setTexture(map, 0);
   }
 
   std::string MeshBasicMaterial::vertexShaderCode() const

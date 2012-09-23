@@ -15,7 +15,7 @@ namespace three {
 
       uint32_t type() const { return MeshBasicMaterial::Type; }
 
-      void apply();
+      void apply(Renderer * renderer);
 
       std::string vertexShaderCode() const;
       std::string fragmentShaderCode() const;

@@ -24,6 +24,7 @@
 
 #include "Matrix4.h"
 #include "RenderGeometry.h"
+ #include <stdint.h>
 
 namespace three {
 
@@ -33,9 +34,9 @@ namespace three {
       GLGeometry(Geometry * source);
 
     public:
-      unsigned int vertexBuffer;
-      unsigned int normalBuffer;
-      unsigned int indexBuffer;
+      uint32_t vertexBuffer;
+      uint32_t normalBuffer;
+      uint32_t indexBuffer;
   };
 
 }

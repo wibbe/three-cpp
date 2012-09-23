@@ -114,21 +114,47 @@ namespace three {
     return (value & (value - 1)) == 0;
   }
 
-  int __dummyCode(int value)
+  static void showLogInfo(GLuint object, 
+                          void (*glGet__iv)(GLuint, GLenum, GLint*),
+                          void (*glGet__InfoLog)(GLuint, GLsizei, GLsizei*, GLchar*))
   {
-    return value;
+    int logLength;
+    char * log;
+    
+    glGet__iv(object, GL_INFO_LOG_LENGTH, &logLength);
+    log = new char[logLength];
+    glGet__InfoLog(object, logLength, NULL, log);
+    fprintf(stderr, "%s", log);
+
+    delete[] log;
   }
 
-  static void registerCode(Code * code)
+  static uint32_t compileShader(std::string const& code, unsigned int type)
   {
+    const GLint length = code.size();
+    uint32_t shader = glCreateShader(type);
+    glShaderSource(shader, 1, (const GLchar **)code.c_str(), &length);
+    glCompileShader(shader);
+    
+    int ok;
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &ok);
+    if (!ok)
+    {
+      fprintf(stderr, "Failed to compile shader:\n");
+      showLogInfo(shader, glGetShaderiv, glGetShaderInfoLog);
+      glDeleteShader(shader);
+      return 0;
+    }
 
+    return shader;
   }
 
   GLRenderer::GLRenderer(int windowWidth, int windowHeight, bool fullscreen)
     : Renderer(),
       oldDepthTest(true),
       oldDepthWrite(true),
-      oldBlending(NormalBlending)
+      oldBlending(NormalBlending),
+      _oldProgram(0)
   {
     if (!GLEW_ARB_framebuffer_object)
     {
@@ -304,6 +330,7 @@ namespace three {
     oldDepthTest = true;
     oldDepthWrite = true;
     oldBlending = NormalBlending;
+    _oldProgram = 0;
   }
   
   void GLRenderer::render(Scene * scene, Camera * camera, RenderTarget * renderTarget, bool forceClear)
@@ -526,15 +553,113 @@ namespace three {
 
     if (!glMat || material->needsUpdate)
     {
-      glMat = new GLMaterial(material->uniformCount());
+      if (!glMat)
+      {
+        std::map<uint32_t, GLMaterial *>::iterator result = _cachedMaterials.find(material->type());
+        if (result == _cachedMaterials.end())
+        {
+          glMat = new GLMaterial(material->uniformCount());
+          _cachedMaterials.insert(std::make_pair(material->type(), glMat));
+        }
+        else
+          glMat = result->second;
+
+        material->__renderMaterial = glMat;
+      }
+
       setupMaterial(material, object);
       material->needsUpdate = false;
+    }
+
+    if (glMat->program)
+    {
+      if (glMat->program != _oldProgram)
+      {
+        _oldProgram = glMat->program;
+        glUseProgram(_oldProgram);
+      }
+
+      // Set default uniforms
+      glUniformMatrix4fv(glMat->objectMatrix, 1, 0, object->sourceObject->matrixWorld.data());
+      glUniformMatrix4fv(glMat->modelViewMatrix, 1, 0, object->modelViewMatrix.data());
+      glUniformMatrix4fv(glMat->projectionMatrix, 1, 0, camera->projectionMatrix.data());
+      //glMat->viewMatrix
+      glUniformMatrix4fv(glMat->normalMatrix, 1, 0, object->normalMatrix.data());
+      glUniform3f(glMat->cameraPosition, camera->position.x, camera->position.y, camera->position.z);
+
+      // Set material specific uniforms and textures
+      material->apply(this);
     }
   }
 
   void GLRenderer::setupMaterial(Material * material, GLObject * object)
   {
     GLMaterial * glMat = static_cast<GLMaterial *>(material->__renderMaterial);
+
+    // Do we need to generate a new program?
+    if (glMat->program == 0)
+    {
+      uint32_t vertexShader = compileShader(material->vertexShaderCode(), GL_VERTEX_SHADER);
+      if (vertexShader == 0)
+        return;
+
+      uint32_t fragmentShader = compileShader(material->fragmentShaderCode(), GL_FRAGMENT_SHADER);
+      if (fragmentShader == 0)
+      {
+        glDeleteShader(vertexShader);
+        return;
+      }
+
+      glMat->program = glCreateProgram();
+      glAttachShader(glMat->program, vertexShader);
+      glAttachShader(glMat->program, fragmentShader);
+
+      // Bind attributes
+      glBindAttribLocation(glMat->program, 0, "position");
+      glBindAttribLocation(glMat->program, 1, "normal");
+      glBindAttribLocation(glMat->program, 2, "uv0");
+      glBindAttribLocation(glMat->program, 3, "uv1");
+      glBindAttribLocation(glMat->program, 4, "color");
+
+      glLinkProgram(glMat->program);
+
+      int ok;
+      glGetProgramiv(glMat->program, GL_LINK_STATUS, &ok);
+      if (!ok)
+      {
+        fprintf(stderr, "Failed to link shader program:\n");
+        showLogInfo(glMat->program, glGetProgramiv, glGetProgramInfoLog);
+        
+        glDeleteShader(vertexShader);
+        glDeleteShader(fragmentShader);
+        glDeleteProgram(glMat->program);
+        glMat->program = 0;
+        return;
+      }
+
+      glUseProgram(glMat->program);
+
+      // Get material specific uniform positions
+      for (uint32_t i = 0; i < material->uniformCount(); ++i)
+        glMat->uniforms[i] = glGetUniformLocation(glMat->program, material->uniformName(i));
+
+      // Get default uniform positions
+      glMat->objectMatrix = glGetUniformLocation(glMat->program, "objectMatrix");
+      glMat->modelViewMatrix = glGetUniformLocation(glMat->program, "modelViewMatrix");
+      glMat->projectionMatrix = glGetUniformLocation(glMat->program, "projectionMatrix");
+      glMat->viewMatrix = glGetUniformLocation(glMat->program, "viewMatrix");
+      glMat->normalMatrix = glGetUniformLocation(glMat->program, "normalMatrix");
+      glMat->cameraPosition = glGetUniformLocation(glMat->program, "cameraPosition");
+
+      // Bind texture positions
+      for (uint32_t i = 0; i < material->textureCount(); ++i)
+      {
+        GLuint pos = glGetUniformLocation(glMat->program, material->textureName(i));
+        glUniform1i(pos, i);
+      }
+
+      glUseProgram(_oldProgram);
+    }
   }
 
 }

@@ -42,11 +42,12 @@ namespace three {
       uint32_t * uniforms;
       uint32_t uniformCount;
 
-      uint32_t attributePosition;
-      uint32_t attributeNormal;
-      uint32_t attributeUv;
-      uint32_t attributeUv2;
-      uint32_t attributeColor;
+      uint32_t objectMatrix;
+      uint32_t modelViewMatrix;
+      uint32_t projectionMatrix;
+      uint32_t viewMatrix;
+      uint32_t normalMatrix;
+      uint32_t cameraPosition;
   };
 
 }

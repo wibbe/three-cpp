@@ -44,10 +44,6 @@ namespace three {
       Material * transparentMaterial;
       Material * opaqueMaterial;
 
-      unsigned int vertexBuffer;
-      unsigned int normalBuffer;
-      unsigned int indexBuffer;
-
       float z;
 
       bool render;

@@ -39,8 +39,6 @@ class CubeDemo : public Window
 
       renderer = new GLRenderer();
       renderer->setSize(1024, 768);
-
-      std::cout << material->vertexShaderCode() << std::endl;
     }
 
     bool update(double dt)
