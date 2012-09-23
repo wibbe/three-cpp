@@ -30,6 +30,16 @@ namespace three {
     return static_cast<GLObject *>(obj1)->z > static_cast<GLObject *>(obj2)->z;
   }
 
+  enum SHADER_ATTRIB_LOCATION
+  {
+    POSITION_ATTRIB_LOCATION = 0,
+    NORMAL_ATTRIB_LOCATION,
+    UV0_ATTRIB_LOCATION,
+    UV1_ATTRIB_LOCATION,
+    COLOR_ATTRIB_LOCATION,
+    TANGENT_ATTRIB_LOCATION
+  };
+
   static inline GLenum wrappingToGL(WrappingMode mode)
   {
     switch (mode)
@@ -132,8 +142,11 @@ namespace three {
   static uint32_t compileShader(std::string const& code, unsigned int type)
   {
     const GLint length = code.size();
+    const GLchar * data[1];
+    data[0] = code.c_str();
+
     uint32_t shader = glCreateShader(type);
-    glShaderSource(shader, 1, (const GLchar **)code.c_str(), &length);
+    glShaderSource(shader, 1, (const GLchar **)data, &length);
     glCompileShader(shader);
     
     int ok;
@@ -142,6 +155,7 @@ namespace three {
     {
       fprintf(stderr, "Failed to compile shader:\n");
       showLogInfo(shader, glGetShaderiv, glGetShaderInfoLog);
+      fprintf(stderr, "----------------------------\n%s----------------------------", code.c_str());
       glDeleteShader(shader);
       return 0;
     }
@@ -154,7 +168,11 @@ namespace three {
       oldDepthTest(true),
       oldDepthWrite(true),
       oldBlending(NormalBlending),
-      _oldProgram(0)
+      _currentProgram(0),
+      _currentVertexBuffer(0),
+      _currentNormalBuffer(0),
+      _currentColorBuffer(0),
+      _currentIndexBuffer(0)
   {
     if (!GLEW_ARB_framebuffer_object)
     {
@@ -256,7 +274,7 @@ namespace three {
 
     GLTexture * glTex = static_cast<GLTexture *>(texture->__renderTexture);
 
-    if (texture->needsUpdate)
+    if (!glTex || texture->needsUpdate)
     {
       if (!glTex)
       {
@@ -289,7 +307,6 @@ namespace three {
     {
       glActiveTexture(GL_TEXTURE0 + slot);
       glBindTexture(GL_TEXTURE_2D, glTex->id);
-
     }
   }
 
@@ -316,13 +333,14 @@ namespace three {
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
 
-    glFrontFace(GL_CCW);
-    glCullFace(GL_BACK);
-    glEnable(GL_CULL_FACE);
+    //glFrontFace(GL_CCW);
+    //glCullFace(GL_BACK);
+    //glEnable(GL_CULL_FACE);
+    glDisable(GL_CULL_FACE);
 
-    glEnable(GL_BLEND);
-    glBlendEquation(GL_FUNC_ADD);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glEnable(GL_BLEND);
+    //glBlendEquation(GL_FUNC_ADD);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   }
 
   void GLRenderer::resetCache()
@@ -330,7 +348,6 @@ namespace three {
     oldDepthTest = true;
     oldDepthWrite = true;
     oldBlending = NormalBlending;
-    _oldProgram = 0;
   }
   
   void GLRenderer::render(Scene * scene, Camera * camera, RenderTarget * renderTarget, bool forceClear)
@@ -359,7 +376,7 @@ namespace three {
       GLObject * glObject = static_cast<GLObject *>(*it);
       Object * object = glObject->sourceObject;
 
-      setupMatrices(object, camera);
+      updateMatrices(object, camera);
 
       glObject->render = false;
 
@@ -423,131 +440,90 @@ namespace three {
     {
       for (std::vector<RenderObject *>::const_iterator it = renderList.begin(), end = renderList.end(); it != end; ++it)
       {
+        GLObject * object = static_cast<GLObject *>(*it);
+
+        renderObject(camera, lights, overrideMaterial ? overrideMaterial : object->material, object->geometry, object, useBlending);
       }
     }
   }
 
-  void GLRenderer::renderBuffer(Camera * camera, 
+  void GLRenderer::renderObject(Camera * camera, 
                                 std::vector<Object *> const& lights, 
                                 /* fog, */ 
                                 Material * material, 
                                 GLGeometry * geometry, 
-                                GLObject * object)
+                                GLObject * object,
+                                bool useBlending)
   {
     if (!material->visible)
       return;
 
-    setProgram(camera, lights, /* fog, */ material, object);
+    setMaterial(camera, lights, /* fog, */ material, object, useBlending);
 
-    bool updateBuffers = false;
-    
-    if (updateBuffers)
+    // Bind buffers
+    if (_currentVertexBuffer != geometry->vertexBuffer)
     {
-      glBindBuffer(GL_ARRAY_BUFFER, geometry->vertexBuffer);
-      //glVertex
+      if (geometry->vertexBuffer)
+      {
+        glEnableVertexAttribArray(POSITION_ATTRIB_LOCATION);
+        glVertexAttribPointer(POSITION_ATTRIB_LOCATION, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
+      }
+      else
+        glDisableVertexAttribArray(POSITION_ATTRIB_LOCATION);
+
+      _currentVertexBuffer = geometry->vertexBuffer;
+      glBindBuffer(GL_ARRAY_BUFFER, _currentVertexBuffer);
     }
-  }
 
-  void GLRenderer::updateGLObjects(Scene * scene)
-  {
-    for (std::vector<Object *>::iterator it = scene->objectsAdded.begin(), end = scene->objectsAdded.end(); it != end; ++it)
-      addObject(*it, scene);
-
-    for (std::vector<Object *>::iterator it = scene->objectsRemoved.begin(), end = scene->objectsRemoved.end(); it != end; ++it)
-      removeObject(*it, scene);
-
-    scene->objectsAdded.clear();
-    scene->objectsRemoved.clear();
-
-    for (std::vector<RenderObject *>::iterator it = scene->__renderObjects.begin(), end = scene->__renderObjects.end(); it != end; ++it)
-      updateObject((*it)->sourceObject);
-
-  }
-
-  void GLRenderer::addObject(Object * object, Scene * scene)
-  {
-    if (object->type() == Mesh::Type)
+    if (_currentNormalBuffer != geometry->normalBuffer)
     {
-      Mesh * mesh = dynamic_cast<Mesh *>(object);
-
-      if (!object->__renderObject)
+      if (geometry->normalBuffer)
       {
-        GLObject * glObject = new GLObject(object);
-        scene->__renderObjects.push_back(glObject);
+        glEnableVertexAttribArray(NORMAL_ATTRIB_LOCATION);
+        glVertexAttribPointer(NORMAL_ATTRIB_LOCATION, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
       }
+      else
+        glDisableVertexAttribArray(NORMAL_ATTRIB_LOCATION);
 
-      assert(mesh->geometry);
-
-      createMeshBuffers(mesh->geometry);
+      _currentNormalBuffer = geometry->normalBuffer;
+      glBindBuffer(GL_ARRAY_BUFFER, _currentNormalBuffer);
     }
-  }
 
-  void GLRenderer::removeObject(Object * object, Scene * scene)
-  {
-  }
-
-  void GLRenderer::updateObject(Object * object)
-  {
-    if (object->type() == Mesh::Type)
+    if (_currentColorBuffer != geometry->colorBuffer)
     {
-      Mesh * mesh = dynamic_cast<Mesh *>(object);
-
-      Geometry * geom = mesh->geometry;
-      GLGeometry * glGeom = static_cast<GLGeometry *>(geom->__renderGeometry);
-
-      if (geom->verticesNeedUpdate)
+      if (geometry->colorBuffer)
       {
-        glBindBuffer(GL_ARRAY_BUFFER, glGeom->vertexBuffer);
-        glBufferData(GL_ARRAY_BUFFER, geom->vertices.size() * sizeof(Vector3), &geom->vertices[0], geom->dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
-        geom->verticesNeedUpdate = false;
+        glEnableVertexAttribArray(COLOR_ATTRIB_LOCATION);
+        glVertexAttribPointer(COLOR_ATTRIB_LOCATION, 4, GL_FLOAT, GL_FALSE, 0, (void *)0);
       }
+      else
+        glDisableVertexAttribArray(COLOR_ATTRIB_LOCATION);
 
-      if (geom->normalsNeedUpdate)
-      {
-        glBindBuffer(GL_ARRAY_BUFFER, glGeom->normalBuffer);
-        glBufferData(GL_ARRAY_BUFFER, geom->normals.size() * sizeof(Vector3), &geom->normals[0], geom->dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
-        geom->normalsNeedUpdate = false;
-      }
-
-      if (geom->elementsNeedUpdate)
-      {
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, glGeom->indexBuffer);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, geom->faces.size() * sizeof(Face), &geom->faces[0], geom->dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
-        geom->elementsNeedUpdate = false;
-      }
+      _currentColorBuffer = geometry->colorBuffer;
+      glBindBuffer(GL_ARRAY_BUFFER, _currentColorBuffer);
     }
+
+    if (_currentIndexBuffer != geometry->indexBuffer)
+    {
+      _currentIndexBuffer = geometry->indexBuffer;
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _currentIndexBuffer);
+    }
+
+    printf("Face count = %d\n", geometry->faceCount);
+
+    // Render buffer
+    if (_currentIndexBuffer)
+      glDrawElements(GL_TRIANGLES, geometry->faceCount, GL_UNSIGNED_SHORT, (void *)0);
+    else
+      glDrawArrays(GL_TRIANGLES, 0, geometry->faceCount);
   }
 
-  void GLRenderer::createMeshBuffers(Geometry * geometry)
-  {
-    if (geometry->__renderGeometry)
-      return;
-
-    GLGeometry * geom = new GLGeometry(geometry);
-
-    glGenBuffers(1, &geom->vertexBuffer);
-    glGenBuffers(1, &geom->normalBuffer);
-    glGenBuffers(1, &geom->indexBuffer);
-
-    geometry->verticesNeedUpdate = true;
-    geometry->normalsNeedUpdate = true;
-    geometry->elementsNeedUpdate = true;
-  }
-
-  void GLRenderer::setupMatrices(Object * object, Camera * camera)
-  {
-    GLObject * glObject = static_cast<GLObject *>(object->__renderObject);
-
-    glObject->modelViewMatrix = camera->matrixWorldInverse * object->matrixWorld;
-    glObject->normalMatrix = glObject->modelViewMatrix.inverse();
-    glObject->normalMatrix.transpose();
-  }
-
-  void GLRenderer::setProgram(Camera * camera,
-                              std::vector<Object *> const& lights,
-                              /* fog, */
-                              Material * material,
-                              GLObject * object)
+  void GLRenderer::setMaterial(Camera * camera,
+                               std::vector<Object *> const& lights,
+                               /* fog, */
+                               Material * material,
+                               GLObject * object,
+                               bool useBlending)
   {
     GLMaterial * glMat = static_cast<GLMaterial *>(material->__renderMaterial);
 
@@ -567,16 +543,16 @@ namespace three {
         material->__renderMaterial = glMat;
       }
 
-      setupMaterial(material, object);
+      createMaterial(material, object);
       material->needsUpdate = false;
     }
 
     if (glMat->program)
     {
-      if (glMat->program != _oldProgram)
+      if (glMat->program != _currentProgram)
       {
-        _oldProgram = glMat->program;
-        glUseProgram(_oldProgram);
+        _currentProgram = glMat->program;
+        glUseProgram(_currentProgram);
       }
 
       // Set default uniforms
@@ -590,9 +566,154 @@ namespace three {
       // Set material specific uniforms and textures
       material->apply(this);
     }
+
+    if (useBlending)
+      setBlending(material->blending);
+
+    setDepthTest(material->depthTest);
+    setDepthWrite(material->depthWrite);
   }
 
-  void GLRenderer::setupMaterial(Material * material, GLObject * object)
+  void GLRenderer::updateGLObjects(Scene * scene)
+  {
+    for (std::vector<Object *>::iterator it = scene->objectsAdded.begin(), end = scene->objectsAdded.end(); it != end; ++it)
+      addObject(*it, scene);
+
+    for (std::vector<Object *>::iterator it = scene->objectsRemoved.begin(), end = scene->objectsRemoved.end(); it != end; ++it)
+      removeObject(*it, scene);
+
+    scene->objectsAdded.clear();
+    scene->objectsRemoved.clear();
+
+    for (std::vector<RenderObject *>::iterator it = scene->__renderObjects.begin(), end = scene->__renderObjects.end(); it != end; ++it)
+      updateObject((*it)->sourceObject);
+  }
+
+  void GLRenderer::addObject(Object * object, Scene * scene)
+  {
+    if (object->type() == Mesh::Type)
+    {
+      if (!object->__renderObject)
+      {
+        GLObject * glObject = new GLObject(object);
+        scene->__renderObjects.push_back(glObject);
+      }
+    }
+  }
+
+  void GLRenderer::removeObject(Object * object, Scene * scene)
+  {
+    scene->__renderObjects.erase(std::remove(scene->__renderObjects.begin(),
+                                             scene->__renderObjects.end(),
+                                             object->__renderObject),
+                                 scene->__renderObjects.end());
+
+    delete object->__renderObject;
+    object->__renderObject = 0;
+  }
+
+  void GLRenderer::updateObject(Object * object)
+  {
+    if (object->type() == Mesh::Type)
+    {
+      Mesh * mesh = dynamic_cast<Mesh *>(object);
+      assert(mesh->geometry && "Mesh missing geometry buffer");
+
+      Geometry * geom = mesh->geometry;
+      GLObject * glObject = static_cast<GLObject *>(mesh->__renderObject);
+
+      glObject->material = mesh->material;
+
+      // Has the geometry buffer changed?
+      if (!geom->__renderGeometry || geom->__renderGeometry != glObject->geometry)
+      {
+        createGeometry(geom);
+        glObject->geometry = static_cast<GLGeometry *>(geom->__renderGeometry);
+      }
+
+      updateGeometry(geom);
+    }
+  }
+
+  void GLRenderer::updateGeometry(Geometry * geom)
+  {
+    GLGeometry * glGeom = static_cast<GLGeometry *>(geom->__renderGeometry);
+
+    if (geom->verticesNeedUpdate && glGeom->vertexBuffer)
+    {
+      glBindBuffer(GL_ARRAY_BUFFER, glGeom->vertexBuffer);
+      glBufferData(GL_ARRAY_BUFFER, geom->vertices.size() * sizeof(Vector3), &geom->vertices[0], geom->dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
+      geom->verticesNeedUpdate = false;
+    }
+
+    if (geom->normalsNeedUpdate && glGeom->normalBuffer)
+    {
+      glBindBuffer(GL_ARRAY_BUFFER, glGeom->normalBuffer);
+      glBufferData(GL_ARRAY_BUFFER, geom->normals.size() * sizeof(Vector3), &geom->normals[0], geom->dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
+      geom->normalsNeedUpdate = false;
+    }
+
+    if (geom->colorsNeedUpdate && glGeom->colorBuffer)
+    {
+      glBindBuffer(GL_ARRAY_BUFFER, glGeom->colorBuffer);
+      glBufferData(GL_ARRAY_BUFFER, geom->colors.size() * sizeof(Color), &geom->colors[0], geom->dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
+      geom->colorsNeedUpdate = false;
+    }
+
+    if (geom->elementsNeedUpdate && glGeom->indexBuffer)
+    {
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, glGeom->indexBuffer);
+      glBufferData(GL_ELEMENT_ARRAY_BUFFER, geom->faces.size() * sizeof(Face), &geom->faces[0], geom->dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
+      geom->elementsNeedUpdate = false;
+
+      glGeom->faceCount = geom->faces.size() * 3;
+    }
+    else if (!glGeom->indexBuffer)
+      glGeom->faceCount = geom->faceCount;
+  }
+
+  void GLRenderer::updateMatrices(Object * object, Camera * camera)
+  {
+    GLObject * glObject = static_cast<GLObject *>(object->__renderObject);
+
+    glObject->modelViewMatrix = camera->matrixWorldInverse * object->matrixWorld;
+    glObject->normalMatrix = glObject->modelViewMatrix.inverse();
+    glObject->normalMatrix.transpose();
+  }
+
+  void GLRenderer::createGeometry(Geometry * geometry)
+  {
+    if (geometry->__renderGeometry)
+      return;
+
+    GLGeometry * geom = new GLGeometry(geometry);
+
+    if (!geometry->vertices.empty())
+    {
+      glGenBuffers(1, &geom->vertexBuffer);
+      geometry->verticesNeedUpdate = true;
+    }
+
+    if (!geometry->normals.empty())
+    {
+      glGenBuffers(1, &geom->normalBuffer);
+      geometry->normalsNeedUpdate = true;
+    }
+
+    if (!geometry->colors.empty())
+    {
+      glGenBuffers(1, &geom->colorBuffer);
+      geometry->colorsNeedUpdate = true;
+    }
+
+    if (!geometry->faces.empty())
+    {
+      glGenBuffers(1, &geom->indexBuffer);
+      geometry->elementsNeedUpdate = true;
+    }
+  }
+
+  void GLRenderer::createMaterial(Material * material, GLObject * object)
   {
     GLMaterial * glMat = static_cast<GLMaterial *>(material->__renderMaterial);
 
@@ -615,11 +736,12 @@ namespace three {
       glAttachShader(glMat->program, fragmentShader);
 
       // Bind attributes
-      glBindAttribLocation(glMat->program, 0, "position");
-      glBindAttribLocation(glMat->program, 1, "normal");
-      glBindAttribLocation(glMat->program, 2, "uv0");
-      glBindAttribLocation(glMat->program, 3, "uv1");
-      glBindAttribLocation(glMat->program, 4, "color");
+      glBindAttribLocation(glMat->program, POSITION_ATTRIB_LOCATION, "position");
+      glBindAttribLocation(glMat->program, NORMAL_ATTRIB_LOCATION, "normal");
+      glBindAttribLocation(glMat->program, UV0_ATTRIB_LOCATION, "uv0");
+      glBindAttribLocation(glMat->program, UV1_ATTRIB_LOCATION, "uv1");
+      glBindAttribLocation(glMat->program, COLOR_ATTRIB_LOCATION, "color");
+      glBindAttribLocation(glMat->program, TANGENT_ATTRIB_LOCATION, "tangent");
 
       glLinkProgram(glMat->program);
 
@@ -658,7 +780,7 @@ namespace three {
         glUniform1i(pos, i);
       }
 
-      glUseProgram(_oldProgram);
+      glUseProgram(_currentProgram);
     }
   }
 

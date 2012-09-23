@@ -51,12 +51,14 @@ namespace three {
       ColorArray colors;
 
       FaceArray faces;
+      uint32_t faceCount;
 
       bool hasTangents;
       bool dynamic;
 
       bool verticesNeedUpdate;
       bool normalsNeedUpdate;
+      bool colorsNeedUpdate;
       bool elementsNeedUpdate;
 
       float boundingSphereRadius;

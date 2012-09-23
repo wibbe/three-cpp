@@ -14,7 +14,8 @@ namespace three {
       format(RGBAFormat),
       type(UnsignedByteType),
       needsUpdate(false),
-      generateMipmaps(true)
+      generateMipmaps(true),
+      __renderTexture(0)
   {
   }
 

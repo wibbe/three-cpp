@@ -36,7 +36,10 @@ namespace three {
     public:
       uint32_t vertexBuffer;
       uint32_t normalBuffer;
+      uint32_t colorBuffer;
       uint32_t indexBuffer;
+
+      uint32_t faceCount;
   };
 
 }

@@ -8,9 +8,8 @@ namespace three {
 
   GLObject::GLObject(Object * source)
     : RenderObject(source),
-      buffer(0),
-      transparentMaterial(0),
-      opaqueMaterial(0),
+      geometry(0),
+      material(0),
       render(false)
   {
     source->__renderObject = this;

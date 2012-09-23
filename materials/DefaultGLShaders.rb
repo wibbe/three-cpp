@@ -31,6 +31,7 @@ define 'DefaultGLShaders', ['three'] do
     "attribute vec3 normal;",
     "attribute vec2 uv0;",
     "attribute vec2 uv1;",
+    "attribute vec3 tangent;",
 
     "#ifdef USE_COLOR",
       "attribute vec3 color;",
@@ -82,8 +83,8 @@ define 'DefaultGLShaders', ['three'] do
 
   snipet :mapFragmentParams, [
     "#ifdef USE_MAP",
-      "varying vUv0;",
-      "varying vUv1;",
+      "varying vec2 vUv0;",
+      "varying vec2 vUv1;",
       "uniform sampler2D map;",
     "#endif"
   ]
@@ -152,8 +153,8 @@ define 'DefaultGLShaders', ['three'] do
 
   shader :basicFragment, [
     :prefixFragment,
-    "uniform vec3 diffuse",
-    "uniform float opacity",
+    "uniform vec3 diffuse;",
+    "uniform float opacity;",
     :mapFragmentParams,
     :colorFragmentParams,
 

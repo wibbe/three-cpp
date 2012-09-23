@@ -66,28 +66,31 @@ namespace three {
                          bool useBlending, 
                          Material * overrideMaterial);
 
-      void renderBuffer(Camera * camera, 
+      void renderObject(Camera * camera, 
                         std::vector<Object *> const& lights, 
                         /* fog, */ 
                         Material * material, 
                         GLGeometry * geometry, 
-                        GLObject * object);
+                        GLObject * object,
+                        bool useBlending);
 
       void updateGLObjects(Scene * scene);
+      void updateGeometry(Geometry * geometry);
+      void updateObject(Object * object);
+      void updateMatrices(Object * object, Camera * camera);
+      
       void addObject(Object * object, Scene * scene);
       void removeObject(Object * object, Scene * scene);
-      void updateObject(Object * object);
 
-      void setProgram(Camera * camera,
-                      std::vector<Object *> const& lights,
-                      /* fog, */
-                      Material * material,
-                      GLObject * object);
+      void setMaterial(Camera * camera,
+                       std::vector<Object *> const& lights,
+                       /* fog, */
+                       Material * material,
+                       GLObject * object,
+                       bool useBlending);
 
-      void createMeshBuffers(Geometry * geometry);
-
-      void setupMatrices(Object * object, Camera * camera);
-      void setupMaterial(Material * material, GLObject * object);
+      void createGeometry(Geometry * geometry);
+      void createMaterial(Material * material, GLObject * object);
 
     private:
       int viewportX;
@@ -106,7 +109,11 @@ namespace three {
 
       Blending oldBlending;
 
-      uint32_t _oldProgram;
+      uint32_t _currentProgram;
+      uint32_t _currentVertexBuffer;
+      uint32_t _currentNormalBuffer;
+      uint32_t _currentColorBuffer;
+      uint32_t _currentIndexBuffer;
 
       std::map<uint32_t, GLMaterial *> _cachedMaterials;
   };

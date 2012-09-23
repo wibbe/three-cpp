@@ -36,9 +36,9 @@ namespace three {
         Code * codeSnipet = findCode(snipet);
         if (codeSnipet)
         {
-          ss << "#line 0 \"" << snipet << "\"" << std::endl;
+          //ss << "#line 0 \"" << snipet << "\"" << std::endl;
           generateCode(codeSnipet, ss);
-          ss << "#line " << i << " \"" << code->name << "\"" << std::endl;
+          //ss << "#line " << i << " \"" << code->name << "\"" << std::endl;
         }
         else
           ss << "#error Could not find code snipet " << snipet << std::endl;
@@ -89,7 +89,7 @@ namespace three {
 
     va_end(argp);
 
-    ss << "#line 0 \"" << name << "\"" << std::endl;
+    //ss << "#line 0 \"" << name << "\"" << std::endl;
     generateCode(code, ss);
 
     return ss.str();

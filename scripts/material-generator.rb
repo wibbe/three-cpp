@@ -391,9 +391,6 @@ def define(target_name, namespace, &block)
   lib.generate_code(options[:path])
 end
 
-puts "Path: #{options[:path]}"
-puts "Files: #{options[:files]}"
-
 options[:files].each do |file|
   puts "Processing file #{file}"
   require(file)

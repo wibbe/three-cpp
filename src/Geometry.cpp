@@ -4,7 +4,8 @@
 namespace three {
 
   Geometry::Geometry()
-    : hasTangents(false),
+    : faceCount(0),
+      hasTangents(false),
       dynamic(false),
       boundingSphereRadius(-1.0f),
       verticesNeedUpdate(false),

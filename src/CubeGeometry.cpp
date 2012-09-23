@@ -15,9 +15,12 @@ namespace three {
     normals.push_back(Vector3(0, 1, 0));
     normals.push_back(Vector3(0, 1, 0));
     normals.push_back(Vector3(0, 1, 0));
+    colors.push_back(Color(1, 1, 1, 1));
+    colors.push_back(Color(1, 1, 1, 1));
+    colors.push_back(Color(1, 1, 1, 1));
+    colors.push_back(Color(1, 1, 1, 1));
     faces.push_back(Face(0, 1, 2));
     faces.push_back(Face(1, 2, 3));
-
   }
 
 }

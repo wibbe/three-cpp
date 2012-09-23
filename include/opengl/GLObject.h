@@ -40,9 +40,8 @@ namespace three {
       Matrix4 modelViewMatrix;
       Matrix4 normalMatrix;
 
-      GLGeometry * buffer;
-      Material * transparentMaterial;
-      Material * opaqueMaterial;
+      GLGeometry * geometry;
+      Material * material;
 
       float z;
 

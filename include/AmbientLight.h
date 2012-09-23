@@ -35,6 +35,8 @@ namespace three {
       AmbientLight(Color const& _color = Color(1.0f, 1.0f, 1.0f, 1.0f));
 
       uint32_t type() const { return AmbientLight::Type; }
+
+      // Ambient light should have 6 color values, one for each of the directions: +X, -X, +Y, -Y, +Z, -Z
   };
 
 }
