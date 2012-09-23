@@ -371,7 +371,7 @@ namespace three {
     if (autoUpdateObjects)
       updateGLObjects(scene);
 
-    renderPlugins(renderPluginsPost, scene, camera);
+    renderPlugins(renderPluginsPre, scene, camera);
 
     setRenderTarget(renderTarget);
 
