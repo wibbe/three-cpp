@@ -30,13 +30,6 @@ class TriangleDemo : public Window
       camera->position.y = 1;
       camera->position.z = 2;
       camera->rotation.x = -0.4;
-      //camera->rotation.y = 1;
-      //camera->position.x = 0.4;
-      //camera->position.z = -1;
-      //camera->lookAt(Vector3(0, 0, 0));
-      //camera->projectionMatrix.identity();
-
-      printf("Projection:\n%s", camera->projectionMatrix.str().c_str());
       scene->add(camera);
 
       Geometry * geometry = new Geometry();
@@ -70,7 +63,6 @@ class TriangleDemo : public Window
     {
       mesh->rotation.y += dt * 2.0;
       mesh->matrixWorldNeedsUpdate = true;
-      //camera->
 
       return !isKeyDown(Key::Esc);
     }
