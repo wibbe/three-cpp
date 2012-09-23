@@ -540,6 +540,7 @@ namespace three {
       if (!glMat)
       {
         // TODO: Need to take into account material options here as well!!!
+        /* Disabled caching for now
         std::map<uint32_t, GLMaterial *>::iterator result = _cachedMaterials.find(material->type());
         if (result == _cachedMaterials.end())
         {
@@ -548,12 +549,13 @@ namespace three {
         }
         else
           glMat = result->second;
+        */
 
+        glMat = new GLMaterial(material->uniformCount());
         material->__renderMaterial = glMat;
       }
 
       createMaterial(material, object);
-      material->needsUpdate = false;
     }
 
     if (glMat->program)
@@ -728,70 +730,71 @@ namespace three {
     GLMaterial * glMat = static_cast<GLMaterial *>(material->__renderMaterial);
 
     // Do we need to generate a new program?
-    if (glMat->program == 0)
+    if (glMat->program)
+      glDeleteProgram(glMat->program);
+
+    uint32_t vertexShader = compileShader(material->vertexShaderCode(), GL_VERTEX_SHADER);
+    if (vertexShader == 0)
+      return;
+
+    uint32_t fragmentShader = compileShader(material->fragmentShaderCode(), GL_FRAGMENT_SHADER);
+    if (fragmentShader == 0)
     {
-      uint32_t vertexShader = compileShader(material->vertexShaderCode(), GL_VERTEX_SHADER);
-      if (vertexShader == 0)
-        return;
-
-      uint32_t fragmentShader = compileShader(material->fragmentShaderCode(), GL_FRAGMENT_SHADER);
-      if (fragmentShader == 0)
-      {
-        glDeleteShader(vertexShader);
-        return;
-      }
-
-      glMat->program = glCreateProgram();
-      glAttachShader(glMat->program, vertexShader);
-      glAttachShader(glMat->program, fragmentShader);
-
-      // Bind attributes
-      glBindAttribLocation(glMat->program, POSITION_ATTRIB_LOCATION, "position");
-      glBindAttribLocation(glMat->program, NORMAL_ATTRIB_LOCATION, "normal");
-      glBindAttribLocation(glMat->program, UV0_ATTRIB_LOCATION, "uv0");
-      glBindAttribLocation(glMat->program, UV1_ATTRIB_LOCATION, "uv1");
-      glBindAttribLocation(glMat->program, COLOR_ATTRIB_LOCATION, "color");
-      glBindAttribLocation(glMat->program, TANGENT_ATTRIB_LOCATION, "tangent");
-
-      glLinkProgram(glMat->program);
-
-      int ok;
-      glGetProgramiv(glMat->program, GL_LINK_STATUS, &ok);
-      if (!ok)
-      {
-        fprintf(stderr, "Failed to link shader program:\n");
-        showLogInfo(glMat->program, glGetProgramiv, glGetProgramInfoLog);
-        
-        glDeleteShader(vertexShader);
-        glDeleteShader(fragmentShader);
-        glDeleteProgram(glMat->program);
-        glMat->program = 0;
-        return;
-      }
-
-      glUseProgram(glMat->program);
-
-      // Get material specific uniform positions
-      for (uint32_t i = 0; i < material->uniformCount(); ++i)
-        glMat->uniforms[i] = glGetUniformLocation(glMat->program, material->uniformName(i));
-
-      // Get default uniform positions
-      glMat->objectMatrix = glGetUniformLocation(glMat->program, "objectMatrix");
-      glMat->modelViewMatrix = glGetUniformLocation(glMat->program, "modelViewMatrix");
-      glMat->projectionMatrix = glGetUniformLocation(glMat->program, "projectionMatrix");
-      glMat->viewMatrix = glGetUniformLocation(glMat->program, "viewMatrix");
-      glMat->normalMatrix = glGetUniformLocation(glMat->program, "normalMatrix");
-      glMat->cameraPosition = glGetUniformLocation(glMat->program, "cameraPosition");
-
-      // Bind texture positions
-      for (uint32_t i = 0; i < material->textureCount(); ++i)
-      {
-        GLuint pos = glGetUniformLocation(glMat->program, material->textureName(i));
-        glUniform1i(pos, i);
-      }
-
-      glUseProgram(_currentProgram);
+      glDeleteShader(vertexShader);
+      return;
     }
+
+    glMat->program = glCreateProgram();
+    glAttachShader(glMat->program, vertexShader);
+    glAttachShader(glMat->program, fragmentShader);
+
+    // Bind attributes
+    glBindAttribLocation(glMat->program, POSITION_ATTRIB_LOCATION, "position");
+    glBindAttribLocation(glMat->program, NORMAL_ATTRIB_LOCATION, "normal");
+    glBindAttribLocation(glMat->program, UV0_ATTRIB_LOCATION, "uv0");
+    glBindAttribLocation(glMat->program, UV1_ATTRIB_LOCATION, "uv1");
+    glBindAttribLocation(glMat->program, COLOR_ATTRIB_LOCATION, "color");
+    glBindAttribLocation(glMat->program, TANGENT_ATTRIB_LOCATION, "tangent");
+
+    glLinkProgram(glMat->program);
+
+    int ok;
+    glGetProgramiv(glMat->program, GL_LINK_STATUS, &ok);
+    if (!ok)
+    {
+      fprintf(stderr, "Failed to link shader program:\n");
+      showLogInfo(glMat->program, glGetProgramiv, glGetProgramInfoLog);
+      
+      glDeleteShader(vertexShader);
+      glDeleteShader(fragmentShader);
+      glDeleteProgram(glMat->program);
+      glMat->program = 0;
+      return;
+    }
+
+    glUseProgram(glMat->program);
+
+    // Get material specific uniform positions
+    for (uint32_t i = 0; i < material->uniformCount(); ++i)
+      glMat->uniforms[i] = glGetUniformLocation(glMat->program, material->uniformName(i));
+
+    // Get default uniform positions
+    glMat->objectMatrix = glGetUniformLocation(glMat->program, "objectMatrix");
+    glMat->modelViewMatrix = glGetUniformLocation(glMat->program, "modelViewMatrix");
+    glMat->projectionMatrix = glGetUniformLocation(glMat->program, "projectionMatrix");
+    glMat->viewMatrix = glGetUniformLocation(glMat->program, "viewMatrix");
+    glMat->normalMatrix = glGetUniformLocation(glMat->program, "normalMatrix");
+    glMat->cameraPosition = glGetUniformLocation(glMat->program, "cameraPosition");
+
+    // Bind texture positions
+    for (uint32_t i = 0; i < material->textureCount(); ++i)
+    {
+      GLuint pos = glGetUniformLocation(glMat->program, material->textureName(i));
+      glUniform1i(pos, i);
+    }
+
+    material->needsUpdate = false;
+    glUseProgram(_currentProgram);
   }
 
 }
