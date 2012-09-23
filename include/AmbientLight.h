@@ -29,12 +29,12 @@ namespace three {
   class AmbientLight : public Light
   {
     public:
-      static unsigned int Type;
+      static uint32_t Type;
 
     public:
       AmbientLight(Color const& _color = Color(1.0f, 1.0f, 1.0f, 1.0f));
 
-      unsigned int type() const { return AmbientLight::Type; }
+      uint32_t type() const { return AmbientLight::Type; }
   };
 
 }

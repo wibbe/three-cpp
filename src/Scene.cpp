@@ -8,7 +8,7 @@
 
 namespace three {
 
-  unsigned int Scene::Type = StringHash("Scene").hash;
+  uint32_t Scene::Type = StringHash("Scene").hash;
   
   Scene::Scene()
     : Object(),

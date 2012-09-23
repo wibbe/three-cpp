@@ -22,6 +22,8 @@
 
 #pragma once
 
+ #include <stdint.h>
+
 namespace three {
 
   enum Blending

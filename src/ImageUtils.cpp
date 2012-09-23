@@ -1,29 +1,29 @@
 
 #include "ImageUtils.h"
 #include "Texture.h"
+#include "StbImage.cpp"
 
 #include <cassert>
 #include <stdio.h>
-#include <SOIL.h>
 
 namespace three {
 
-  static int formatToSoil(Format format)
+  static int formatToComponent(Format format)
   {
     switch (format)
     {
       case AlphaFormat:
       case LuminanceFormat:
-        return SOIL_LOAD_L;
+        return 1;
 
       case LuminanceAlphaFormat:
-        return SOIL_LOAD_LA;
+        return 2;
 
       case RGBFormat:
-        return SOIL_LOAD_RGB;
+        return 3;
 
       case RGBAFormat:
-        return SOIL_LOAD_RGBA;
+        return 4;
     };
 
     return 0;
@@ -34,15 +34,21 @@ namespace three {
     assert(0 && "Should never create an instance of this class");
   }
 
-  Texture * ImageUtils::loadTexture(std::string const & path, Format format)
+  Texture * ImageUtils::loadTexture(const char * path, Format format)
   {
     unsigned char * image = 0;
     int width, height, channels;
 
-    image = SOIL_load_image(path.c_str(), &width, &height, &channels, formatToSoil(format));
+    FILE *file = fopen(path, "rb");
+    if (!file)
+        return 0;
+
+    image = stbi_load_from_file(file, &width, &height, &channels, formatToComponent(format));
+    fclose(file);
+
     if (!image)
     {
-      fprintf(stderr, "Failed to load texture %s: %s\n", path.c_str(), SOIL_last_result());
+      fprintf(stderr, "Failed to load texture %s\n", path);
       return 0;
     }
 
@@ -52,6 +58,8 @@ namespace three {
     tex->height = height;
     tex->format = format;
     tex->needsUpdate = true;
+
+    stbi_image_free(image);
 
     return tex;
   }

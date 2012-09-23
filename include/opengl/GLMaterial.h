@@ -29,12 +29,24 @@ namespace three {
   class GLMaterial : public RenderMaterial
   {
     public:
-      GLMaterial(Material * mat)
-        : RenderMaterial(mat)
-      { }
+      GLMaterial(uint32_t uniformCount);
+      virtual ~GLMaterial();
+
+      void uniform(uint32_t id, float value);
+      void uniform(uint32_t id, Vector3 const& value);
+      void uniform(uint32_t id, Vector4 const& value);
+      void uniform(uint32_t id, Color const& value);
 
     public:
-      unsigned int program;
+      uint32_t program;
+      uint32_t * uniforms;
+      uint32_t uniformCount;
+
+      uint32_t attributePosition;
+      uint32_t attributeNormal;
+      uint32_t attributeUv;
+      uint32_t attributeUv2;
+      uint32_t attributeColor;
   };
 
 }

@@ -35,7 +35,7 @@ namespace three {
     public:
       ImageUtils();
 
-      static Texture * loadTexture(std::string const & path, Format format = RGBAFormat);
+      static Texture * loadTexture(const char * path, Format format = RGBAFormat);
   };
 
 }

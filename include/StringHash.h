@@ -22,12 +22,14 @@
 
 #pragma once
 
+ #include <stdint.h>
+
 namespace three {
 
   template <unsigned int N, unsigned int I>
   struct FnvHash
   {
-    inline static unsigned int hash(const char (&str)[N])
+    inline static uint32_t hash(const char (&str)[N])
     {
       return (FnvHash<N, I - 1>::hash(str) ^ str[I - 1]) * 16777619u;
     }
@@ -36,7 +38,7 @@ namespace three {
   template <unsigned int N>
   struct FnvHash<N, 1>
   {
-    inline static unsigned int hash(const char (&str)[N])
+    inline static uint32_t hash(const char (&str)[N])
     {
       return (2166136261u ^ str[0]) * 16777619u;
     }
@@ -51,7 +53,7 @@ namespace three {
       { }
 
     public:
-      unsigned int hash;
+      uint32_t hash;
   };
 
 }

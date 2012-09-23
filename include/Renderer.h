@@ -35,6 +35,7 @@ namespace three {
   class Material;
   class Geometry;
   class Texture;
+  class Code;
   class RenderTarget;
   class RenderPlugin;
 
@@ -78,6 +79,9 @@ namespace three {
       std::vector<RenderPlugin *> renderPluginsPre;
       std::vector<RenderPlugin *> renderPluginsPost;
   };
+
+  int __dummyCode(int value);
+  static void registerCode(Code * code);
 
 }
 

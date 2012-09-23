@@ -22,30 +22,22 @@
 
 #pragma once
 
- #include <stdint.h>
+#include <string>
+#include <vector>
 
 namespace three {
 
-  // Forward declarations
-  class Material;
-  class Vector3;
-  class Vector4;
-  class Color;
-
-  class RenderMaterial
+  class Code
   {
     public:
-      RenderMaterial()
-      { }
+      Code(const char * name, const char ** code, int rowCount);
 
-      virtual ~RenderMaterial()
-      { }
+      static std::string generate(const char * name, ...);
 
-      virtual void uniform(uint32_t id, float value) = 0;
-      virtual void uniform(uint32_t id, Vector3 const& value) = 0;
-      virtual void uniform(uint32_t id, Vector4 const& value) = 0;
-      virtual void uniform(uint32_t id, Color const& value) = 0;
+      const char * name;
+      const char ** code;
+      int rowCount;
+      Code * next;
   };
 
 }
-

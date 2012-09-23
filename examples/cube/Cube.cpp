@@ -9,7 +9,10 @@
 #include "Texture.h"
 #include "ImageUtils.h"
 #include "CubeGeometry.h"
-#include "GLRenderer.h"
+#include "opengl/GLRenderer.h"
+#include "Code.h"
+
+#include <iostream>
 
 using namespace three;
 
@@ -28,13 +31,16 @@ class CubeDemo : public Window
       scene->add(camera);
 
       Geometry * geometry = new CubeGeometry(200, 200, 200);
-      MeshBasicMaterial * material = new MeshBasicMaterial(ImageUtils::loadTexture("assets/crate.png"));
+      MeshBasicMaterial * material = new MeshBasicMaterial();
+      material->map = ImageUtils::loadTexture("assets/crate.png");
 
       mesh = new Mesh(geometry, material);
       scene->add(mesh);
 
       renderer = new GLRenderer();
       renderer->setSize(1024, 768);
+
+      std::cout << material->vertexShaderCode() << std::endl;
     }
 
     bool update(double dt)

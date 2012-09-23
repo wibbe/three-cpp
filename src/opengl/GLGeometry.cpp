@@ -1,5 +1,5 @@
 
-#include "GLGeometry.h"
+#include "opengl/GLGeometry.h"
 #include "Geometry.h"
 
 namespace three {
@@ -11,4 +11,3 @@ namespace three {
   }
 
 }
-

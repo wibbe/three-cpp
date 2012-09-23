@@ -27,6 +27,7 @@
 
 #include <vector>
 #include <string>
+ #include <stdint.h>
 
 namespace three {
 
@@ -50,7 +51,7 @@ namespace three {
       void updateMatrix();
       void updateWorldMatrix(bool force = false);
 
-      virtual unsigned int type() const = 0;
+      virtual uint32_t type() const = 0;
 
     public:
       Object * parent;

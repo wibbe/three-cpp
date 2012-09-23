@@ -1,5 +1,6 @@
 
-#include "GLRenderer.h"
+#include "opengl/GLRenderer.h"
+
 #include "Scene.h"
 #include "Camera.h"
 #include "RenderPlugin.h"
@@ -7,11 +8,13 @@
 #include "Mesh.h"
 #include "Geometry.h"
 #include "Texture.h"
-#include "GLObject.h"
-#include "GLGeometry.h"
-#include "GLTexture.h"
-#include "GLMaterial.h"
-#include "GLShaders.h"
+#include "Code.h"
+#include "DefaultGLShaders.h"
+
+#include "opengl/GLObject.h"
+#include "opengl/GLGeometry.h"
+#include "opengl/GLTexture.h"
+#include "opengl/GLMaterial.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -111,6 +114,16 @@ namespace three {
     return (value & (value - 1)) == 0;
   }
 
+  int __dummyCode(int value)
+  {
+    return value;
+  }
+
+  static void registerCode(Code * code)
+  {
+
+  }
+
   GLRenderer::GLRenderer(int windowWidth, int windowHeight, bool fullscreen)
     : Renderer(),
       oldDepthTest(true),
@@ -127,6 +140,8 @@ namespace three {
     setViewport(0, 0, windowWidth, windowHeight);
 
     resetCache();
+
+    initializeDefaultGLShaders();
   }
 
   GLRenderer::~GLRenderer()
@@ -511,7 +526,7 @@ namespace three {
 
     if (!glMat || material->needsUpdate)
     {
-      glMat = new GLMaterial(material);
+      glMat = new GLMaterial(material->uniformCount());
       setupMaterial(material, object);
       material->needsUpdate = false;
     }

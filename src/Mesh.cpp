@@ -4,7 +4,7 @@
 
 namespace three {
 
-  unsigned int Mesh::Type = StringHash("Mesh").hash;
+  uint32_t Mesh::Type = StringHash("Mesh").hash;
 
   Mesh::Mesh()
     : Object(),

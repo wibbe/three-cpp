@@ -4,16 +4,10 @@
 #include "Camera.h"
 #include "RenderPlugin.h"
 #include "Mesh.h"
-#include "Geometry.h"
-#include "GLObject.h"
-#include "GLGeometry.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <cassert>
-
-#include <GL/glew.h>
-#include <GL/glfw.h>
 
 namespace three {
 

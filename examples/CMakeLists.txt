@@ -2,7 +2,6 @@
 SET(LIBRARIES
   ${OPENGL_LIBRARIES}
   ${EXTRA_LIBRARIES}
-  SOIL
   GLEW
   glfw
   three

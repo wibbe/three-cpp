@@ -23,19 +23,33 @@
 #pragma once
 
 #include "Defines.h"
+#include "Vector3.h"
+#include "Vector4.h"
+#include "Color.h"
 #include <string>
 
 namespace three {
 
   // Forward declarations
   class RenderMaterial;
+  class Renderer;
+  class Texture;
 
   class Material
   {
     public:
       Material();
 
-      virtual unsigned int type() const = 0;
+      virtual uint32_t type() const = 0;
+
+      virtual void apply() = 0;
+
+      virtual std::string vertexShaderCode() const = 0;
+      virtual std::string fragmentShaderCode() const = 0;
+      virtual const char * textureName(uint32_t slot) const = 0;
+      virtual const char * uniformName(uint32_t slot) const = 0;
+      virtual uint32_t textureCount() const = 0;
+      virtual uint32_t uniformCount() const = 0;
 
     public:
       std::string name;
