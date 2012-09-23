@@ -57,6 +57,8 @@ class TriangleDemo : public Window
     void resize(int width, int height)
     {
       renderer->setSize(width, height);
+      camera->aspect = width / (float)height;
+      camera->updateProjectionMatrix();
     }
 
     bool update(double dt)
@@ -75,7 +77,7 @@ class TriangleDemo : public Window
   private:
     Renderer * renderer;
     Scene * scene;
-    Camera * camera;
+    PerspectiveCamera * camera;
     Mesh * mesh;
 };
 
