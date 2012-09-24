@@ -54,7 +54,6 @@ class TriangleDemo : public Window
       scene->add(mesh);
 
       renderer = new GLRenderer();
-      renderer->setSize(1024, 768);
     }
 
     void resize(int width, int height)

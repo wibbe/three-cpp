@@ -59,8 +59,6 @@ namespace three {
     tex->format = format;
     tex->needsUpdate = true;
 
-    stbi_image_free(image);
-
     return tex;
   }
 

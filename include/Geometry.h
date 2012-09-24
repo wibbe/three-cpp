@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include "Vector2.h"
 #include "Vector3.h"
 #include "Color.h"
 #include "Face.h"
@@ -40,6 +41,7 @@ namespace three {
       typedef std::vector<Vector3> VertexArray;
       typedef std::vector<Color> ColorArray;
       typedef std::vector<Face> FaceArray;
+      typedef std::vector<Vector2> TexCoordArray;
 
     public:
       Geometry();
@@ -50,6 +52,7 @@ namespace three {
       VertexArray vertices;
       VertexArray normals;
       ColorArray colors;
+      TexCoordArray texCoord0;
 
       FaceArray faces;
       uint32_t faceCount;
@@ -60,6 +63,7 @@ namespace three {
       bool verticesNeedUpdate;
       bool normalsNeedUpdate;
       bool colorsNeedUpdate;
+      bool texCoord0NeedUpdate;
       bool elementsNeedUpdate;
 
       float boundingSphereRadius;

@@ -7,6 +7,44 @@
 
 namespace three {
 
+  static const char * _text_fogFragementParams[] = {
+    "#ifdef USE_FOG\n",
+    "  uniform vec3 fogColor;\n",
+    "  #ifdef FOG_EXP2\n",
+    "    uniform float fogDensity;\n",
+    "  #else\n",
+    "    uniform float fogNear;\n",
+    "    uniform float fogFar;\n",
+    "  #endif\n",
+    "#endif\n",
+  };
+
+  static const char * _text_colorFragmentParams[] = {
+    "#ifdef USE_COLOR\n",
+    "  varying vec4 vColor;\n",
+    "#endif\n",
+  };
+
+  static const char * _text_fogFragment[] = {
+    "#ifdef USE_FOG\n",
+    "  float depth = gl_FragCoord.z / gl_FragCoord.w;\n",
+    "  #ifdef FOG_EXP2\n",
+    "    const float LOG2 = 1.442695;\n",
+    "    float fogFactor = exp2( - fogDensity * fogDensity * depth * depth * LOG2 );\n",
+    "    fogFactor = 1.0 - clamp( fogFactor, 0.0, 1.0 );\n",
+    "  #else\n",
+    "    float fogFactor = smoothstep( fogNear, fogFar, depth );\n",
+    "  #endif\n",
+    "  gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );\n",
+    "#endif\n",
+  };
+
+  static const char * _text_colorVertexParams[] = {
+    "#ifdef USE_COLOR\n",
+    "  varying vec4 vColor;\n",
+    "#endif\n",
+  };
+
   static const char * _text_mapVertexParams[] = {
     "#ifdef USE_MAP\n",
     "  varying vec2 vUv0;\n",
@@ -84,44 +122,10 @@ namespace three {
     "#endif\n",
   };
 
-  static const char * _text_fogFragementParams[] = {
-    "#ifdef USE_FOG\n",
-    "  uniform vec3 fogColor;\n",
-    "  #ifdef FOG_EXP2\n",
-    "    uniform float fogDensity;\n",
-    "  #else\n",
-    "    uniform float fogNear;\n",
-    "    uniform float fogFar;\n",
-    "  #endif\n",
-    "#endif\n",
-  };
-
-  static const char * _text_colorFragmentParams[] = {
-    "#ifdef USE_COLOR\n",
-    "  varying vec4 vColor;\n",
-    "#endif\n",
-  };
-
-  static const char * _text_fogFragment[] = {
-    "#ifdef USE_FOG\n",
-    "  float depth = gl_FragCoord.z / gl_FragCoord.w;\n",
-    "  #ifdef FOG_EXP2\n",
-    "    const float LOG2 = 1.442695;\n",
-    "    float fogFactor = exp2( - fogDensity * fogDensity * depth * depth * LOG2 );\n",
-    "    fogFactor = 1.0 - clamp( fogFactor, 0.0, 1.0 );\n",
-    "  #else\n",
-    "    float fogFactor = smoothstep( fogNear, fogFar, depth );\n",
-    "  #endif\n",
-    "  gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );\n",
-    "#endif\n",
-  };
-
-  static const char * _text_colorVertexParams[] = {
-    "#ifdef USE_COLOR\n",
-    "  varying vec4 vColor;\n",
-    "#endif\n",
-  };
-
+  three::Code _code_fogFragementParams("@fogFragementParams", _text_fogFragementParams, 9);
+  three::Code _code_colorFragmentParams("@colorFragmentParams", _text_colorFragmentParams, 3);
+  three::Code _code_fogFragment("@fogFragment", _text_fogFragment, 11);
+  three::Code _code_colorVertexParams("@colorVertexParams", _text_colorVertexParams, 3);
   three::Code _code_mapVertexParams("@mapVertexParams", _text_mapVertexParams, 5);
   three::Code _code_colorVertex("@colorVertex", _text_colorVertex, 7);
   three::Code _code_prefixVertex("@prefixVertex", _text_prefixVertex, 14);
@@ -131,10 +135,27 @@ namespace three {
   three::Code _code_mapVertex("@mapVertex", _text_mapVertex, 4);
   three::Code _code_defaultVertex("@defaultVertex", _text_defaultVertex, 1);
   three::Code _code_mapFragment("@mapFragment", _text_mapFragment, 9);
-  three::Code _code_fogFragementParams("@fogFragementParams", _text_fogFragementParams, 9);
-  three::Code _code_colorFragmentParams("@colorFragmentParams", _text_colorFragmentParams, 3);
-  three::Code _code_fogFragment("@fogFragment", _text_fogFragment, 11);
-  three::Code _code_colorVertexParams("@colorVertexParams", _text_colorVertexParams, 3);
+
+  static const char * _text_basicFragmentShader[] = {
+    "uniform vec4 color;\n",
+    "void main()\n",
+    "{\n",
+    "  gl_FragColor = color;\n",
+    "}\n",
+  };
+
+  static const char * _text_defaultVertexShader[] = {
+    "@prefixVertex",
+    "@mapVertexParams",
+    "@colorVertexParams",
+    "void main()\n",
+    "{\n",
+    "  vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);\n",
+    "@mapVertex",
+    "@colorVertex",
+    "@defaultVertex",
+    "}\n",
+  };
 
   static const char * _text_defaultFragmentShader[] = {
     "@prefixFragment",
@@ -159,31 +180,10 @@ namespace three {
     "}\n",
   };
 
-  static const char * _text_basicFragmentShader[] = {
-    "uniform vec4 color;\n",
-    "void main()\n",
-    "{\n",
-    "  gl_FragColor = color;\n",
-    "}\n",
-  };
-
-  static const char * _text_defaultVertexShader[] = {
-    "@prefixVertex",
-    "@mapVertexParams",
-    "@colorVertexParams",
-    "void main()\n",
-    "{\n",
-    "  vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);\n",
-    "@mapVertex",
-    "@colorVertex",
-    "@defaultVertex",
-    "}\n",
-  };
-
-  three::Code _code_defaultFragmentShader("defaultFragmentShader", _text_defaultFragmentShader, 11);
-  three::Code _code_basicVertexShader("basicVertexShader", _text_basicVertexShader, 6);
   three::Code _code_basicFragmentShader("basicFragmentShader", _text_basicFragmentShader, 5);
   three::Code _code_defaultVertexShader("defaultVertexShader", _text_defaultVertexShader, 10);
+  three::Code _code_defaultFragmentShader("defaultFragmentShader", _text_defaultFragmentShader, 11);
+  three::Code _code_basicVertexShader("basicVertexShader", _text_basicVertexShader, 6);
 
   void initializeDefaultGLShaders()
   {

@@ -81,6 +81,10 @@ namespace three {
   std::string MeshBasicMaterial::vertexShaderCode() const
   {
     std::vector<std::string> defines;
+    if (useTextureMap)
+      defines.push_back("USE_MAP");
+    if (useVertexColor)
+      defines.push_back("USE_COLOR");
 
     return three::Code::generate("defaultVertexShader", defines);
   }

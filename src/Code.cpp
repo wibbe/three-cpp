@@ -75,7 +75,7 @@ namespace three {
 
     // Generate defines
     for (std::vector<std::string>::const_iterator it = defines.begin(), end = defines.end(); it != end; ++it)
-      ss << "#define " << *it << std::endl;
+      ss << "#define " << *it << " 1" << std::endl;
 
     //ss << "#line 0 \"" << name << "\"" << std::endl;
     generateCode(code, ss);

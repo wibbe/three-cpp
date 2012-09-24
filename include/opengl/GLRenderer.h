@@ -113,6 +113,7 @@ namespace three {
       uint32_t _currentVertexBuffer;
       uint32_t _currentNormalBuffer;
       uint32_t _currentColorBuffer;
+      uint32_t _currentTexCoord0Buffer;
       uint32_t _currentIndexBuffer;
       uint32_t _currentTexture[MaxTextureCount];
 

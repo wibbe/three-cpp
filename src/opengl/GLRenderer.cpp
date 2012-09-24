@@ -163,7 +163,7 @@ namespace three {
     }
     else
     {
-      //fprintf(stderr, "Compiled shader:\n----------------------------\n%s----------------------------\n", code.c_str());
+      //std::cout << "Compiled shader:" << std::endl << "----------------------------" << std::endl << code << std::endl << "----------------------------" << std::endl;
     }
 
     return shader;
@@ -178,6 +178,7 @@ namespace three {
       _currentVertexBuffer(0),
       _currentNormalBuffer(0),
       _currentColorBuffer(0),
+      _currentTexCoord0Buffer(0),
       _currentIndexBuffer(0)
   {
     if (!GLEW_ARB_framebuffer_object)
@@ -319,13 +320,10 @@ namespace three {
 
     if (!glTex || texture->needsUpdate)
     {
-      std::cout << "Initialize texture: " << texture << std::endl;
-
       if (!glTex)
       {
         glTex = new GLTexture(texture);
         glGenTextures(1, &glTex->id);
-        std::cout << "Generating id(" << glTex->id << "): " << glTex << std::endl;
       }
 
       glActiveTexture(GL_TEXTURE0 + slot);
@@ -529,6 +527,20 @@ namespace three {
       _currentColorBuffer = geometry->colorBuffer;
     }
 
+    if (_currentTexCoord0Buffer != geometry->texCoord0Buffer)
+    {
+      if (geometry->texCoord0Buffer)
+      {
+        glEnableVertexAttribArray(UV0_ATTRIB_LOCATION);
+        glBindBuffer(GL_ARRAY_BUFFER, geometry->texCoord0Buffer);
+        glVertexAttribPointer(UV0_ATTRIB_LOCATION, 2, GL_FLOAT, GL_FALSE, 0, (void *)0);
+      }
+      else
+        glDisableVertexAttribArray(UV0_ATTRIB_LOCATION);
+
+      _currentTexCoord0Buffer = geometry->texCoord0Buffer;
+    }
+
     if (_currentIndexBuffer != geometry->indexBuffer)
     {
       _currentIndexBuffer = geometry->indexBuffer;
@@ -687,6 +699,13 @@ namespace three {
       geom->colorsNeedUpdate = false;
     }
 
+    if (geom->texCoord0NeedUpdate && glGeom->texCoord0Buffer)
+    {
+      glBindBuffer(GL_ARRAY_BUFFER, glGeom->texCoord0Buffer);
+      glBufferData(GL_ARRAY_BUFFER, geom->texCoord0.size() * sizeof(Vector2), &geom->texCoord0[0], geom->dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
+      geom->texCoord0NeedUpdate = false;
+    }
+
     if (geom->elementsNeedUpdate && glGeom->indexBuffer)
     {
       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, glGeom->indexBuffer);
@@ -732,6 +751,12 @@ namespace three {
     {
       glGenBuffers(1, &geom->colorBuffer);
       geometry->colorsNeedUpdate = true;
+    }
+
+    if (!geometry->texCoord0.empty())
+    {
+      glGenBuffers(1, &geom->texCoord0Buffer);
+      geometry->texCoord0NeedUpdate = true;
     }
 
     if (!geometry->faces.empty())
@@ -792,7 +817,12 @@ namespace three {
 
     // Get material specific uniform positions
     for (uint32_t i = 0; i < material->uniformCount(); ++i)
-      glMat->uniforms[i] = glGetUniformLocation(glMat->program, material->uniformName(i));
+    {
+      int32_t location = glGetUniformLocation(glMat->program, material->uniformName(i));
+      if (location < 0)
+        std::cout << "Could not find uniform '" << material->uniformName(i) << "'" << std::endl;
+      glMat->uniforms[i] = location;
+    }
 
     // Get default uniform positions
     glMat->objectMatrix = glGetUniformLocation(glMat->program, "objectMatrix");

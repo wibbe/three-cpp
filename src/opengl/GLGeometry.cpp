@@ -9,6 +9,7 @@ namespace three {
       vertexBuffer(0),
       normalBuffer(0),
       colorBuffer(0),
+      texCoord0Buffer(0),
       indexBuffer(0),
       faceCount(0)
   {

@@ -14,6 +14,8 @@ SET(SOURCE
   AmbientLight.cpp
   Code.cpp
   Material.cpp
+
+  Vector2.cpp
   Vector3.cpp
   Matrix4.cpp
   Quaternion.cpp

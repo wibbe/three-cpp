@@ -40,6 +40,10 @@ namespace three {
       colors.push_back(Color(1, 1, 1, 1));
       colors.push_back(Color(1, 1, 1, 1));
       colors.push_back(Color(1, 1, 1, 1));
+      texCoord0.push_back(Vector2(1, 1));
+      texCoord0.push_back(Vector2(1, 0));
+      texCoord0.push_back(Vector2(0, 0));
+      texCoord0.push_back(Vector2(0, 1));
       faces.push_back(Face(indexStart + 0, indexStart + 1, indexStart + 2));
       faces.push_back(Face(indexStart + 2, indexStart + 3, indexStart + 0));
     }

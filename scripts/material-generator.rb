@@ -1,17 +1,17 @@
 #! /use/bin/ruby
 
 # Copyright (c) 2012 Daniel Wiberg
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in
 # all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -42,7 +42,7 @@ def parse_args
 
     opts.on_tail('-h', '--help', 'Show this message') do
       puts opts
-      exit      
+      exit
     end
 
     opts.parse(ARGV)
@@ -209,6 +209,10 @@ class Material
     file.puts "  {"
     file.puts "    std::vector<std::string> defines;"
     @defines.each { |name| file.puts "    defines.push_back(\"#{name}\");" }
+    @options.each do |option|
+      file.puts "    if (#{option[0]})"
+      file.puts "      defines.push_back(\"#{option[1]}\");"
+    end
     file.puts ""
     file.puts "    return three::Code::generate(\"#{@vertex_shader}\", defines);"
     file.puts "  }"
