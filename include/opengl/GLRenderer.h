@@ -1,16 +1,16 @@
 /**
  * Copyright (c) 2012 Daniel Wiberg
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -57,20 +57,20 @@ namespace three {
       void setDefaultGLState();
       void resetCache();
 
-      void renderObjects(std::vector<RenderObject *> const& renderList, 
-                         bool reverse, 
-                         std::string materialType, 
-                         Camera * camera, 
+      void renderObjects(std::vector<RenderObject *> const& renderList,
+                         bool reverse,
+                         std::string materialType,
+                         Camera * camera,
                          std::vector<Object *> const& lights,
-                         /* fog, */ 
-                         bool useBlending, 
+                         /* fog, */
+                         bool useBlending,
                          Material * overrideMaterial);
 
-      void renderObject(Camera * camera, 
-                        std::vector<Object *> const& lights, 
-                        /* fog, */ 
-                        Material * material, 
-                        GLGeometry * geometry, 
+      void renderObject(Camera * camera,
+                        std::vector<Object *> const& lights,
+                        /* fog, */
+                        Material * material,
+                        GLGeometry * geometry,
                         GLObject * object,
                         bool useBlending);
 
@@ -78,7 +78,7 @@ namespace three {
       void updateGeometry(Geometry * geometry);
       void updateObject(Object * object);
       void updateMatrices(Object * object, Camera * camera);
-      
+
       void addObject(Object * object, Scene * scene);
       void removeObject(Object * object, Scene * scene);
 
@@ -104,8 +104,8 @@ namespace three {
       Matrix4 projScreenMatrix;
       Matrix4 projScreenMatrixPS;
 
-      bool oldDepthTest;
-      bool oldDepthWrite;
+      bool _currentDepthTest;
+      bool _currentDepthWrite;
 
       Blending _currentBlending;
 
@@ -114,6 +114,7 @@ namespace three {
       uint32_t _currentNormalBuffer;
       uint32_t _currentColorBuffer;
       uint32_t _currentIndexBuffer;
+      uint32_t _currentTexture[MaxTextureCount];
 
       std::map<uint32_t, GLMaterial *> _cachedMaterials;
   };

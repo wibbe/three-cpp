@@ -18,6 +18,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <memory.h>
 #include <cassert>
 #include <algorithm>
 #include <iostream>
@@ -170,8 +171,8 @@ namespace three {
 
   GLRenderer::GLRenderer(int windowWidth, int windowHeight, bool fullscreen)
     : Renderer(),
-      oldDepthTest(true),
-      oldDepthWrite(true),
+      _currentDepthTest(true),
+      _currentDepthWrite(true),
       _currentBlending(NormalBlending),
       _currentProgram(0),
       _currentVertexBuffer(0),
@@ -185,6 +186,8 @@ namespace three {
       return;
     }
 
+    memset(_currentTexture, 0, sizeof(uint32_t) * MaxTextureCount);
+
     setDefaultGLState();
     setViewport(0, 0, windowWidth, windowHeight);
 
@@ -195,6 +198,32 @@ namespace three {
 
   GLRenderer::~GLRenderer()
   {
+  }
+
+  void GLRenderer::setDefaultGLState()
+  {
+    glClearColor(0, 0, 0, 1);
+    glClearDepth(1.0);
+    glClearStencil(0);
+
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
+
+    glFrontFace(GL_CCW);
+    glCullFace(GL_BACK);
+    glEnable(GL_CULL_FACE);
+    //glDisable(GL_CULL_FACE);
+
+    glEnable(GL_BLEND);
+    glBlendEquation(GL_FUNC_ADD);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  }
+
+  void GLRenderer::resetCache()
+  {
+    _currentDepthTest = true;
+    _currentDepthWrite = true;
+    _currentBlending = NormalBlending;
   }
 
   void GLRenderer::setSize(int width, int height)
@@ -214,23 +243,23 @@ namespace three {
 
   void GLRenderer::setDepthTest(bool enabled)
   {
-    if (oldDepthTest != enabled)
+    if (_currentDepthTest != enabled)
     {
       if (enabled)
         glEnable(GL_DEPTH_TEST);
       else
         glDisable(GL_DEPTH_TEST);
 
-      oldDepthTest = enabled;
+      _currentDepthTest = enabled;
     }
   }
 
   void GLRenderer::setDepthWrite(bool enabled)
   {
-    if (oldDepthWrite != enabled)
+    if (_currentDepthWrite != enabled)
     {
       glDepthMask(enabled);
-      oldDepthWrite = enabled;
+      _currentDepthWrite = enabled;
     }
   }
 
@@ -277,8 +306,12 @@ namespace three {
   {
     if (!texture)
     {
-      glActiveTexture(GL_TEXTURE0 + slot);
-      glBindTexture(GL_TEXTURE_2D, 0);
+      if (_currentTexture[slot] != 0)
+      {
+        _currentTexture[slot] = 0;
+        glActiveTexture(GL_TEXTURE0 + slot);
+        glBindTexture(GL_TEXTURE_2D, 0);
+      }
       return;
     }
 
@@ -318,8 +351,12 @@ namespace three {
     }
     else
     {
-      glActiveTexture(GL_TEXTURE0 + slot);
-      glBindTexture(GL_TEXTURE_2D, glTex->id);
+      if (_currentTexture[slot] != glTex->id)
+      {
+        glActiveTexture(GL_TEXTURE0 + slot);
+        glBindTexture(GL_TEXTURE_2D, glTex->id);
+        _currentTexture[slot] = glTex->id;
+      }
     }
   }
 
@@ -335,32 +372,6 @@ namespace three {
     if (stencil) bits |= GL_STENCIL_BUFFER_BIT;
 
     glClear(bits);
-  }
-
-  void GLRenderer::setDefaultGLState()
-  {
-    glClearColor(0, 0, 0, 1);
-    glClearDepth(1.0);
-    glClearStencil(0);
-
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LEQUAL);
-
-    glFrontFace(GL_CCW);
-    glCullFace(GL_BACK);
-    glEnable(GL_CULL_FACE);
-    //glDisable(GL_CULL_FACE);
-
-    glEnable(GL_BLEND);
-    glBlendEquation(GL_FUNC_ADD);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  }
-
-  void GLRenderer::resetCache()
-  {
-    oldDepthTest = true;
-    oldDepthWrite = true;
-    _currentBlending = NormalBlending;
   }
 
   void GLRenderer::render(Scene * scene, Camera * camera, RenderTarget * renderTarget, bool forceClear)
