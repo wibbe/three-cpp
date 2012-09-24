@@ -28,7 +28,7 @@ namespace three {
     for (int i = 0; i < code->rowCount; ++i)
     {
       const char * row = code->code[i];
-      char * snipet = strchr(row, '@');
+      char * snipet = strchr((char *)row, '@');
 
       if (snipet)
       {
@@ -66,7 +66,7 @@ namespace three {
   }
 
   std::string Code::generate(const char * name, std::vector<std::string> const& defines)
-  { 
+  {
     Code * code = findCode(name);
     if (!code)
       return "#error \"Could not find code segment '" + std::string(name) + "'\"";

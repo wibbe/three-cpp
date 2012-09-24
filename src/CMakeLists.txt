@@ -25,6 +25,7 @@ SET(SOURCE
   opengl/GLGeometry.cpp
   opengl/GLRenderer.cpp
   opengl/GLMaterial.cpp
+  opengl/GLTexture.cpp
 )
 
 SET(LIBRARIES

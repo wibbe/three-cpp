@@ -9,7 +9,7 @@
 #include "Color.h"
 
 namespace three {
-  
+
   GLMaterial::GLMaterial(uint32_t _uniformCount)
     : program(0),
       uniforms(new int32_t[_uniformCount]),

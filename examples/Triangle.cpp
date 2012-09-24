@@ -29,7 +29,8 @@ class TriangleDemo : public Window
       camera = new PerspectiveCamera();
       camera->position.y = 1;
       camera->position.z = 2;
-      camera->rotation.x = -0.4;
+      //camera->rotation.x = -0.4;
+      camera->lookAt(Vector3(0, 0, 0));
       scene->add(camera);
 
       Geometry * geometry = new Geometry();
@@ -39,7 +40,9 @@ class TriangleDemo : public Window
       geometry->vertices.push_back(Vector3(0, 0.5, 0));
       geometry->vertices.push_back(Vector3(0.5, 0, 0));
       geometry->vertices.push_back(Vector3(-0.5, 0, 0));
-      geometry->faceCount = 2;
+      geometry->faces.push_back(Face(0, 1, 2));
+      geometry->faces.push_back(Face(3, 4, 5));
+      //geometry->faceCount = 2;
 
       MeshBasicMaterial * material = new MeshBasicMaterial();
       //material->map = ImageUtils::loadTexture("assets/crate.png");
@@ -68,7 +71,7 @@ class TriangleDemo : public Window
 
       return !isKeyDown(Key::Esc);
     }
-    
+
     void paint()
     {
       renderer->render(scene, camera);

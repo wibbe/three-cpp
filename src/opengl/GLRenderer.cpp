@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <cassert>
 #include <algorithm>
+#include <iostream>
 
 #include <GL/glew.h>
 
@@ -124,13 +125,13 @@ namespace three {
     return (value & (value - 1)) == 0;
   }
 
-  static void showLogInfo(GLuint object, 
+  static void showLogInfo(GLuint object,
                           void (*glGet__iv)(GLuint, GLenum, GLint*),
                           void (*glGet__InfoLog)(GLuint, GLsizei, GLsizei*, GLchar*))
   {
     int logLength;
     char * log;
-    
+
     glGet__iv(object, GL_INFO_LOG_LENGTH, &logLength);
     log = new char[logLength];
     glGet__InfoLog(object, logLength, NULL, log);
@@ -148,7 +149,7 @@ namespace three {
     uint32_t shader = glCreateShader(type);
     glShaderSource(shader, 1, (const GLchar **)data, &length);
     glCompileShader(shader);
-    
+
     int ok;
     glGetShaderiv(shader, GL_COMPILE_STATUS, &ok);
     if (!ok)
@@ -161,7 +162,7 @@ namespace three {
     }
     else
     {
-      fprintf(stderr, "Compiled shader:\n----------------------------\n%s----------------------------\n", code.c_str());
+      //fprintf(stderr, "Compiled shader:\n----------------------------\n%s----------------------------\n", code.c_str());
     }
 
     return shader;
@@ -248,7 +249,7 @@ namespace three {
           glBlendEquation(GL_FUNC_ADD);
           glBlendFunc(GL_SRC_ALPHA, GL_ONE);
           break;
-      
+
         case SubstractiveBlending:
           glEnable(GL_BLEND);
           glBlendEquation(GL_FUNC_ADD);
@@ -285,10 +286,13 @@ namespace three {
 
     if (!glTex || texture->needsUpdate)
     {
+      std::cout << "Initialize texture: " << texture << std::endl;
+
       if (!glTex)
       {
         glTex = new GLTexture(texture);
         glGenTextures(1, &glTex->id);
+        std::cout << "Generating id(" << glTex->id << "): " << glTex << std::endl;
       }
 
       glActiveTexture(GL_TEXTURE0 + slot);
@@ -299,10 +303,10 @@ namespace three {
   	  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrappingToGL(texture->wrapS));
   	  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrappingToGL(texture->wrapT));
 
-  	  glTexImage2D(GL_TEXTURE_2D, 0, 
-  	               formatToGL(texture->format), 
-  	               texture->width, texture->height, 0, 
-  	               formatToGL(texture->format), 
+  	  glTexImage2D(GL_TEXTURE_2D, 0,
+  	               formatToGL(texture->format),
+  	               texture->width, texture->height, 0,
+  	               formatToGL(texture->format),
   	               typeToGL(texture->type), texture->image);
 
       bool isImagePowerOfTwo = isPowerOfTwo(texture->width) && isPowerOfTwo(texture->height);
@@ -342,9 +346,10 @@ namespace three {
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
 
-    //glFrontFace(GL_CCW);
-    //glCullFace(GL_BACK);
-    //glEnable(GL_CULL_FACE);
+    glFrontFace(GL_CCW);
+    glCullFace(GL_BACK);
+    glEnable(GL_CULL_FACE);
+    //glDisable(GL_CULL_FACE);
 
     glEnable(GL_BLEND);
     glBlendEquation(GL_FUNC_ADD);
@@ -357,7 +362,7 @@ namespace three {
     oldDepthWrite = true;
     _currentBlending = NormalBlending;
   }
-  
+
   void GLRenderer::render(Scene * scene, Camera * camera, RenderTarget * renderTarget, bool forceClear)
   {
     assert(scene && camera);
@@ -430,13 +435,13 @@ namespace three {
     setDepthWrite(true);
   }
 
-  void GLRenderer::renderObjects(std::vector<RenderObject *> const& renderList, 
-                                 bool reverse, 
-                                 std::string materialType, 
+  void GLRenderer::renderObjects(std::vector<RenderObject *> const& renderList,
+                                 bool reverse,
+                                 std::string materialType,
                                  Camera * camera,
                                  std::vector<Object *> const& lights,
-                                 /* fog, */ 
-                                 bool useBlending, 
+                                 /* fog, */
+                                 bool useBlending,
                                  Material * overrideMaterial)
   {
     if (reverse)
@@ -457,11 +462,11 @@ namespace three {
     }
   }
 
-  void GLRenderer::renderObject(Camera * camera, 
-                                std::vector<Object *> const& lights, 
-                                /* fog, */ 
-                                Material * material, 
-                                GLGeometry * geometry, 
+  void GLRenderer::renderObject(Camera * camera,
+                                std::vector<Object *> const& lights,
+                                /* fog, */
+                                Material * material,
+                                GLGeometry * geometry,
                                 GLObject * object,
                                 bool useBlending)
   {
@@ -476,13 +481,13 @@ namespace three {
       if (geometry->vertexBuffer)
       {
         glEnableVertexAttribArray(POSITION_ATTRIB_LOCATION);
+        glBindBuffer(GL_ARRAY_BUFFER, geometry->vertexBuffer);
         glVertexAttribPointer(POSITION_ATTRIB_LOCATION, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
       }
       else
         glDisableVertexAttribArray(POSITION_ATTRIB_LOCATION);
 
       _currentVertexBuffer = geometry->vertexBuffer;
-      glBindBuffer(GL_ARRAY_BUFFER, _currentVertexBuffer);
     }
 
     if (_currentNormalBuffer != geometry->normalBuffer)
@@ -490,13 +495,13 @@ namespace three {
       if (geometry->normalBuffer)
       {
         glEnableVertexAttribArray(NORMAL_ATTRIB_LOCATION);
+        glBindBuffer(GL_ARRAY_BUFFER, geometry->normalBuffer);
         glVertexAttribPointer(NORMAL_ATTRIB_LOCATION, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
       }
       else
         glDisableVertexAttribArray(NORMAL_ATTRIB_LOCATION);
 
       _currentNormalBuffer = geometry->normalBuffer;
-      glBindBuffer(GL_ARRAY_BUFFER, _currentNormalBuffer);
     }
 
     if (_currentColorBuffer != geometry->colorBuffer)
@@ -504,13 +509,13 @@ namespace three {
       if (geometry->colorBuffer)
       {
         glEnableVertexAttribArray(COLOR_ATTRIB_LOCATION);
+        glBindBuffer(GL_ARRAY_BUFFER, geometry->colorBuffer);
         glVertexAttribPointer(COLOR_ATTRIB_LOCATION, 4, GL_FLOAT, GL_FALSE, 0, (void *)0);
       }
       else
         glDisableVertexAttribArray(COLOR_ATTRIB_LOCATION);
 
       _currentColorBuffer = geometry->colorBuffer;
-      glBindBuffer(GL_ARRAY_BUFFER, _currentColorBuffer);
     }
 
     if (_currentIndexBuffer != geometry->indexBuffer)
@@ -764,7 +769,7 @@ namespace three {
     {
       fprintf(stderr, "Failed to link shader program:\n");
       showLogInfo(glMat->program, glGetProgramiv, glGetProgramInfoLog);
-      
+
       glDeleteShader(vertexShader);
       glDeleteShader(fragmentShader);
       glDeleteProgram(glMat->program);

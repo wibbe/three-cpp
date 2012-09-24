@@ -2,6 +2,8 @@
 #include "Vector3.h"
 #include "Matrix4.h"
 
+#include <stdio.h>
+
 namespace three {
 
   void Vector3::getRotationFromMatrix(Matrix4 const& mat, float scale)
@@ -24,6 +26,13 @@ namespace three {
 			x = 0;
 			z = std::atan2(m21, m22);
 		}
+	}
+
+	std::string Vector3::str() const
+	{
+		char str[1024];
+		snprintf(str, 1024, "[ %3.1f, %3.1f, %3.1f ]", x, y, z);
+		return std::string(str);
 	}
 
 }

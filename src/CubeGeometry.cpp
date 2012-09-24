@@ -22,9 +22,9 @@ namespace three {
       Vector3 up = std::abs(dot(normal, Vector3(0, 1, 0))) > 0.9f ? Vector3(0, 0, 1) : Vector3(0, 1, 0);
       Vector3 side = cross(normal, up) * Vector3(width, height, depth) * 0.5f;
       up = up * Vector3(width, height, depth) * 0.5f;
-      
+
       Vector3 pos = normal * Vector3(width, height, depth) * 0.5f;
-      
+
       uint16_t indexStart = vertices.size();
 
       // Top
@@ -41,8 +41,10 @@ namespace three {
       colors.push_back(Color(1, 1, 1, 1));
       colors.push_back(Color(1, 1, 1, 1));
       faces.push_back(Face(indexStart + 0, indexStart + 1, indexStart + 2));
-      faces.push_back(Face(indexStart + 1, indexStart + 2, indexStart + 3));
+      faces.push_back(Face(indexStart + 2, indexStart + 3, indexStart + 0));
     }
+
+    computeBoundingSphere();
   }
 
 }
