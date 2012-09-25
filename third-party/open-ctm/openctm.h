@@ -296,7 +296,7 @@ CTMEXPORT void CTMCALL ctmFreeContext(CTMcontext aContext);
 /// @see CTMenum
 CTMEXPORT CTMenum CTMCALL ctmGetError(CTMcontext aContext);
 
-/// Converts an OpenCTM error code to a zero-terminated string. 
+/// Converts an OpenCTM error code to a zero-terminated string.
 /// @param[in] aError An OpenCTM error code, as returned by ctmGetError().
 /// @return A zero terminated string that describes the error. For instance,
 ///         if \c aError is CTM_INVALID_OPERATION, then the return value will
@@ -487,7 +487,7 @@ CTMEXPORT void CTMCALL ctmVertexPrecision(CTMcontext aContext,
 ///            ctmNewContext().
 /// @param[in] aRelPrecision Relative precision. This factor is multiplied by the
 ///            average triangle edge length in the mesh in order to obtain the
-///            final, fixed point precision. For instance, if aRelPrecision is 
+///            final, fixed point precision. For instance, if aRelPrecision is
 ///            0.01, and the average edge length is 3.7, then the fixed point
 ///            precision is set to 0.037.
 /// @note The mesh must have been defined using the ctmDefineMesh() function

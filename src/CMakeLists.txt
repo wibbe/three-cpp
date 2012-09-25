@@ -20,6 +20,8 @@ SET(SOURCE
   Matrix4.cpp
   Quaternion.cpp
 
+  CTMLoader.cpp
+
   DefaultMaterials.cpp
   DefaultGLShaders.cpp
 
