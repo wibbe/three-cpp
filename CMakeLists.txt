@@ -43,6 +43,7 @@ LINK_DIRECTORIES(
 
 ADD_SUBDIRECTORY(third-party/tinyxml)
 ADD_SUBDIRECTORY(third-party/open-ctm)
+ADD_SUBDIRECTORY(third-party/convert-ctm)
 
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(examples)
