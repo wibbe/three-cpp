@@ -32,6 +32,12 @@ namespace three {
     MultiplyOperation
   };
 
+  enum TextureType
+  {
+    Texture2D,
+    TextureCube
+  };
+
   enum Blending
   {
     NoBlending,

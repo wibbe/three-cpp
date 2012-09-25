@@ -36,6 +36,7 @@ namespace three {
       ImageUtils();
 
       static Texture * loadTexture(const char * path, Format format = RGBAFormat);
+      static Texture * loadCubeTexture(const char * path[6], Format format = RGBFormat);
   };
 
 }

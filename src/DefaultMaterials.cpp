@@ -24,7 +24,7 @@ namespace three {
     useRefract = 0;
     reflectivity = 1.0;
     refractionRatio = 0.98;
-    useTextureMap = true;
+    useTextureMap = false;
     useLightMap = false;
     useEnvMap = false;
     doubleSided = false;

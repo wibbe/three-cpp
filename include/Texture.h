@@ -33,9 +33,10 @@ namespace three {
   {
     public:
       Texture();
+      ~Texture();
 
     public:
-      unsigned char * image;
+      void * images[6];
       int width;
       int height;
 
@@ -46,7 +47,9 @@ namespace three {
       Filter minFilter;
 
       Format format;
-      Type type;
+      Type imageDataType;
+
+      TextureType type;
 
       bool needsUpdate;
       bool generateMipmaps;

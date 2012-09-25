@@ -1,22 +1,24 @@
 
 #include "Texture.h"
+#include <memory.h>
 
 namespace three {
 
   Texture::Texture()
-    : image(0),
-      width(0),
+    : width(0),
       height(0),
       wrapS(ClampToEdgeWrapping),
       wrapT(ClampToEdgeWrapping),
       magFilter(LinearFilter),
       minFilter(LinearMipMapLinearFilter),
       format(RGBAFormat),
-      type(UnsignedByteType),
+      imageDataType(UnsignedByteType),
+      type(Texture2D),
       needsUpdate(false),
       generateMipmaps(true),
       __renderTexture(0)
   {
+    memset(images, 0, sizeof(void *));
   }
 
 }

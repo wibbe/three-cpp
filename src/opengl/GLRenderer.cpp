@@ -323,27 +323,42 @@ namespace three {
       if (!glTex)
       {
         glTex = new GLTexture(texture);
+        glTex->type = texture->type == Texture2D ? GL_TEXTURE_2D : GL_TEXTURE_CUBE_MAP;
         glGenTextures(1, &glTex->id);
       }
 
       glActiveTexture(GL_TEXTURE0 + slot);
-      glBindTexture(GL_TEXTURE_2D, glTex->id);
+      glBindTexture(glTex->type, glTex->id);
 
-  	  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterToGL(texture->minFilter));
-  	  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterToGL(texture->magFilter));
-  	  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrappingToGL(texture->wrapS));
-  	  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrappingToGL(texture->wrapT));
+      if (texture->type == Texture2D)
+      {
+    	  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterToGL(texture->minFilter));
+    	  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterToGL(texture->magFilter));
+    	  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrappingToGL(texture->wrapS));
+    	  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrappingToGL(texture->wrapT));
 
-  	  glTexImage2D(GL_TEXTURE_2D, 0,
-  	               formatToGL(texture->format),
-  	               texture->width, texture->height, 0,
-  	               formatToGL(texture->format),
-  	               typeToGL(texture->type), texture->image);
+
+    	  glTexImage2D(GL_TEXTURE_2D, 0,
+    	               formatToGL(texture->format),
+    	               texture->width, texture->height, 0,
+    	               formatToGL(texture->format),
+    	               typeToGL(texture->imageDataType), texture->images[0]);
+      }
+      else // CubeMap
+      {
+        GLenum format = formatToGL(texture->format);
+        GLenum type = typeToGL(texture->imageDataType);
+
+        for (int i = 0; i < 6; ++i)
+          glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0,
+                       format, texture->width, texture->height, 0,
+                       format, type, texture->images[i]);
+      }
 
       bool isImagePowerOfTwo = isPowerOfTwo(texture->width) && isPowerOfTwo(texture->height);
 
       if (texture->generateMipmaps && isImagePowerOfTwo)
-        glGenerateMipmap(GL_TEXTURE_2D);
+        glGenerateMipmap(glTex->type);
 
       texture->needsUpdate = false;
     }
@@ -352,7 +367,7 @@ namespace three {
       if (_currentTexture[slot] != glTex->id)
       {
         glActiveTexture(GL_TEXTURE0 + slot);
-        glBindTexture(GL_TEXTURE_2D, glTex->id);
+        glBindTexture(glTex->type, glTex->id);
         _currentTexture[slot] = glTex->id;
       }
     }
@@ -819,8 +834,6 @@ namespace three {
     for (uint32_t i = 0; i < material->uniformCount(); ++i)
     {
       int32_t location = glGetUniformLocation(glMat->program, material->uniformName(i));
-      if (location < 0)
-        std::cout << "Could not find uniform '" << material->uniformName(i) << "'" << std::endl;
       glMat->uniforms[i] = location;
     }
 

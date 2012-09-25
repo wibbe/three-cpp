@@ -24,7 +24,7 @@ define 'DefaultMaterials', ['three'] do
     vertex_shader :basicVertexShader
     fragment_shader :basicFragmentShader
 
-    option :useTextureMap, :USE_MAP, true
+    option :useTextureMap, :USE_MAP, false
     option :useLightMap, :USE_LIGHTMAP, false
     option :useEnvMap, :USE_ENVMAP, false
     option :doubleSided, :DOUBLE_SIDED, false

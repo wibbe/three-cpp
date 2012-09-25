@@ -25,6 +25,15 @@ class CamaroDemo : public Window
     CamaroDemo()
       : Window(1024, 768)
     {
+      const char * sky[6] = {
+        "assets/sky/teide_posx.jpg",
+        "assets/sky/teide_negx.jpg",
+        "assets/sky/teide_posy.jpg",
+        "assets/sky/teide_negy.jpg",
+        "assets/sky/teide_posz.jpg",
+        "assets/sky/teide_negz.jpg",
+      };
+
       setTitle("Camaro Example");
 
       scene = new Scene();
@@ -38,9 +47,13 @@ class CamaroDemo : public Window
       camero = CTMLoader::loadMesh("assets/Camaro.ctm");
       assert(camero && "Could not load asserts/Camaro.ctm");
 
+      Texture * skyMap = ImageUtils::loadCubeTexture(sky, RGBFormat);
+
       MeshBasicMaterial * material = new MeshBasicMaterial();
-      material->diffuse = Color(1, 0.8, 0.4);
-      material->useTextureMap = false;
+      material->useEnvMap = true;
+      material->diffuse = Color(1, 0.5, 0.0);
+      material->envMap = skyMap;
+      material->reflectivity = 0.3;
 
       camero->material = material;
       scene->add(camero);

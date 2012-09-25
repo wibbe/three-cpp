@@ -23,6 +23,7 @@
 #pragma once
 
 #include "RenderTexture.h"
+#include <stdint.h>
 
 namespace three {
 
@@ -32,7 +33,8 @@ namespace three {
       GLTexture(Texture * source);
 
     public:
-      unsigned int id;
+      uint32_t id;
+      uint32_t type;
   };
 
 }
