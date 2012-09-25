@@ -28,8 +28,8 @@ namespace three {
 
   enum TextureCombine
   {
-    MixOperation,
-    MultiplyOperation
+    MultiplyOperation,
+    MixOperation
   };
 
   enum TextureType

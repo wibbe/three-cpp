@@ -1,10 +1,13 @@
 
 #include "Object.h"
 #include "Scene.h"
+#include "StringHash.h"
 
 #include <algorithm>
 
 namespace three {
+
+  uint32_t Object::Type = StringHash("Object").hash;
 
   Object::Object()
     : parent(0),

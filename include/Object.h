@@ -40,6 +40,8 @@ namespace three {
   class Object
   {
     public:
+      static uint32_t Type;
+    public:
       Object();
       virtual ~Object();
 
@@ -51,7 +53,7 @@ namespace three {
       void updateMatrix();
       void updateWorldMatrix(bool force = false);
 
-      virtual uint32_t type() const = 0;
+      virtual uint32_t type() const { return Object::Type; }
 
     public:
       Object * parent;

@@ -44,21 +44,13 @@ class CamaroDemo : public Window
       camera->lookAt(Vector3(0, 1, 0));
       scene->add(camera);
 
-      camero = CTMLoader::loadMesh("assets/Camaro.ctm");
-      assert(camero && "Could not load asserts/Camaro.ctm");
+      skyMap = ImageUtils::loadCubeTexture(sky, RGBFormat);
 
-      Texture * skyMap = ImageUtils::loadCubeTexture(sky, RGBFormat);
-
-      MeshBasicMaterial * material = new MeshBasicMaterial();
-      material->useEnvMap = true;
-      material->diffuse = Color(1, 0.5, 0.0);
-      material->envMap = skyMap;
-      material->reflectivity = 0.3;
-
-      camero->material = material;
-      scene->add(camero);
+      camaro = createCar();
+      scene->add(camaro);
 
       renderer = new GLRenderer();
+      renderer->setClearColor(Color(0.7, 0.7, 0.7));
     }
 
     void resize(int width, int height)
@@ -70,8 +62,8 @@ class CamaroDemo : public Window
 
     bool update(double dt)
     {
-      camero->rotation.y -= dt * 0.3;
-      camero->matrixWorldNeedsUpdate = true;
+      camaro->rotation.y -= dt * 0.3;
+      camaro->matrixWorldNeedsUpdate = true;
 
       return !isKeyDown(Key::Esc);
     }
@@ -81,11 +73,78 @@ class CamaroDemo : public Window
       renderer->render(scene, camera);
     }
 
+    Object * createCar()
+    {
+      Mesh * body = CTMLoader::loadMesh("assets/models/camaro/body.ctm");
+      Mesh * black = CTMLoader::loadMesh("assets/models/camaro/black.ctm");
+      Mesh * black2 = CTMLoader::loadMesh("assets/models/camaro/black2.ctm");
+      Mesh * crome = CTMLoader::loadMesh("assets/models/camaro/crome.ctm");
+      Mesh * intake = CTMLoader::loadMesh("assets/models/camaro/intake.ctm");
+      Mesh * interior = CTMLoader::loadMesh("assets/models/camaro/interior.ctm");
+      Mesh * tire = CTMLoader::loadMesh("assets/models/camaro/tire.ctm");
+      Mesh * tireRim = CTMLoader::loadMesh("assets/models/camaro/tire_rim.ctm");
+      Mesh * window = CTMLoader::loadMesh("assets/models/camaro/window.ctm");
+      assert(body && black && black2 && crome && intake && interior && tire && tireRim && window && "Could not Camaro model");
+
+      MeshBasicMaterial * bodyMaterial = new MeshBasicMaterial();
+      bodyMaterial->useEnvMap = true;
+      bodyMaterial->gammaCorrection = true;
+      bodyMaterial->diffuse = Color(1, 0.5, 0.0);
+      bodyMaterial->envMap = skyMap;
+      bodyMaterial->reflectivity = 0;
+      bodyMaterial->combine = 0;
+
+      MeshBasicMaterial * cromeMaterial = new MeshBasicMaterial();
+      cromeMaterial->gammaCorrection = true;
+      cromeMaterial->useEnvMap = true;
+      cromeMaterial->envMap = skyMap;
+      cromeMaterial->reflectivity = 0.5;
+
+      MeshBasicMaterial * windowMaterial = new MeshBasicMaterial();
+      windowMaterial->gammaCorrection = true;
+      windowMaterial->transparent = true;
+      windowMaterial->opacity = 0.8;
+      windowMaterial->diffuse = Color(0.3, 0.3, 0.4);
+      windowMaterial->useEnvMap = true;
+      windowMaterial->useEnvMap = skyMap;
+      windowMaterial->reflectivity = 1;
+
+      MeshBasicMaterial * tireMaterial = new MeshBasicMaterial();
+      tireMaterial->diffuse = Color(0.1, 0.1, 0.1);
+
+      MeshBasicMaterial * blackMaterial = new MeshBasicMaterial();
+      blackMaterial->diffuse = Color(0.0, 0.0, 0.0);
+
+      body->material = bodyMaterial;
+      black->material = blackMaterial;
+      black2->material = blackMaterial;
+      crome->material = cromeMaterial;
+      intake->material = bodyMaterial;
+      interior->material = blackMaterial;
+      tire->material = tireMaterial;
+      tireRim->material = cromeMaterial;
+      window->material = windowMaterial;
+
+      Object * car = new Object();
+      car->add(body);
+      car->add(black);
+      car->add(black2);
+      car->add(crome);
+      car->add(intake);
+      car->add(interior);
+      car->add(tire);
+      car->add(tireRim);
+      car->add(window);
+
+      return car;
+    }
+
   private:
     Renderer * renderer;
     Scene * scene;
     PerspectiveCamera * camera;
-    Mesh * camero;
+    Object * camaro;
+    Texture * skyMap;
 };
 
 

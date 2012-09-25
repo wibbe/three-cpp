@@ -303,6 +303,11 @@ namespace three {
     }
   }
 
+  void GLRenderer::setClearColor(Color const& color)
+  {
+    glClearColor(color.r, color.g, color.b, color.a);
+  }
+
   void GLRenderer::setTexture(Texture * texture, int slot)
   {
     if (!texture)

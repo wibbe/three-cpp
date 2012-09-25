@@ -49,6 +49,7 @@ namespace three {
       void setDepthWrite(bool enabled);
       void setBlending(Blending blending);
       void setTexture(Texture * texture, int slot);
+      void setClearColor(Color const& color);
 
       void clear(bool color, bool depth, bool stencil = false);
       void render(Scene * scene, Camera * camera, RenderTarget * renderTarget = 0, bool forceClear = false);

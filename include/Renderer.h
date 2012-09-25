@@ -36,6 +36,7 @@ namespace three {
   class Geometry;
   class Texture;
   class Code;
+  class Color;
   class RenderTarget;
   class RenderPlugin;
 
@@ -52,6 +53,7 @@ namespace three {
       virtual void setDepthWrite(bool enabled) = 0;
       virtual void setBlending(Blending blending) = 0;
       virtual void setTexture(Texture * texture, int slot) = 0;
+      virtual void setClearColor(Color const& color) = 0;
 
       virtual void clear(bool color, bool depth, bool stencil = false) = 0;
 
