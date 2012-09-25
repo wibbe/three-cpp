@@ -33,6 +33,7 @@ INCLUDE_DIRECTORIES(
   "${CMAKE_CURRENT_SOURCE_DIR}/include"
   "${CMAKE_CURRENT_SOURCE_DIR}/build/include"
   "${CMAKE_CURRENT_SOURCE_DIR}/third-party/tinyxml"
+  "${CMAKE_CURRENT_SOURCE_DIR}/third-party/open-ctm"
 	"${OPENGL_INCLUDE_DIR}"
 )
 
@@ -41,6 +42,8 @@ LINK_DIRECTORIES(
 )
 
 ADD_SUBDIRECTORY(third-party/tinyxml)
+ADD_SUBDIRECTORY(third-party/open-ctm)
+
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(examples)
 

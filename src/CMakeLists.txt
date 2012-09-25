@@ -35,6 +35,7 @@ SET(LIBRARIES
     ${EXTRA_LIBRARIES}
     GLEW
     glfw
+    openctm
 )
 
 ADD_LIBRARY(three ${SOURCE})
