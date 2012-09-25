@@ -20,23 +20,28 @@
 
 define 'DefaultMaterials', ['three'] do
 
-  material 'BasicColorMaterial' do
+  material 'MeshBasicMaterial' do
     vertex_shader :basicVertexShader
     fragment_shader :basicFragmentShader
 
-    color :color, 1, 1, 1, 1
-  end
-
-  material 'MeshBasicMaterial' do
-    vertex_shader :defaultVertexShader
-    fragment_shader :defaultFragmentShader
-
     option :useTextureMap, :USE_MAP, true
+    option :useLightMap, :USE_LIGHTMAP, false
+    option :useEnvMap, :USE_ENVMAP, false
+    option :doubleSided, :DOUBLE_SIDED, false
     option :useVertexColor, :USE_COLOR, false
+    option :gammaCorrection, :USE_GAMMA, false
 
     texture :map
+    texture :lightMap
+    texture :envMap
+
+    int :combine, 'three::MixOperation'
     vec4 :offsetRepeat, 0, 0, 1, 1
     color :diffuse, 1, 1, 1, 1
     float :opacity, 1
+    float :flipEnvMap, -1
+    int :useRefract, 0
+    float :reflectivity, 1.0
+    float :refractionRatio, 0.98
   end
 end

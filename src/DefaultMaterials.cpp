@@ -9,73 +9,43 @@
 namespace three {
 
 
-  uint32_t BasicColorMaterial::Type = three::StringHash("BasicColorMaterial").hash;
-
-  BasicColorMaterial::BasicColorMaterial()
-  {
-    color = three::Color(1, 1, 1, 1);
-  }
-
-  void BasicColorMaterial::apply(Renderer * renderer)
-  {
-    assert(__renderMaterial && renderer);
-    __renderMaterial->uniform(0, color);
-  }
-
-  std::string BasicColorMaterial::vertexShaderCode() const
-  {
-    std::vector<std::string> defines;
-
-    return three::Code::generate("basicVertexShader", defines);
-  }
-
-  std::string BasicColorMaterial::fragmentShaderCode() const
-  {
-    std::vector<std::string> defines;
-
-    return three::Code::generate("basicFragmentShader", defines);
-  }
-
-  const char * BasicColorMaterial::textureName(uint32_t slot) const
-  {
-    switch (slot)
-    {
-      default:
-        return 0;
-    }
-  }
-
-  const char * BasicColorMaterial::uniformName(uint32_t slot) const
-  {
-    switch (slot)
-    {
-      case 0:
-        return "color";
-      default:
-        return 0;
-    }
-  }
-
-
   uint32_t MeshBasicMaterial::Type = three::StringHash("MeshBasicMaterial").hash;
 
   MeshBasicMaterial::MeshBasicMaterial()
   {
     map = 0;
+    lightMap = 0;
+    envMap = 0;
+    combine = three::MixOperation;
     offsetRepeat = three::Vector4(0, 0, 1, 1);
     diffuse = three::Color(1, 1, 1, 1);
     opacity = 1;
+    flipEnvMap = -1;
+    useRefract = 0;
+    reflectivity = 1.0;
+    refractionRatio = 0.98;
     useTextureMap = true;
+    useLightMap = false;
+    useEnvMap = false;
+    doubleSided = false;
     useVertexColor = false;
+    gammaCorrection = false;
   }
 
   void MeshBasicMaterial::apply(Renderer * renderer)
   {
     assert(__renderMaterial && renderer);
-    __renderMaterial->uniform(0, offsetRepeat);
-    __renderMaterial->uniform(1, diffuse);
-    __renderMaterial->uniform(2, opacity);
+    __renderMaterial->uniform(0, combine);
+    __renderMaterial->uniform(1, offsetRepeat);
+    __renderMaterial->uniform(2, diffuse);
+    __renderMaterial->uniform(3, opacity);
+    __renderMaterial->uniform(4, flipEnvMap);
+    __renderMaterial->uniform(5, useRefract);
+    __renderMaterial->uniform(6, reflectivity);
+    __renderMaterial->uniform(7, refractionRatio);
     renderer->setTexture(map, 0);
+    renderer->setTexture(lightMap, 1);
+    renderer->setTexture(envMap, 2);
   }
 
   std::string MeshBasicMaterial::vertexShaderCode() const
@@ -83,10 +53,18 @@ namespace three {
     std::vector<std::string> defines;
     if (useTextureMap)
       defines.push_back("USE_MAP");
+    if (useLightMap)
+      defines.push_back("USE_LIGHTMAP");
+    if (useEnvMap)
+      defines.push_back("USE_ENVMAP");
+    if (doubleSided)
+      defines.push_back("DOUBLE_SIDED");
     if (useVertexColor)
       defines.push_back("USE_COLOR");
+    if (gammaCorrection)
+      defines.push_back("USE_GAMMA");
 
-    return three::Code::generate("defaultVertexShader", defines);
+    return three::Code::generate("basicVertexShader", defines);
   }
 
   std::string MeshBasicMaterial::fragmentShaderCode() const
@@ -94,10 +72,18 @@ namespace three {
     std::vector<std::string> defines;
     if (useTextureMap)
       defines.push_back("USE_MAP");
+    if (useLightMap)
+      defines.push_back("USE_LIGHTMAP");
+    if (useEnvMap)
+      defines.push_back("USE_ENVMAP");
+    if (doubleSided)
+      defines.push_back("DOUBLE_SIDED");
     if (useVertexColor)
       defines.push_back("USE_COLOR");
+    if (gammaCorrection)
+      defines.push_back("USE_GAMMA");
 
-    return three::Code::generate("defaultFragmentShader", defines);
+    return three::Code::generate("basicFragmentShader", defines);
   }
 
   const char * MeshBasicMaterial::textureName(uint32_t slot) const
@@ -106,6 +92,10 @@ namespace three {
     {
       case 0:
         return "map";
+      case 1:
+        return "lightMap";
+      case 2:
+        return "envMap";
       default:
         return 0;
     }
@@ -116,11 +106,21 @@ namespace three {
     switch (slot)
     {
       case 0:
-        return "offsetRepeat";
+        return "combine";
       case 1:
-        return "diffuse";
+        return "offsetRepeat";
       case 2:
+        return "diffuse";
+      case 3:
         return "opacity";
+      case 4:
+        return "flipEnvMap";
+      case 5:
+        return "useRefract";
+      case 6:
+        return "reflectivity";
+      case 7:
+        return "refractionRatio";
       default:
         return 0;
     }

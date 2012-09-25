@@ -47,6 +47,7 @@ define 'DefaultGLShaders', ['three'] do
     "gl_Position = projectionMatrix * mvPosition;"
   ]
 
+  # -- Fog --
   snipet :fogFragementParams, [
     "#ifdef USE_FOG",
       "uniform vec3 fogColor;",
@@ -73,10 +74,10 @@ define 'DefaultGLShaders', ['three'] do
     "#endif"
   ]
 
+  # -- Texture --
   snipet :mapVertexParams, [
     "#ifdef USE_MAP",
       "varying vec2 vUv0;",
-      "varying vec2 vUv1;",
       "uniform vec4 offsetRepeat;",
     "#endif"
   ]
@@ -84,7 +85,6 @@ define 'DefaultGLShaders', ['three'] do
   snipet :mapFragmentParams, [
     "#ifdef USE_MAP",
       "varying vec2 vUv0;",
-      "varying vec2 vUv1;",
       "uniform sampler2D map;",
     "#endif"
   ]
@@ -92,13 +92,12 @@ define 'DefaultGLShaders', ['three'] do
   snipet :mapVertex, [
     "#ifdef USE_MAP",
       "vUv0 = uv0 * offsetRepeat.zw + offsetRepeat.xy;",
-      "vUv1 = uv1;",
     "#endif"
   ]
 
   snipet :mapFragment, [
     "#ifdef USE_MAP",
-      "#ifdef GAMMA_INPUT",
+      "#ifdef USE_GAMMA",
         "vec4 texelColor = texture2D(map, vUv0);",
         "texelColor.xyz *= texelColor.xyz;",
         "gl_FragColor = gl_FragColor * texelColor;",
@@ -108,6 +107,86 @@ define 'DefaultGLShaders', ['three'] do
     "#endif"
   ]
 
+  # -- Lightmap --
+  snipet :lightMapVertexParams, [
+    "#ifdef USE_LIGHTMAP",
+      "varying vec2 vUv2;",
+    "#endif"
+  ]
+
+  snipet :lightMapFragmentParams, [
+    "#ifdef USE_LIGHTMAP",
+      "varying vec2 vUv2;",
+      "uniform sampler2D lightMap;",
+    "#endif"
+  ]
+
+  snipet :lightMapVertex, [
+    "#ifdef USE_LIGHTMAP",
+      "vUv2 = uv2;",
+    "#endif"
+  ]
+
+  snipet :lightMapFragment, [
+    "#ifdef USE_LIGHTMAP",
+      "gl_FragColor = gl_FragColor * texture2D(lightMap, vUv2);",
+    "#endif"
+  ]
+
+  # -- Environment Map --
+  snipet :envMapVertexParams, [
+    "#ifdef USE_ENVMAP",
+      "varying vec3 vReflect;",
+
+      "uniform float refractionRatio;",
+      "uniform bool useRefract;",
+    "#endif"
+  ]
+
+  snipet :envMapFragmentParams, [
+    "#ifdef USE_ENVMAP",
+      "varying vec3 vReflect;",
+
+      "uniform float reflectivity;",
+      "uniform samplerCube envMap;",
+      "uniform float flipEnvMap;",
+      "uniform int combine;",
+    "#endif"
+  ]
+
+  snipet :envMapVertex, [
+    "#ifdef USE_ENVMAP",
+      "vec4 mPosition = objectMatrix * vec4(position, 1.0);",
+      "vec3 nWorld = mat3(objectMatrix[0].xyz, objectMatrix[1].xyz, objectMatrix[2].xyz) * normal;",
+      "if (useRefract) {",
+        "vReflect = refract(normalize(mPosition.xyz - cameraPosition), normalize(nWorld.xyz), refractionRatio);",
+      "} else {",
+        "vReflect = reflect(normalize(mPosition.xyz - cameraPosition), normalize(nWorld.xyz));",
+      "}",
+    "#endif"
+  ]
+
+  snipet :envMapFragment, [
+    "#ifdef USE_ENVMAP",
+      "#ifdef DOUBLE_SIDED",
+        "float flipNormal = (-1.0 + 2.0 * float(gl_FrontFacing));",
+        "vec4 cubeColor = textureCube(envMap, flipNormal * vec3(flipEnvMap * vReflect.x, vReflect.yz));",
+      "#else",
+        "vec4 cubeColor = textureCube(envMap, vec3(flipEnvMap * vReflect.x, vReflect.yz));",
+      "#endif",
+
+      "#ifdef USE_GAMMA",
+        "cubeColor.xyz *= cubeColor.xyz;",
+      "#endif",
+      "if (combine == 1) {",
+        "gl_FragColor.xyz = mix(gl_FragColor.xyz, cubeColor.xyz, reflectivity);",
+      "} else {",
+        "gl_FragColor.xyz = gl_FragColor.xyz * cubeColor.xyz;",
+      "}",
+    "#endif"
+  ]
+
+  # -- Vertex Color --
   snipet :colorFragmentParams, [
     "#ifdef USE_COLOR",
       "varying vec4 vColor;",
@@ -122,7 +201,7 @@ define 'DefaultGLShaders', ['three'] do
 
   snipet :colorVertex, [
     "#ifdef USE_COLOR",
-      "#ifdef GAMMA_INPUT",
+      "#ifdef USE_GAMMA",
         "vColor = color * color;",
       "#else",
         "vColor = color;",
@@ -136,51 +215,57 @@ define 'DefaultGLShaders', ['three'] do
     "#endif"
   ]
 
+  # -- Gamma --
+  snipet :linearToGammaFragment, [
+    "#ifdef USE_GAMMA",
+      "gl_FragColor.xyz = sqrt(gl_FragColor.xyz);",
+    "#endif"
+  ]
+
+  # -- Alpha Test --
+  snipet :alphaTestFragment, [
+    "#ifdef ALPHATEST",
+      "if ( gl_FragColor.a < ALPHATEST ) discard;",
+    "#endif"
+  ]
+
+  # -- Basic shader --
   shader :basicVertexShader, [
     :prefixVertex,
-    "void main()",
-    "{",
-      "vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);",
-  #    "gl_Position = mvPosition;",
-      :defaultVertex,
-    "}"
-  ]
-
-  shader :basicFragmentShader, [
-    "uniform vec4 color;",
-    "void main()",
-    "{",
-      "gl_FragColor = color;",
-    "}"
-  ]
-
-  # Define the shaders
-  shader :defaultVertexShader, [
-    :prefixVertex,
     :mapVertexParams,
+    :lightMapVertexParams,
+    :envMapVertexParams,
     :colorVertexParams,
 
     "void main()",
     "{",
       "vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);",
       :mapVertex,
+      :lightMapVertex,
+      :envMapVertex,
       :colorVertex,
       :defaultVertex,
     "}"
   ]
 
-  shader :defaultFragmentShader, [
+  shader :basicFragmentShader, [
     :prefixFragment,
     "uniform vec4 diffuse;",
     "uniform float opacity;",
     :mapFragmentParams,
+    :lightMapFragmentParams,
+    :envMapFragmentParams,
     :colorFragmentParams,
 
     "void main()",
     "{",
       "gl_FragColor = vec4(diffuse.xyz, opacity);",
-      :colorFragment,
       :mapFragment,
+      :alphaTestFragment,
+      :lightMapFragment,
+      :colorFragment,
+      :envMapFragment,
+      :linearToGammaFragment,
     "}"
   ]
 end

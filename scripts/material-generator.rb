@@ -64,6 +64,7 @@ end
 # -- Generator lib --
 
 module UniformType
+  INT = 0
   FLOAT = 1
   VEC3 = 2
   VEC4 = 3
@@ -83,6 +84,7 @@ class Uniform
   def definition
     str = ""
 
+    str = "int " if @type == UniformType::INT
     str = "float" if @type == UniformType::FLOAT
     str = "three::Vector3" if @type == UniformType::VEC3
     str = "three::Vector4" if @type == UniformType::VEC4
@@ -95,7 +97,7 @@ class Uniform
   def default_declaration
     str = ""
 
-    str = "#{@default_value[0]}" if @type == UniformType::FLOAT
+    str = "#{@default_value[0]}" if @type == UniformType::FLOAT or @type == UniformType::INT
     str = "three::Vector3(#{@default_value[0]}, #{@default_value[1]}, #{@default_value[2]})" if @type == UniformType::VEC3
     str = "three::Vector4(#{@default_value[0]}, #{@default_value[1]}, #{@default_value[2]}, #{@default_value[3]})" if @type == UniformType::VEC4
     str = "three::Color(#{@default_value[0]}, #{@default_value[1]}, #{@default_value[2]}, #{@default_value[3]})" if @type == UniformType::COLOR
@@ -115,6 +117,10 @@ class Material
     @defines = []
     @textures = []
     @options = []
+  end
+
+  def int(name, value = 0)
+    @uniforms << Uniform.new(name, UniformType::INT, [value])
   end
 
   def float(name, value = 0.0)

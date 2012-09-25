@@ -26,6 +26,12 @@
 
 namespace three {
 
+  enum TextureCombine
+  {
+    MixOperation,
+    MultiplyOperation
+  };
+
   enum Blending
   {
     NoBlending,

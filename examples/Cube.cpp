@@ -35,8 +35,9 @@ class CubeDemo : public Window
       Geometry * geometry = new CubeGeometry(2, 2, 2);
       MeshBasicMaterial * material = new MeshBasicMaterial();
       material->map = ImageUtils::loadTexture("assets/crate.png");
-      material->diffuse = Color(1, 0.8, 0.4);
+      material->diffuse = Color(1, 1, 1);
       material->useTextureMap = true;
+      material->gammaCorrection = true;
 
       mesh = new Mesh(geometry, material);
       scene->add(mesh);
