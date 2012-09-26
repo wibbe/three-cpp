@@ -108,8 +108,8 @@ class CamaroDemo : public Window
       MeshBasicMaterial * windowMaterial = new MeshBasicMaterial();
       windowMaterial->gammaCorrection = true;
       windowMaterial->transparent = true;
-      windowMaterial->opacity = 0.6;
-      windowMaterial->diffuse = Color("#587CEC");
+      windowMaterial->opacity = 0.5;
+      windowMaterial->diffuse = Color(0.3, 0.3, 0.4);
       windowMaterial->useEnvMap = true;
       windowMaterial->useEnvMap = skyMap;
       windowMaterial->reflectivity = 0.8;

@@ -452,7 +452,6 @@ namespace three {
     {
       // opaque pass (front-to-back order)
       setBlending(NormalBlending);
-
       renderObjects(scene->__renderObjects, false, "opaque", camera, scene->lights, /* fog, */ false, 0);
 
       // transparent pass (back-to-front order)
@@ -481,7 +480,7 @@ namespace three {
         GLObject * object = static_cast<GLObject *>(*it);
         Material * material = overrideMaterial ? overrideMaterial : object->material;
 
-        if (object->render || !material->transparent)
+        if (object->render && material->transparent)
           renderObject(camera, lights, material, object->geometry, object, useBlending);
       }
     }
@@ -492,7 +491,7 @@ namespace three {
         GLObject * object = static_cast<GLObject *>(*it);
         Material * material = overrideMaterial ? overrideMaterial : object->material;
 
-        if (object->render && material->transparent)
+        if (object->render && !material->transparent)
           renderObject(camera, lights, material, object->geometry, object, useBlending);
       }
     }
