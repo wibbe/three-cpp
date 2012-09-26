@@ -102,16 +102,16 @@ class CamaroDemo : public Window
       windowMaterial->gammaCorrection = true;
       windowMaterial->transparent = true;
       windowMaterial->opacity = 0.6;
-      windowMaterial->diffuse = Color(0.3, 0.3, 0.4);
+      windowMaterial->diffuse = Color("#004576");
       windowMaterial->useEnvMap = true;
       windowMaterial->useEnvMap = skyMap;
       windowMaterial->reflectivity = 0.8;
 
       MeshBasicMaterial * tireMaterial = new MeshBasicMaterial();
-      tireMaterial->diffuse = Color(0.1, 0.1, 0.1);
+      tireMaterial->diffuse = Color("#1A1A1A");
 
       MeshBasicMaterial * blackMaterial = new MeshBasicMaterial();
-      blackMaterial->diffuse = Color(0.0, 0.0, 0.0);
+      blackMaterial->diffuse = Color("#000");
 
       body->material = bodyMaterial;
       black->material = blackMaterial;
