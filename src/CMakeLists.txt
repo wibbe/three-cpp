@@ -15,6 +15,7 @@ SET(SOURCE
   Code.cpp
   Material.cpp
   MurmurHash.cpp
+  Color.cpp
 
   Vector2.cpp
   Vector3.cpp

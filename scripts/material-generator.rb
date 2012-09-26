@@ -399,7 +399,7 @@ class CodeLib
     if line.start_with? "{" or line.end_with? "{" or line.start_with? "#ifdef"
       @level += 1
     elsif line.start_with? "}" or line.start_with? "#end"
-      @level -= 1
+      @level -= 1 if @level > 0
       indent = "  " * @level
     elsif line.start_with? "#else"
       indent = "  " * (@level - 1)

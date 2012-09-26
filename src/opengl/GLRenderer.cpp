@@ -828,7 +828,7 @@ namespace three {
     glGetProgramiv(glMat->program, GL_LINK_STATUS, &ok);
     if (!ok)
     {
-      fprintf(stderr, "Failed to link shader program:\n");
+      fprintf(stderr, "(%s) Failed to link shader program:\n", material->name.c_str());
       showLogInfo(glMat->program, glGetProgramiv, glGetProgramInfoLog);
 
       glDeleteShader(vertexShader);
@@ -844,6 +844,8 @@ namespace three {
     for (uint32_t i = 0; i < material->uniformCount(); ++i)
     {
       int32_t location = glGetUniformLocation(glMat->program, material->uniformName(i));
+      if (location < 0)
+        std::cerr << "(" << material->name << ") Could not find uniform: " << material->uniformName(i) << std::endl;
       glMat->uniforms[i] = location;
     }
 

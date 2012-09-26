@@ -16,7 +16,6 @@ namespace three {
     map = 0;
     lightMap = 0;
     envMap = 0;
-    combine = three::MixOperation;
     offsetRepeat = three::Vector4(0, 0, 1, 1);
     diffuse = three::Color(1, 1, 1, 1);
     opacity = 1;
@@ -30,19 +29,19 @@ namespace three {
     doubleSided = false;
     useVertexColor = false;
     gammaCorrection = false;
+    useReflectivity = true;
   }
 
   void MeshBasicMaterial::apply(Renderer * renderer)
   {
     assert(__renderMaterial && renderer);
-    __renderMaterial->uniform(0, combine);
-    __renderMaterial->uniform(1, offsetRepeat);
-    __renderMaterial->uniform(2, diffuse);
-    __renderMaterial->uniform(3, opacity);
-    __renderMaterial->uniform(4, flipEnvMap);
-    __renderMaterial->uniform(5, useRefract);
-    __renderMaterial->uniform(6, reflectivity);
-    __renderMaterial->uniform(7, refractionRatio);
+    __renderMaterial->uniform(0, offsetRepeat);
+    __renderMaterial->uniform(1, diffuse);
+    __renderMaterial->uniform(2, opacity);
+    __renderMaterial->uniform(3, flipEnvMap);
+    __renderMaterial->uniform(4, useRefract);
+    __renderMaterial->uniform(5, reflectivity);
+    __renderMaterial->uniform(6, refractionRatio);
     renderer->setTexture(map, 0);
     renderer->setTexture(lightMap, 1);
     renderer->setTexture(envMap, 2);
@@ -63,6 +62,8 @@ namespace three {
       defines.push_back("USE_COLOR");
     if (gammaCorrection)
       defines.push_back("USE_GAMMA");
+    if (useReflectivity)
+      defines.push_back("USE_REFLECTIVITY");
 
     return three::Code::generate("basicVertexShader", defines);
   }
@@ -82,6 +83,8 @@ namespace three {
       defines.push_back("USE_COLOR");
     if (gammaCorrection)
       defines.push_back("USE_GAMMA");
+    if (useReflectivity)
+      defines.push_back("USE_REFLECTIVITY");
 
     return three::Code::generate("basicFragmentShader", defines);
   }
@@ -106,20 +109,18 @@ namespace three {
     switch (slot)
     {
       case 0:
-        return "combine";
-      case 1:
         return "offsetRepeat";
-      case 2:
+      case 1:
         return "diffuse";
-      case 3:
+      case 2:
         return "opacity";
-      case 4:
+      case 3:
         return "flipEnvMap";
-      case 5:
+      case 4:
         return "useRefract";
-      case 6:
+      case 5:
         return "reflectivity";
-      case 7:
+      case 6:
         return "refractionRatio";
       default:
         return 0;

@@ -30,12 +30,12 @@ define 'DefaultMaterials', ['three'] do
     option :doubleSided, :DOUBLE_SIDED, false
     option :useVertexColor, :USE_COLOR, false
     option :gammaCorrection, :USE_GAMMA, false
+    option :useReflectivity, :USE_REFLECTIVITY, true
 
     texture :map
     texture :lightMap
     texture :envMap
 
-    int :combine, 'three::MixOperation'
     vec4 :offsetRepeat, 0, 0, 1, 1
     color :diffuse, 1, 1, 1, 1
     float :opacity, 1

@@ -65,12 +65,12 @@ define 'DefaultGLShaders', ['three'] do
       "float depth = gl_FragCoord.z / gl_FragCoord.w;",
       "#ifdef FOG_EXP2",
         "const float LOG2 = 1.442695;",
-        "float fogFactor = exp2( - fogDensity * fogDensity * depth * depth * LOG2 );",
-        "fogFactor = 1.0 - clamp( fogFactor, 0.0, 1.0 );",
+        "float fogFactor = exp2(- fogDensity * fogDensity * depth * depth * LOG2);",
+        "fogFactor = 1.0 - clamp(fogFactor, 0.0, 1.0);",
       "#else",
-        "float fogFactor = smoothstep( fogNear, fogFar, depth );",
+        "float fogFactor = smoothstep(fogNear, fogFar, depth);",
       "#endif",
-      "gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );",
+      "gl_FragColor = mix(gl_FragColor, vec4(fogColor, gl_FragColor.w), fogFactor);",
     "#endif"
   ]
 
@@ -147,10 +147,11 @@ define 'DefaultGLShaders', ['three'] do
     "#ifdef USE_ENVMAP",
       "varying vec3 vReflect;",
 
-      "uniform float reflectivity;",
+      "#if USE_REFLECTIVITY",
+        "uniform float reflectivity;",
+      "#endif",
       "uniform samplerCube envMap;",
       "uniform float flipEnvMap;",
-      "uniform int combine;",
     "#endif"
   ]
 
@@ -158,9 +159,12 @@ define 'DefaultGLShaders', ['three'] do
     "#ifdef USE_ENVMAP",
       "vec4 mPosition = objectMatrix * vec4(position, 1.0);",
       "vec3 nWorld = mat3(objectMatrix[0].xyz, objectMatrix[1].xyz, objectMatrix[2].xyz) * normal;",
-      "if (useRefract) {",
+      "if (useRefract)",
+      "{",
         "vReflect = refract(normalize(mPosition.xyz - cameraPosition), normalize(nWorld.xyz), refractionRatio);",
-      "} else {",
+      "}",
+      "else",
+      "{",
         "vReflect = reflect(normalize(mPosition.xyz - cameraPosition), normalize(nWorld.xyz));",
       "}",
     "#endif"
@@ -178,11 +182,12 @@ define 'DefaultGLShaders', ['three'] do
       "#ifdef USE_GAMMA",
         "cubeColor.xyz *= cubeColor.xyz;",
       "#endif",
-      "if (combine == 1) {",
+
+      "#ifdef USE_REFLECTIVITY",
         "gl_FragColor.xyz = mix(gl_FragColor.xyz, cubeColor.xyz, reflectivity);",
-      "} else {",
+      "#else",
         "gl_FragColor.xyz = gl_FragColor.xyz * cubeColor.xyz;",
-      "}",
+      "#endif",
     "#endif"
   ]
 
