@@ -17,14 +17,6 @@ namespace three {
     ctmLoad(context, name);
     if (ctmGetError(context) == CTM_NONE)
     {
-      // Access the mesh data
-      //vertCount = ctmGetInteger(context, CTM_VERTEX_COUNT);
-      //vertices = ctmGetFloatArray(context, CTM_VERTICES);
-      //triCount = ctmGetInteger(context, CTM_TRIANGLE_COUNT);
-      //indices = ctmGetIntegerArray(context, CTM_INDICES);
-      // Deal with the mesh (e.g. transcode it to our internal representation)
-      // ...
-
       const int vertexCount = ctmGetInteger(context, CTM_VERTEX_COUNT);
       const int triangleCount = ctmGetInteger(context, CTM_TRIANGLE_COUNT);
       const float * positions = ctmGetFloatArray(context, CTM_VERTICES);
