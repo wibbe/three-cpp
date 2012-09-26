@@ -14,6 +14,7 @@ SET(SOURCE
   AmbientLight.cpp
   Code.cpp
   Material.cpp
+  MurmurHash.cpp
 
   Vector2.cpp
   Vector3.cpp
