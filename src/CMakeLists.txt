@@ -5,17 +5,19 @@ SET(SOURCE
   Camera.cpp
   PerspectiveCamera.cpp
   Renderer.cpp
-  Geometry.cpp
-  CubeGeometry.cpp
   Mesh.cpp
   Texture.cpp
-	Window.cpp
+  Window.cpp
   ImageUtils.cpp
   AmbientLight.cpp
   Code.cpp
   Material.cpp
   MurmurHash.cpp
   Color.cpp
+
+  Geometry.cpp
+  CubeGeometry.cpp
+  PlaneGeometry.cpp
 
   Vector2.cpp
   Vector3.cpp

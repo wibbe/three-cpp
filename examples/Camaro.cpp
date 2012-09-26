@@ -10,6 +10,7 @@
 #include "Texture.h"
 #include "ImageUtils.h"
 #include "CubeGeometry.h"
+#include "PlaneGeometry.h"
 #include "opengl/GLRenderer.h"
 #include "Code.h"
 #include "CTMLoader.h"
@@ -39,8 +40,8 @@ class CamaroDemo : public Window
       scene = new Scene();
 
       camera = new PerspectiveCamera(70, 1024.0 / 768.0, 1, 1000);
-      camera->position.z = -17;
-      camera->position.y = 8;
+      camera->position.z = -18;
+      camera->position.y = 9;
       camera->lookAt(Vector3(0, 1, 0));
       scene->add(camera);
 
@@ -49,8 +50,14 @@ class CamaroDemo : public Window
       camaro = createCar();
       scene->add(camaro);
 
+      MeshBasicMaterial * groundMaterial = new MeshBasicMaterial();
+      groundMaterial->diffuse = Color("#636363");
+
+      Mesh * ground = new Mesh(new PlaneGeometry(30, 30, 4, 4), groundMaterial);
+      scene->add(ground);
+
       renderer = new GLRenderer();
-      renderer->setClearColor(Color(0.7, 0.7, 0.7));
+      renderer->setClearColor(Color("#587CEC"));
     }
 
     void resize(int width, int height)
@@ -89,7 +96,7 @@ class CamaroDemo : public Window
       MeshBasicMaterial * bodyMaterial = new MeshBasicMaterial();
       bodyMaterial->name = "body";
       bodyMaterial->useEnvMap = true;
-      bodyMaterial->diffuse = Color("#FF7C18");
+      bodyMaterial->diffuse = Color("#CE6618");
       bodyMaterial->envMap = skyMap;
       bodyMaterial->reflectivity = 0.2;
 
@@ -102,7 +109,7 @@ class CamaroDemo : public Window
       windowMaterial->gammaCorrection = true;
       windowMaterial->transparent = true;
       windowMaterial->opacity = 0.6;
-      windowMaterial->diffuse = Color("#004576");
+      windowMaterial->diffuse = Color("#587CEC");
       windowMaterial->useEnvMap = true;
       windowMaterial->useEnvMap = skyMap;
       windowMaterial->reflectivity = 0.8;

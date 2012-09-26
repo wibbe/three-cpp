@@ -453,10 +453,10 @@ namespace three {
       // opaque pass (front-to-back order)
       setBlending(NormalBlending);
 
-      renderObjects(scene->__renderObjects, true, "opaque", camera, scene->lights, /* fog, */ false, 0);
+      renderObjects(scene->__renderObjects, false, "opaque", camera, scene->lights, /* fog, */ false, 0);
 
       // transparent pass (back-to-front order)
-      renderObjects(scene->__renderObjects, false, "transparent", camera, scene->lights, /* fog, */ true, 0);
+      renderObjects(scene->__renderObjects, true, "transparent", camera, scene->lights, /* fog, */ true, 0);
     }
 
     renderPlugins(renderPluginsPost, scene, camera);
@@ -478,6 +478,11 @@ namespace three {
     {
       for (std::vector<RenderObject *>::const_reverse_iterator it = renderList.rbegin(), end = renderList.rend(); it != end; ++it)
       {
+        GLObject * object = static_cast<GLObject *>(*it);
+        Material * material = overrideMaterial ? overrideMaterial : object->material;
+
+        if (object->render || !material->transparent)
+          renderObject(camera, lights, material, object->geometry, object, useBlending);
       }
     }
     else
@@ -485,9 +490,10 @@ namespace three {
       for (std::vector<RenderObject *>::const_iterator it = renderList.begin(), end = renderList.end(); it != end; ++it)
       {
         GLObject * object = static_cast<GLObject *>(*it);
+        Material * material = overrideMaterial ? overrideMaterial : object->material;
 
-        if (object->render)
-          renderObject(camera, lights, overrideMaterial ? overrideMaterial : object->material, object->geometry, object, useBlending);
+        if (object->render && material->transparent)
+          renderObject(camera, lights, material, object->geometry, object, useBlending);
       }
     }
   }
