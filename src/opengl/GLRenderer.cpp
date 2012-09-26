@@ -9,6 +9,7 @@
 #include "Geometry.h"
 #include "Texture.h"
 #include "Code.h"
+#include "MurmurHash.h"
 #include "DefaultGLShaders.h"
 
 #include "opengl/GLObject.h"
@@ -587,23 +588,27 @@ namespace three {
     {
       if (!glMat)
       {
-        // TODO: Need to take into account material options here as well!!!
-        /* Disabled caching for now
-        std::map<uint32_t, GLMaterial *>::iterator result = _cachedMaterials.find(material->type());
+        const std::string vertexShaderCode = material->vertexShaderCode();
+        const std::string fragmentShaderCode = material->fragmentShaderCode();
+
+        const uint32_t vertexShaderHash = murmurHash(vertexShaderCode.c_str(), vertexShaderCode.size());
+        const uint32_t materialHash = murmurHash(fragmentShaderCode.c_str(), fragmentShaderCode.size(), vertexShaderHash);
+
+        std::map<uint32_t, GLMaterial *>::iterator result = _cachedMaterials.find(materialHash);
         if (result == _cachedMaterials.end())
         {
           glMat = new GLMaterial(material->uniformCount());
-          _cachedMaterials.insert(std::make_pair(material->type(), glMat));
+          material->__renderMaterial = glMat;
+          createMaterial(material, object);
+
+          _cachedMaterials.insert(std::make_pair(materialHash, glMat));
         }
         else
+        {
           glMat = result->second;
-        */
-
-        glMat = new GLMaterial(material->uniformCount());
-        material->__renderMaterial = glMat;
+          material->__renderMaterial = glMat;
+        }
       }
-
-      createMaterial(material, object);
     }
 
     if (glMat->program)
