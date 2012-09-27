@@ -1,16 +1,16 @@
 /**
  * Copyright (c) 2012 Daniel Wiberg
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -25,7 +25,7 @@
 #include <string>
 
 namespace three {
-  
+
   struct Key
   {
     enum Values
@@ -102,7 +102,7 @@ namespace three {
        Menu         = 256 + 69
     };
   };
-  
+
   /// Used to construct a window with a valid OpenGL context.
   /// Note that there can only exists one window at the time.
   class Window
@@ -110,12 +110,12 @@ namespace three {
     public:
       Window(int width, int height);
       virtual ~Window();
-      
+
       void run();
       bool step();
-      
+
       void setTitle(std::string const& title);
-      
+
       virtual void resize(int width, int height) { }
       virtual bool update(double dt) { return true; }
       virtual void paint() = 0;
@@ -124,12 +124,12 @@ namespace three {
       virtual void mouseReleased(int button) { }
 
       double time() const { return m_totalTime; }
-      
+
       bool isKeyDown(int key) const;
-      
+
     private:
       double m_lastTimeStamp;
       double m_totalTime;
   };
-  
+
 }

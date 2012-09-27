@@ -14,6 +14,7 @@
 #include "opengl/GLRenderer.h"
 #include "Code.h"
 #include "CTMLoader.h"
+#include "MathUtils.h"
 
 #include <iostream>
 #include <cassert>
@@ -58,6 +59,12 @@ class CamaroDemo : public Window
 
       renderer = new GLRenderer();
       renderer->setClearColor(Color("#587CEC"));
+
+      drag = false;
+      mouseX = 0;
+      mouseY = 0;
+      angle = 0.0f;
+      angleSpeed = 0.0f;
     }
 
     void resize(int width, int height)
@@ -67,10 +74,42 @@ class CamaroDemo : public Window
       camera->updateProjectionMatrix();
     }
 
+    void mousePressed(int button)
+    {
+      drag = true;
+    }
+
+    void mouseReleased(int button)
+    {
+      drag = false;
+    }
+
+    void mouseMoved(int x, int y)
+    {
+      int diffX = x - mouseX;
+      int diffY = y - mouseY;
+      mouseX = x;
+      mouseY = y;
+
+      if (drag)
+        angle -= diffX * -0.003f;
+    }
+
     bool update(double dt)
     {
-      camaro->rotation.y -= dt * 0.3;
+      camaro->rotation.y = angle;
       camaro->matrixWorldNeedsUpdate = true;
+
+      if (drag)
+      {
+        angleSpeed = max(0.0f, angleSpeed - (float)dt * 1.0f);
+      }
+      else
+      {
+        angleSpeed = min(0.2f, angleSpeed + (float)dt * 0.2f);
+      }
+
+      angle += angleSpeed * dt;
 
       return !isKeyDown(Key::Esc);
     }
@@ -150,6 +189,10 @@ class CamaroDemo : public Window
     PerspectiveCamera * camera;
     Object * camaro;
     Texture * skyMap;
+
+    bool drag;
+    int mouseX, mouseY;
+    float angle, angleSpeed;
 };
 
 
