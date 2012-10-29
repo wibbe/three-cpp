@@ -28,6 +28,7 @@ SET(SOURCE
   DefaultGLShaders.cpp
 
   CTMLoader.cpp
+  JsonLoader.cpp
 
   opengl/GLObject.cpp
   opengl/GLGeometry.cpp
