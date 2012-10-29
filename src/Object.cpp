@@ -103,7 +103,7 @@ namespace three {
     if (matrixWorldNeedsUpdate || force)
     {
       if (parent)
-        matrixWorld = matrix * parent->matrixWorld; // * matrix;
+        matrixWorld = parent->matrixWorld * matrix;
       else
         matrixWorld = matrix;
 

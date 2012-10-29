@@ -100,7 +100,7 @@ class CamaroDemo : public Window
       mouseY = y;
 
       if (drag)
-        angle -= diffX * -0.003f;
+        angle -= diffX * 0.003f;
     }
 
     bool update(double dt)

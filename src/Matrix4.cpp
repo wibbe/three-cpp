@@ -240,7 +240,7 @@ namespace three {
         result.m[index] = 0.0f;
 
         for (int i = 0; i < 4; ++i)
-          result.m[index] += m[(row * 4) + i] * mat[(i * 4) + col];
+          result.m[index] += m[(i * 4) + col] * mat[(row * 4) + i];
       }
 
     return result;
