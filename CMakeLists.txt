@@ -41,6 +41,7 @@ LINK_DIRECTORIES(
   "${CMAKE_CURRENT_SOURCE_DIR}/build/lib"
 )
 
+ADD_SUBDIRECTORY(third-party/parson)
 ADD_SUBDIRECTORY(third-party/tinyxml)
 ADD_SUBDIRECTORY(third-party/open-ctm)
 ADD_SUBDIRECTORY(third-party/convert-ctm)

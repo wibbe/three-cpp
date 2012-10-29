@@ -1,0 +1,15 @@
+
+
+SET(SOURCE
+  parson.c
+)
+
+SET(LIBRARIES
+)
+
+ADD_LIBRARY(parson ${SOURCE})
+TARGET_LINK_LIBRARIES(parson ${LIBRARIES})
+
+# Installation
+INSTALL(TARGETS parson CONFIGURATIONS Release DESTINATION lib)
+
