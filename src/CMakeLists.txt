@@ -24,10 +24,10 @@ SET(SOURCE
   Matrix4.cpp
   Quaternion.cpp
 
-  CTMLoader.cpp
-
   DefaultMaterials.cpp
   DefaultGLShaders.cpp
+
+  CTMLoader.cpp
 
   opengl/GLObject.cpp
   opengl/GLGeometry.cpp
@@ -44,7 +44,7 @@ SET(LIBRARIES
     openctm
 )
 
-ADD_LIBRARY(three ${SOURCE})
+ADD_LIBRARY(three ${SOURCE} ${GENERATED_SOURCE})
 TARGET_LINK_LIBRARIES(three ${LIBRARIES})
 
 # Installation

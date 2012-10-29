@@ -401,6 +401,7 @@ namespace three {
       scene->updateWorldMatrix();
 
     camera->matrixWorldInverse = camera->matrixWorld.inverse();
+    camera->positionWorld = camera->matrixWorld * camera->position;
     projScreenMatrix = camera->projectionMatrix * camera->matrixWorldInverse;
 
     if (autoUpdateObjects)
@@ -589,7 +590,7 @@ namespace three {
   {
     GLMaterial * glMat = static_cast<GLMaterial *>(material->__renderMaterial);
 
-    if (!glMat || material->needsUpdate)
+    if (!glMat)
     {
       if (!glMat)
       {
@@ -630,7 +631,11 @@ namespace three {
       glUniformMatrix4fv(glMat->projectionMatrix, 1, 0, camera->projectionMatrix.data());
       //glMat->viewMatrix
       glUniformMatrix4fv(glMat->normalMatrix, 1, 0, object->normalMatrix.data());
-      glUniform3f(glMat->cameraPosition, camera->position.x, camera->position.y, camera->position.z);
+
+      {
+        Vector3 pos = camera->matrixWorld.getPosition();
+        glUniform3f(glMat->cameraPosition, pos.x, pos.y, pos.z);
+      }
 
       // Set material specific uniforms and textures
       material->apply(this);
@@ -708,38 +713,40 @@ namespace three {
   {
     GLGeometry * glGeom = static_cast<GLGeometry *>(geom->__renderGeometry);
 
+    GLenum bufferUsage = geom->dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW;
+
     if (geom->verticesNeedUpdate && glGeom->vertexBuffer)
     {
       glBindBuffer(GL_ARRAY_BUFFER, glGeom->vertexBuffer);
-      glBufferData(GL_ARRAY_BUFFER, geom->vertices.size() * sizeof(Vector3), &geom->vertices[0], geom->dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
+      glBufferData(GL_ARRAY_BUFFER, geom->vertices.size() * sizeof(Vector3), &geom->vertices[0], bufferUsage);
       geom->verticesNeedUpdate = false;
     }
 
     if (geom->normalsNeedUpdate && glGeom->normalBuffer)
     {
       glBindBuffer(GL_ARRAY_BUFFER, glGeom->normalBuffer);
-      glBufferData(GL_ARRAY_BUFFER, geom->normals.size() * sizeof(Vector3), &geom->normals[0], geom->dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
+      glBufferData(GL_ARRAY_BUFFER, geom->normals.size() * sizeof(Vector3), &geom->normals[0], bufferUsage);
       geom->normalsNeedUpdate = false;
     }
 
     if (geom->colorsNeedUpdate && glGeom->colorBuffer)
     {
       glBindBuffer(GL_ARRAY_BUFFER, glGeom->colorBuffer);
-      glBufferData(GL_ARRAY_BUFFER, geom->colors.size() * sizeof(Color), &geom->colors[0], geom->dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
+      glBufferData(GL_ARRAY_BUFFER, geom->colors.size() * sizeof(Color), &geom->colors[0], bufferUsage);
       geom->colorsNeedUpdate = false;
     }
 
     if (geom->texCoord0NeedUpdate && glGeom->texCoord0Buffer)
     {
       glBindBuffer(GL_ARRAY_BUFFER, glGeom->texCoord0Buffer);
-      glBufferData(GL_ARRAY_BUFFER, geom->texCoord0.size() * sizeof(Vector2), &geom->texCoord0[0], geom->dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
+      glBufferData(GL_ARRAY_BUFFER, geom->texCoord0.size() * sizeof(Vector2), &geom->texCoord0[0], bufferUsage);
       geom->texCoord0NeedUpdate = false;
     }
 
     if (geom->elementsNeedUpdate && glGeom->indexBuffer)
     {
       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, glGeom->indexBuffer);
-      glBufferData(GL_ELEMENT_ARRAY_BUFFER, geom->faces.size() * sizeof(Face), &geom->faces[0], geom->dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
+      glBufferData(GL_ELEMENT_ARRAY_BUFFER, geom->faces.size() * sizeof(Face), &geom->faces[0], bufferUsage);
       geom->elementsNeedUpdate = false;
 
       glGeom->faceCount = geom->faces.size() * 3;
@@ -867,7 +874,6 @@ namespace three {
       glUniform1i(pos, i);
     }
 
-    material->needsUpdate = false;
     glUseProgram(_currentProgram);
   }
 

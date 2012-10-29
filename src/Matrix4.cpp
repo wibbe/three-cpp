@@ -107,9 +107,9 @@ namespace three {
 
     Vector3 y = cross(z, x);
 
-    m[_00] = x.x; m[_01] = y.x; m[_02] = z.x;
-    m[_10] = x.y; m[_11] = y.y; m[_12] = z.y;
-    m[_20] = x.z; m[_21] = y.z; m[_22] = z.z;
+    m[_00] = x.x; m[_10] = y.x; m[_20] = z.x;
+    m[_01] = x.y; m[_11] = y.y; m[_21] = z.y;
+    m[_02] = x.z; m[_12] = y.z; m[_22] = z.z;
   }
 
   void Matrix4::setPosition(Vector3 const& pos)
@@ -236,6 +236,7 @@ namespace three {
       for (int col = 0; col < 4; ++col)
       {
         const int index = (row * 4) + col;
+        //const int index = (col * 4) + row;
         result.m[index] = 0.0f;
 
         for (int i = 0; i < 4; ++i)

@@ -102,7 +102,7 @@ namespace three {
   static const char * _text_envMapVertex[] = {
     "#ifdef USE_ENVMAP\n",
     "  vec4 mPosition = objectMatrix * vec4(position, 1.0);\n",
-    "  vec3 nWorld = mat3(objectMatrix[0].xyz, objectMatrix[1].xyz, objectMatrix[2].xyz) * normal;\n",
+    "  vec3 nWorld = (objectMatrix * vec4(normal, 0.0)).xyz;\n",
     "  if (useRefract)\n",
     "  {\n",
     "    vReflect = refract(normalize(mPosition.xyz - cameraPosition), normalize(nWorld.xyz), refractionRatio);\n",

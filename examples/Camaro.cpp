@@ -42,9 +42,14 @@ class CamaroDemo : public Window
 
       camera = new PerspectiveCamera(70, 1024.0 / 768.0, 1, 1000);
       camera->position.z = -18;
+      camera->position.x = 0;
       camera->position.y = 9;
       camera->lookAt(Vector3(0, 1, 0));
-      scene->add(camera);
+
+      pivot = new Object();
+      pivot->add(camera);
+
+      scene->add(pivot);
 
       skyMap = ImageUtils::loadCubeTexture(sky, RGBFormat);
 
@@ -53,6 +58,9 @@ class CamaroDemo : public Window
 
       MeshBasicMaterial * groundMaterial = new MeshBasicMaterial();
       groundMaterial->diffuse = Color("#636363");
+      groundMaterial->useEnvMap = true;
+      groundMaterial->envMap = skyMap;
+      groundMaterial->reflectivity = 0.2;
 
       Mesh * ground = new Mesh(new PlaneGeometry(30, 30, 4, 4), groundMaterial);
       scene->add(ground);
@@ -97,8 +105,10 @@ class CamaroDemo : public Window
 
     bool update(double dt)
     {
-      camaro->rotation.y = angle;
-      camaro->matrixWorldNeedsUpdate = true;
+      //camaro->rotation.y = angle;
+      //camaro->matrixWorldNeedsUpdate = true;
+      pivot->rotation.y = angle;
+      pivot->matrixWorldNeedsUpdate = true;
 
       if (drag)
       {
@@ -138,6 +148,7 @@ class CamaroDemo : public Window
       bodyMaterial->diffuse = Color("#CE6618");
       bodyMaterial->envMap = skyMap;
       bodyMaterial->reflectivity = 0.2;
+      bodyMaterial->needsUpdate = true;
 
       MeshBasicMaterial * cromeMaterial = new MeshBasicMaterial();
       cromeMaterial->useEnvMap = true;
@@ -188,6 +199,7 @@ class CamaroDemo : public Window
     Scene * scene;
     PerspectiveCamera * camera;
     Object * camaro;
+    Object * pivot;
     Texture * skyMap;
 
     bool drag;

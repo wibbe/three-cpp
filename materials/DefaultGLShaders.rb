@@ -158,7 +158,8 @@ define 'DefaultGLShaders', ['three'] do
   snipet :envMapVertex, [
     "#ifdef USE_ENVMAP",
       "vec4 mPosition = objectMatrix * vec4(position, 1.0);",
-      "vec3 nWorld = mat3(objectMatrix[0].xyz, objectMatrix[1].xyz, objectMatrix[2].xyz) * normal;",
+      #"vec3 nWorld = mat3(objectMatrix[0].xyz, objectMatrix[1].xyz, objectMatrix[2].xyz) * normal;",
+      "vec3 nWorld = (objectMatrix * vec4(normal, 0.0)).xyz;",
       "if (useRefract)",
       "{",
         "vReflect = refract(normalize(mPosition.xyz - cameraPosition), normalize(nWorld.xyz), refractionRatio);",

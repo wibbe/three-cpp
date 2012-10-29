@@ -84,6 +84,7 @@ namespace three {
 
   void Object::updateMatrix()
   {
+    matrix.identity();
     matrix.setPosition(position);
     matrix.setRotationFromEuler(rotation);
 
@@ -102,7 +103,7 @@ namespace three {
     if (matrixWorldNeedsUpdate || force)
     {
       if (parent)
-        matrixWorld = parent->matrixWorld * matrix;
+        matrixWorld = matrix * parent->matrixWorld; // * matrix;
       else
         matrixWorld = matrix;
 
