@@ -1,5 +1,5 @@
 
-#include "JsonLoader.h"
+#include "JSONLoader.h"
 
 #include "Object.h"
 #include "Mesh.h"
@@ -9,7 +9,7 @@
 
 namespace three {
 
-  Object * JsonLoader::loadScene(const char * filename)
+  Object * JSONLoader::loadScene(const char * filename)
   {
     Object * root = 0;
 

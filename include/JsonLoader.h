@@ -27,7 +27,7 @@ namespace three {
   // Forward declarations
   class Object;
 
-  class JsonLoader
+  class JSONLoader
   {
     public:
 
