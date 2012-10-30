@@ -34,6 +34,7 @@ INCLUDE_DIRECTORIES(
   "${CMAKE_CURRENT_SOURCE_DIR}/build/include"
   "${CMAKE_CURRENT_SOURCE_DIR}/third-party/tinyxml"
   "${CMAKE_CURRENT_SOURCE_DIR}/third-party/open-ctm"
+  "${CMAKE_CURRENT_SOURCE_DIR}/third-party/parson"
 	"${OPENGL_INCLUDE_DIR}"
 )
 
