@@ -1,16 +1,16 @@
 
-#include "Window.h"
-#include "Scene.h"
-#include "Camera.h"
-#include "Mesh.h"
-#include "Camera.h"
-#include "PerspectiveCamera.h"
-#include "DefaultMaterials.h"
-#include "Texture.h"
-#include "ImageUtils.h"
-#include "CubeGeometry.h"
+#include "base/Window.h"
+#include "base/Scene.h"
+#include "base/Camera.h"
+#include "base/Mesh.h"
+#include "base/Camera.h"
+#include "base/PerspectiveCamera.h"
+#include "material/DefaultMaterials.h"
+#include "base/Texture.h"
+#include "loader/ImageUtils.h"
+#include "base/CubeGeometry.h"
 #include "opengl/GLRenderer.h"
-#include "Code.h"
+#include "base/Code.h"
 
 #include <iostream>
 

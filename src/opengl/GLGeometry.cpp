@@ -1,6 +1,6 @@
 
 #include "opengl/GLGeometry.h"
-#include "Geometry.h"
+#include "base/Geometry.h"
 
 namespace three {
 

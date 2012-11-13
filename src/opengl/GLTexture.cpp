@@ -1,6 +1,6 @@
 
 #include "opengl/GLTexture.h"
-#include "Texture.h"
+#include "base/Texture.h"
 
 namespace three {
 

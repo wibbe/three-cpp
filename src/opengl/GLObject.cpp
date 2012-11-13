@@ -1,8 +1,8 @@
 
 #include "opengl/GLObject.h"
 #include "opengl/GLGeometry.h"
-#include "Object.h"
-#include "Material.h"
+#include "base/Object.h"
+#include "base/Material.h"
 
 namespace three {
 

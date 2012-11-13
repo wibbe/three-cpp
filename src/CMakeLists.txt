@@ -1,34 +1,32 @@
 
 SET(SOURCE
-  Object.cpp
-  Scene.cpp
-  Camera.cpp
-  PerspectiveCamera.cpp
-  Renderer.cpp
-  Mesh.cpp
-  Texture.cpp
-  Window.cpp
-  ImageUtils.cpp
-  AmbientLight.cpp
-  Code.cpp
-  Material.cpp
-  MurmurHash.cpp
-  Color.cpp
+  base/Object.cpp
+  base/Scene.cpp
+  base/Camera.cpp
+  base/PerspectiveCamera.cpp
+  base/Renderer.cpp
+  base/Mesh.cpp
+  base/Texture.cpp
+  base/Window.cpp
+  base/AmbientLight.cpp
+  base/Code.cpp
+  base/Material.cpp
+  base/MurmurHash.cpp
+  base/Color.cpp
+  base/Geometry.cpp
+  base/CubeGeometry.cpp
+  base/PlaneGeometry.cpp
+  base/Vector2.cpp
+  base/Vector3.cpp
+  base/Matrix4.cpp
+  base/Quaternion.cpp
 
-  Geometry.cpp
-  CubeGeometry.cpp
-  PlaneGeometry.cpp
+  material/DefaultMaterials.cpp
+  material/DefaultGLShaders.cpp
 
-  Vector2.cpp
-  Vector3.cpp
-  Matrix4.cpp
-  Quaternion.cpp
-
-  DefaultMaterials.cpp
-  DefaultGLShaders.cpp
-
-  CTMLoader.cpp
-  JsonLoader.cpp
+  loader/ImageUtils.cpp
+  loader/CTMLoader.cpp
+  loader/JsonLoader.cpp
 
   opengl/GLObject.cpp
   opengl/GLGeometry.cpp
@@ -40,12 +38,13 @@ SET(SOURCE
 SET(LIBRARIES
     ${OPENGL_LIBRARIES}
     ${EXTRA_LIBRARIES}
+    openctm
+    parson
     GLEW
     glfw
-    openctm
 )
 
-ADD_LIBRARY(three ${SOURCE} ${GENERATED_SOURCE})
+ADD_LIBRARY(three ${SOURCE})
 TARGET_LINK_LIBRARIES(three ${LIBRARIES})
 
 # Installation

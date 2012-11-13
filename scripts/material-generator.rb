@@ -310,7 +310,7 @@ class CodeLib
     file.puts ""
 
     if not @materials.empty?
-      file.puts '#include "Material.h"'
+      file.puts '#include "base/Material.h"'
       file.puts ""
     end
 
@@ -330,10 +330,10 @@ class CodeLib
   def generate_source(header_file, file)
     file.puts ""
     file.puts "#include \"#{File.basename(header_file)}\"" if not @materials.empty?
-    file.puts '#include "Code.h"'
-    file.puts '#include "RenderMaterial.h"'
-    file.puts '#include "StringHash.h"'
-    file.puts '#include "Renderer.h"'
+    file.puts '#include "base/Code.h"'
+    file.puts '#include "base/RenderMaterial.h"'
+    file.puts '#include "base/StringHash.h"'
+    file.puts '#include "base/Renderer.h"'
     file.puts '#include <cassert>'
     file.puts ""
     begin_namespace(file)

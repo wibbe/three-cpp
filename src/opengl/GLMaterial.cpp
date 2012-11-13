@@ -4,9 +4,9 @@
 #include <GL/glew.h>
 #include <cassert>
 
-#include "Vector3.h"
-#include "Vector4.h"
-#include "Color.h"
+#include "base/Vector3.h"
+#include "base/Vector4.h"
+#include "base/Color.h"
 
 namespace three {
 

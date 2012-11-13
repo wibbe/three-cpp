@@ -30,11 +30,10 @@ ENDIF(UNIX)
 
 INCLUDE_DIRECTORIES(
   "${CMAKE_CURRENT_SOURCE_DIR}/src"
-  "${CMAKE_CURRENT_SOURCE_DIR}/include"
   "${CMAKE_CURRENT_SOURCE_DIR}/build/include"
-  "${CMAKE_CURRENT_SOURCE_DIR}/third-party/tinyxml"
-  "${CMAKE_CURRENT_SOURCE_DIR}/third-party/open-ctm"
-  "${CMAKE_CURRENT_SOURCE_DIR}/third-party/parson"
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/third-party/tinyxml"
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/third-party/open-ctm"
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/third-party/parson"
 	"${OPENGL_INCLUDE_DIR}"
 )
 
@@ -42,10 +41,10 @@ LINK_DIRECTORIES(
   "${CMAKE_CURRENT_SOURCE_DIR}/build/lib"
 )
 
-ADD_SUBDIRECTORY(third-party/parson)
-ADD_SUBDIRECTORY(third-party/tinyxml)
-ADD_SUBDIRECTORY(third-party/open-ctm)
-ADD_SUBDIRECTORY(third-party/convert-ctm)
+ADD_SUBDIRECTORY(src/third-party/parson)
+ADD_SUBDIRECTORY(src/third-party/tinyxml)
+ADD_SUBDIRECTORY(src/third-party/open-ctm)
+ADD_SUBDIRECTORY(src/third-party/convert-ctm)
 
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(examples)

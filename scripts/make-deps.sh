@@ -10,13 +10,13 @@ mkdir -p $BUILD_TEMP/soil
 if [ "$OS" = "Darwin" ] ; then
 
   # Build GLEW
-  (cd third-party/glew && GLEW_DEST=$BUILD_TEMP SYSTEM=Darwin make install)
-  (cd third-party/glew && GLEW_DEST=$BUILD_TEMP SYSTEM=Darwin make distclean)
+  (cd src/third-party/glew && GLEW_DEST=$BUILD_TEMP SYSTEM=Darwin make install)
+  (cd src/third-party/glew && GLEW_DEST=$BUILD_TEMP SYSTEM=Darwin make distclean)
 
   # Build GLFW
-  (cd third-party/glfw && make cocoa)
-  (cd third-party/glfw && PREFIX=$BUILD_TEMP make cocoa-install)
-  (cd third-party/glfw && make cocoa-clean)
+  (cd src/third-party/glfw && make cocoa)
+  (cd src/third-party/glfw && PREFIX=$BUILD_TEMP make cocoa-install)
+  (cd src/third-party/glfw && make cocoa-clean)
 
   # Some cleanup
   rm $BUILD_TEMP/lib/libGLEW.1.7*
@@ -25,13 +25,13 @@ if [ "$OS" = "Darwin" ] ; then
 elif [ "$OS" = "Linux" ] ; then
 
   # Build GLEW
-  (cd third-party/glew && GLEW_DEST=$BUILD_TEMP SYSTEM=linux make install)
-  (cd third-party/glew && GLEW_DEST=$BUILD_TEMP SYSTEM=linux make distclean)
+  (cd src/third-party/glew && GLEW_DEST=$BUILD_TEMP SYSTEM=linux make install)
+  (cd src/third-party/glew && GLEW_DEST=$BUILD_TEMP SYSTEM=linux make distclean)
 
   # Build GLFW
-  (cd third-party/glfw && make x11)
-  (cd third-party/glfw && PREFIX=$BUILD_TEMP make x11-install)
-  (cd third-party/glfw && make x11-dist-clean)
+  (cd src/third-party/glfw && make x11)
+  (cd src/third-party/glfw && PREFIX=$BUILD_TEMP make x11-install)
+  (cd src/third-party/glfw && make x11-dist-clean)
 
   # Some cleanup
   mv $BUILD_TEMP/lib64/libGLEW.a $BUILD_TEMP/lib
