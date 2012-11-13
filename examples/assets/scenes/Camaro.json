@@ -1,0 +1,30 @@
+{
+  "materials": [
+    {
+      "type": "MeshBasicMaterial",
+      "name": "BodyMaterial",
+      "diffuse": "#CE6618"
+    }
+  ],
+  
+  "scene": [
+    {
+      "type": "Object",
+      "name": "Camaro",
+
+      "children": [
+        {
+          "type": "Mesh",
+          "name": "Body",
+          "filename": "assets/models/camaro/body.ctm",
+          "material": "BodyMaterial"
+        },
+        {
+          "type": "Mesh",
+          "name": "Black",
+          "filename": "assets/models/camaro/black.ctm"
+        }
+      ]
+    }
+  ]
+}
