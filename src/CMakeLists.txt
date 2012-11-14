@@ -20,6 +20,7 @@ SET(SOURCE
   base/Vector3.cpp
   base/Matrix4.cpp
   base/Quaternion.cpp
+  base/Buffer.cpp
 
   material/DefaultMaterials.cpp
   material/DefaultGLShaders.cpp
