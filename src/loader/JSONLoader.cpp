@@ -10,6 +10,8 @@
 #include "loader/ImageUtils.h"
 
 #include <parson.h>
+#include <string.h>
+#include <stdio.h>
 #include <map>
 
 namespace three {
@@ -36,8 +38,8 @@ namespace three {
       if (json_array_get_count(array) < 3)
         return Color();
 
-      return Color(json_array_get_number(array, 0), 
-                   json_array_get_number(array, 1), 
+      return Color(json_array_get_number(array, 0),
+                   json_array_get_number(array, 1),
                    json_array_get_number(array, 2),
                    json_array_get_count(array) == 4 ? json_array_get_number(array, 3) : 1.0f);
     }

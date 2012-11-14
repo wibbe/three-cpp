@@ -26,7 +26,7 @@ SET(SOURCE
 
   loader/ImageUtils.cpp
   loader/CTMLoader.cpp
-  loader/JsonLoader.cpp
+  loader/JSONLoader.cpp
 
   opengl/GLObject.cpp
   opengl/GLGeometry.cpp
