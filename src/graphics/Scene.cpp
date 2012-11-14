@@ -15,6 +15,7 @@ namespace three { namespace graphics {
   Scene::Scene()
   {
     const uint16_t max = std::numeric_limits<uint16_t>::max();
+    _nodeCount = 1;
 
     for (uint32_t i = 0; i < MAX_NODES; ++i)
     {
@@ -62,7 +63,6 @@ namespace three { namespace graphics {
       scene._indices[node.id & INDEX_MASK].index = index.index;
 
       index.index = std::numeric_limits<uint16_t>::max();
-      scene._indices[scene._freeListEnqueue].next = node & INDEX_MASK;
       scene._indices[scene._freeListEnqueue].next = nodeRef & INDEX_MASK;
       scene._freeListEnqueue = nodeRef & INDEX_MASK;
     }
@@ -74,7 +74,6 @@ namespace three { namespace graphics {
       Node & child = lookup(scene, childRef);
       child.parent = parentRef;
 
-      // Sort nodes here!
       // Sort nodes according to parent
       std::sort(&scene._nodes[0], &scene._nodes[MAX_NODES], nodeCompare);
 
@@ -90,6 +89,12 @@ namespace three { namespace graphics {
       }
 
       scene._freeListDequeue = scene._nodeCount;
+    }
+
+    NodeRef parent(Scene & scene, NodeRef child)
+    {
+      assert(has(scene, child));
+      return lookup(scene, child).parent;
     }
   }
 

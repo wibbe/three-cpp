@@ -49,6 +49,7 @@ namespace three { namespace graphics {
     void remove(Scene & scene, NodeRef node);
 
     void link(Scene & scene, NodeRef parent, NodeRef child);
+    NodeRef parent(Scene & scene, NodeRef child);
   }
 
 }}
