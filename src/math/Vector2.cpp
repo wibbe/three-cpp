@@ -1,6 +1,6 @@
 
-#include "base/Vector2.h"
-#include "base/Matrix4.h"
+#include "math/Vector2.h"
+#include "math/Matrix4.h"
 
 #include <stdio.h>
 

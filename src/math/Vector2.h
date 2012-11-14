@@ -22,117 +22,106 @@
 
 #pragma once
 
-#include "base/MathUtils.h"
+#include "math/MathUtils.h"
 #include <string>
 
 namespace three {
 
-  // Forward declarations
-  class Matrix4;
-
-  class Vector3
+  class Vector2
   {
     public:
-      Vector3()
+      Vector2()
         : x(0.0f),
-          y(0.0f),
-          z(0.0f)
+          y(0.0f)
       { }
 
-      Vector3(float _x, float _y, float _z)
+      Vector2(float _x, float _y)
         : x(_x),
-          y(_y),
-          z(_z)
+          y(_y)
       { }
 
-      Vector3(Vector3 const& copy)
+      Vector2(Vector2 const& copy)
         : x(copy.x),
-          y(copy.y),
-          z(copy.z)
+          y(copy.y)
       { }
 
-      inline Vector3 const& operator = (Vector3 const& copy)
+      inline Vector2 const& operator = (Vector2 const& copy)
       {
         x = copy.x;
         y = copy.y;
-        z = copy.z;
         return *this;
       }
 
-      inline Vector3 const& operator += (Vector3 const& vec)
+      inline Vector2 const& operator += (Vector2 const& vec)
       {
         x += vec.x;
         y += vec.y;
-        z += vec.z;
         return *this;
       }
 
-      inline Vector3 const& operator -= (Vector3 const& vec)
+      inline Vector2 const& operator -= (Vector2 const& vec)
       {
         x -= vec.x;
         y -= vec.y;
-        z -= vec.z;
         return *this;
       }
 
-      inline Vector3 operator + (Vector3 const& vec) const
+      inline Vector2 operator + (Vector2 const& vec) const
       {
-        return Vector3(x + vec.x, y + vec.y, z + vec.z);
+        return Vector2(x + vec.x, y + vec.y);
       }
 
-      inline Vector3 operator - (Vector3 const& vec) const
+      inline Vector2 operator - (Vector2 const& vec) const
       {
-        return Vector3(x - vec.x, y - vec.y, z - vec.z);
+        return Vector2(x - vec.x, y - vec.y);
       }
 
-      inline Vector3 operator * (Vector3 const& vec) const
+      inline Vector2 operator * (Vector2 const& vec) const
       {
-        return Vector3(x * vec.x, y * vec.y, z * vec.z);
+        return Vector2(x * vec.x, y * vec.y);
       }
 
-      inline Vector3 operator * (float scalar) const
+      inline Vector2 operator * (float scalar) const
       {
-        return Vector3(x * scalar, y * scalar, z * scalar);
+        return Vector2(x * scalar, y * scalar);
       }
 
-      inline Vector3 operator - () const
+      inline Vector2 operator - () const
       {
-        return Vector3(-x, -y, -z);
+        return Vector2(-x, -y);
       }
 
       inline float length() const
       {
-        return std::sqrt(x * x + y * y + z * z);
+        return std::sqrt(x * x + y * y);
       }
 
-      Vector3 const& normalize()
+      Vector2 const& normalize()
       {
         float len = 1.0f / length();
         x *= len;
         y *= len;
-        z *= len;
 
         return *this;
       }
 
-      Vector3 normalized() const
+      Vector2 normalized() const
       {
         float len = 1.0f / length();
-        return Vector3(x * len, y * len, z * len);
+        return Vector2(x * len, y * len);
       }
 
-      void getRotationFromMatrix(Matrix4 const& mat, float scale = 1.0f);
 
       /// Returns the largest of the three elements
       float max() const
       {
-        return three::max(x, three::max(y, z));
+        return three::max(x, y);
       }
 
       /// Returns the smallest of the three elements
       float min() const
       {
-        return three::min(x, three::min(y, z));
+        return three::min(x, y);
       }
 
       std::string str() const;
@@ -140,19 +129,11 @@ namespace three {
     public:
       float x;
       float y;
-      float z;
   };
 
-  inline float dot(Vector3 const& a, Vector3 const b)
+  inline float dot(Vector2 const& a, Vector2 const b)
   {
-    return a.x * b.x + a.y * b.y + a.z * b.z;
-  }
-
-  inline Vector3 cross(Vector3 const& a, Vector3 const& b)
-  {
-    return Vector3(a.y * b.z - a.z * b.y,
-		               a.z * b.x - a.x * b.z,
-		               a.x * b.y - a.y * b.x);
+    return a.x * b.x + a.y * b.y;
   }
 
 }

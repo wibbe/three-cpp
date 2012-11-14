@@ -1,8 +1,6 @@
 
 #pragma once
 
-#include "base/Vector3.h"
-
 namespace three {
 
   class Face

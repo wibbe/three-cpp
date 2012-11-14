@@ -24,7 +24,7 @@
 
 #include "base/Renderer.h"
 #include "base/RenderObject.h"
-#include "base/Matrix4.h"
+#include "math/Matrix4.h"
 #include <vector>
 #include <string>
 #include <map>

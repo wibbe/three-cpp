@@ -12,17 +12,24 @@ SET(SOURCE
   base/Code.cpp
   base/Material.cpp
   base/MurmurHash.cpp
-  base/Color.cpp
   base/Geometry.cpp
   base/CubeGeometry.cpp
   base/PlaneGeometry.cpp
-  base/Vector2.cpp
-  base/Vector3.cpp
-  base/Matrix4.cpp
-  base/Quaternion.cpp
+
+  math/Color.cpp
+  math/Vector2.cpp
+  math/Vector3.cpp
+  math/Matrix4.cpp
+  math/Quaternion.cpp
 
   material/DefaultMaterials.cpp
   material/DefaultGLShaders.cpp
+
+  graphics/Scene.cpp
+
+  foundation/memory.cpp
+  foundation/murmur_hash.cpp
+  foundation/string_stream.cpp
 
   loader/ImageUtils.cpp
   loader/CTMLoader.cpp

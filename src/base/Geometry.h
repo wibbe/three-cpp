@@ -22,9 +22,9 @@
 
 #pragma once
 
-#include "base/Vector2.h"
-#include "base/Vector3.h"
-#include "base/Color.h"
+#include "math/Vector2.h"
+#include "math/Vector3.h"
+#include "math/Color.h"
 #include "base/Face.h"
 
 #include <vector>

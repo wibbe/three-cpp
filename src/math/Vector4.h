@@ -22,118 +22,125 @@
 
 #pragma once
 
-#include "base/MathUtils.h"
-#include <string>
+#include "math/MathUtils.h"
 
 namespace three {
 
-  class Vector2
+  class Vector4
   {
     public:
-      Vector2()
+      Vector4()
         : x(0.0f),
-          y(0.0f)
+          y(0.0f),
+          z(0.0f),
+          w(0.0f)
       { }
 
-      Vector2(float _x, float _y)
+      Vector4(float _x, float _y, float _z, float _w)
         : x(_x),
-          y(_y)
+          y(_y),
+          z(_z),
+          w(_w)
       { }
 
-      Vector2(Vector2 const& copy)
+      Vector4(Vector4 const& copy)
         : x(copy.x),
-          y(copy.y)
+          y(copy.y),
+          z(copy.z),
+          w(copy.w)
       { }
 
-      inline Vector2 const& operator = (Vector2 const& copy)
+      inline Vector4 const& operator = (Vector4 const& copy)
       {
         x = copy.x;
         y = copy.y;
+        z = copy.z;
+        w = copy.w;
         return *this;
       }
 
-      inline Vector2 const& operator += (Vector2 const& vec)
+      inline Vector4 const& operator += (Vector4 const& vec)
       {
         x += vec.x;
         y += vec.y;
+        z += vec.z;
+        w += vec.w;
         return *this;
       }
 
-      inline Vector2 const& operator -= (Vector2 const& vec)
+      inline Vector4 const& operator -= (Vector4 const& vec)
       {
         x -= vec.x;
         y -= vec.y;
+        z -= vec.z;
+        w -= vec.w;
         return *this;
       }
 
-      inline Vector2 operator + (Vector2 const& vec) const
+      inline Vector4 operator + (Vector4 const& vec) const
       {
-        return Vector2(x + vec.x, y + vec.y);
+        return Vector4(x + vec.x, y + vec.y, z + vec.z, w + vec.w);
       }
 
-      inline Vector2 operator - (Vector2 const& vec) const
+      inline Vector4 operator - (Vector4 const& vec) const
       {
-        return Vector2(x - vec.x, y - vec.y);
+        return Vector4(x - vec.x, y - vec.y, z - vec.z, w - vec.w);
       }
 
-      inline Vector2 operator * (Vector2 const& vec) const
+      inline Vector4 operator * (float scalar) const
       {
-        return Vector2(x * vec.x, y * vec.y);
+        return Vector4(x * scalar, y * scalar, z * scalar, w * scalar);
       }
 
-      inline Vector2 operator * (float scalar) const
+      inline Vector4 operator - () const
       {
-        return Vector2(x * scalar, y * scalar);
-      }
-
-      inline Vector2 operator - () const
-      {
-        return Vector2(-x, -y);
+        return Vector4(-x, -y, -z, -w);
       }
 
       inline float length() const
       {
-        return std::sqrt(x * x + y * y);
+        return std::sqrt(x * x + y * y + z * z + w * w);
       }
 
-      Vector2 const& normalize()
+      Vector4 const& normalize()
       {
         float len = 1.0f / length();
         x *= len;
         y *= len;
+        z *= len;
+        w *= len;
 
         return *this;
       }
 
-      Vector2 normalized() const
+      Vector4 normalized() const
       {
         float len = 1.0f / length();
-        return Vector2(x * len, y * len);
+        return Vector4(x * len, y * len, z * len, w * len);
       }
-
 
       /// Returns the largest of the three elements
       float max() const
       {
-        return three::max(x, y);
+        return three::max(x, three::max(y, three::max(z, w)));
       }
 
       /// Returns the smallest of the three elements
       float min() const
       {
-        return three::min(x, y);
+        return three::min(x, three::min(y, three::min(z, w)));
       }
-
-      std::string str() const;
 
     public:
       float x;
       float y;
+      float z;
+      float w;
   };
 
-  inline float dot(Vector2 const& a, Vector2 const b)
+  inline float dot(Vector4 const& a, Vector4 const b)
   {
-    return a.x * b.x + a.y * b.y;
+    return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
   }
 
 }

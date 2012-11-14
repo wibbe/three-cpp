@@ -14,7 +14,7 @@
 #include "opengl/GLRenderer.h"
 #include "base/Code.h"
 #include "loader/CTMLoader.h"
-#include "base/MathUtils.h"
+#include "math/MathUtils.h"
 
 #include <iostream>
 #include <cassert>

@@ -23,9 +23,9 @@
 #pragma once
 
 #include "base/Defines.h"
-#include "base/Vector3.h"
-#include "base/Vector4.h"
-#include "base/Color.h"
+#include "math/Vector3.h"
+#include "math/Vector4.h"
+#include "math/Color.h"
 #include <string>
 
 namespace three {
