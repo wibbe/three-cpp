@@ -22,73 +22,28 @@
 
 #pragma once
 
- #include <stdint.h>
+#include "Defines.h"
 
 namespace three {
 
-  enum TextureCombine
-  {
-    MultiplyOperation,
-    MixOperation
-  };
+  // Forward declarations
+  class Texture;
+  class RenderBuffer;
 
-  enum TextureType
+  class Buffer
   {
-    Texture2D,
-    TextureCube,
-    TextureTarget
-  };
+    public:
+      Buffer(int width, int height,
+             Format colorFormat = RGBAFormat,
+             Type colorType = UnsignedByteType,
+             bool depthBuffer = true);
+      virtual ~Buffer();
 
-  enum Blending
-  {
-    NoBlending,
-    AdditiveBlending,
-    SubstractiveBlending,
-    MultiplyBlending,
-    NormalBlending
-  };
+    public:
+      Texture * colorTexture;
+      Texture * depthTexture;
 
-  enum WrappingMode
-  {
-    RepeatWrapping,
-    ClampToEdgeWrapping,
-    MirroredRepeatWrapping
-  };
-
-  enum Filter
-  {
-    NearestFilter,
-    NearestMipMapFilter,
-    NearestMipMapLinearFilter,
-    LinearFilter,
-    LinearMipMapFilter,
-    LinearMipMapLinearFilter
-  };
-
-  enum Type
-  {
-    ByteType,
-    UnsignedByteType,
-    ShortType,
-    UnsignedShortType,
-    IntType,
-    UnsignedIntType,
-    FloatType
-  };
-
-  enum Format
-  {
-    AlphaFormat,
-    RGBFormat,
-    RGBAFormat,
-    LuminanceFormat,
-    LuminanceAlphaFormat,
-    DepthFormat
-  };
-
-  enum Limits
-  {
-    MaxTextureCount = 16
+      RenderBuffer * __renderBuffer;
   };
 
 }

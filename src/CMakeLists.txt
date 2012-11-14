@@ -15,6 +15,7 @@ SET(SOURCE
   base/Geometry.cpp
   base/CubeGeometry.cpp
   base/PlaneGeometry.cpp
+  base/Buffer.cpp
 
   math/Color.cpp
   math/Vector2.cpp
@@ -40,6 +41,7 @@ SET(SOURCE
   opengl/GLRenderer.cpp
   opengl/GLMaterial.cpp
   opengl/GLTexture.cpp
+  opengl/GLBuffer.cpp
 )
 
 SET(LIBRARIES
