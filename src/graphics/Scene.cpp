@@ -75,6 +75,21 @@ namespace three { namespace graphics {
       child.parent = parentRef;
 
       // Sort nodes here!
+      // Sort nodes according to parent
+      std::sort(&scene._nodes[0], &scene._nodes[MAX_NODES], nodeCompare);
+
+      // Rebuild index
+      for (uint32_t i = 0; i < MAX_NODES; ++i)
+      {
+        Node & node = scene._nodes[i];
+        Scene::Index & index = scene._indices[node.id & INDEX_MASK];
+
+        index.id = node.id;
+        index.index = i;
+        index.next = (node.id & INDEX_MASK) + 1;
+      }
+
+      scene._freeListDequeue = scene._nodeCount;
     }
   }
 
