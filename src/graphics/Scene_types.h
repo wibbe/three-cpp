@@ -10,7 +10,7 @@ namespace three { namespace graphics {
 
   enum
   {
-    ROOT_NODE = 0;
+    ROOT_NODE = 0
   };
 
   class Scene;

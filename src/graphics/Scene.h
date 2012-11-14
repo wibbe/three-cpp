@@ -25,7 +25,7 @@ namespace three { namespace graphics {
   public:
     struct Index
     {
-      NodeRef ID;
+      NodeRef id;
       uint16_t index;
       uint16_t next;
     };

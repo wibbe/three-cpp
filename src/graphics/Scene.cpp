@@ -2,19 +2,30 @@
 #include "graphics/Scene.h"
 
 #include <limits>
+#include <algorithm>
+#include <cassert>
 
 namespace three { namespace graphics {
 
+  bool nodeCompare(Node const& node1, Node const& node2)
+  {
+    return node1.parent < node2.parent;
+  }
+
   Scene::Scene()
   {
-    _nodeCount = 0;
+    const uint16_t max = std::numeric_limits<uint16_t>::max();
+
     for (uint32_t i = 0; i < MAX_NODES; ++i)
     {
       _indices[i].id = i;
       _indices[i].next = i + 1;
+      _indices[i].index = max;
+      _nodes[i].id = i;
+      _nodes[i].parent = ROOT_NODE;
     }
 
-    _freeListDequeue = 0;
+    _freeListDequeue = 1;
     _freeListEnqueue = MAX_NODES - 1;
   }
 
@@ -27,7 +38,7 @@ namespace three { namespace graphics {
     bool has(Scene & scene, NodeRef node)
     {
       Scene::Index index = scene._indices[node & INDEX_MASK];
-      return index.id == node && in.index != std::numeric_limits<uint16_t>::max();
+      return index.id == node && index.index != std::numeric_limits<uint16_t>::max();
     }
 
     NodeRef add(Scene & scene)
@@ -43,16 +54,17 @@ namespace three { namespace graphics {
       return node.id;
     }
 
-    void remove(Scene & scene, NodeRef node)
+    void remove(Scene & scene, NodeRef nodeRef)
     {
-      Scene::Index & index = scene._indices[node & INDEX_MASK];
+      Scene::Index & index = scene._indices[nodeRef & INDEX_MASK];
       Node & node = scene._nodes[index.index];
       node = scene._nodes[--scene._nodeCount];
-      scene._indices[node.id & INDEX_MASK].index = in.index;
+      scene._indices[node.id & INDEX_MASK].index = index.index;
 
       index.index = std::numeric_limits<uint16_t>::max();
       scene._indices[scene._freeListEnqueue].next = node & INDEX_MASK;
-      scene._freeListEnqueue = node & INDEX_MASK;
+      scene._indices[scene._freeListEnqueue].next = nodeRef & INDEX_MASK;
+      scene._freeListEnqueue = nodeRef & INDEX_MASK;
     }
 
     void link(Scene & scene, NodeRef parentRef, NodeRef childRef)
