@@ -23,6 +23,7 @@
 #pragma once
 
 #include "base/RenderBuffer.h"
+ #include <stdint.h>
 
 namespace three {
 
