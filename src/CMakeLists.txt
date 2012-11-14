@@ -34,6 +34,7 @@ SET(SOURCE
   opengl/GLRenderer.cpp
   opengl/GLMaterial.cpp
   opengl/GLTexture.cpp
+  opengl/GLBuffer.cpp
 )
 
 SET(LIBRARIES

@@ -22,29 +22,20 @@
 
 #pragma once
 
-#include "Defines.h"
+#include "base/RenderBuffer.h"
 
 namespace three {
 
   // Forward declarations
-  class Texture;
-  class RenderBuffer;
+  class Buffer;
 
-  class Buffer
+  class GLBuffer : public RenderBuffer
   {
     public:
-      Buffer(int width, int height,
-             Format colorFormat = RGBAFormat,
-             Type colorType = UnsignedByteType,
-             bool depthBuffer = true);
-      virtual ~Buffer();
+      GLBuffer(Buffer * buffer);
 
     public:
-      Texture * colorTexture;
-      Texture * depthTexture;
-
-      RenderBuffer * __renderBuffer;
+      uint32_t frameBufferObject;
   };
 
 }
-

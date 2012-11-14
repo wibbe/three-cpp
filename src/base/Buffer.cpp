@@ -5,11 +5,12 @@
 namespace three {
 
   Buffer::Buffer(int width, int height,
-                             Format colorFormat,
-                             Type colorType,
-                             bool depthBuffer)
+                 Format colorFormat,
+                 Type colorType,
+                 bool depthBuffer)
     : colorTexture(0),
-      depthTexture(0)
+      depthTexture(0),
+      __renderBuffer(0)
   {
     colorTexture = new Texture();
     colorTexture->width = width;
