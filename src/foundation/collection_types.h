@@ -19,7 +19,7 @@ namespace foundation
 		~Array();
 		Array(const Array &other);
 		Array &operator=(const Array &other);
-		
+
 		T &operator[](uint32_t i);
 		const T &operator[](uint32_t i) const;
 
@@ -48,7 +48,7 @@ namespace foundation
 	{
 	public:
 		Hash(Allocator &a);
-		
+
 		struct Entry {
 			uint64_t key;
 			uint32_t next;

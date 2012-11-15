@@ -1,22 +1,19 @@
 
 #pragma once
 
-#include "foundation/collection_types.h"
+#include "foundation/stream_types.h"
 #include "foundation/memory_types.h"
 
 namespace graphics {
 
   // -- Interface --
-  namespace command {
-    enum Command
-    {
-      UPLOAD_TEXTURE,
-      UPLOAD_BUFFER,
-      UPLOAD_SHADER
-    };
+  enum Command
+  {
+    CMD_UPLOAD_TEXTURE,
+    CMD_UPLOAD_BUFFER,
+    CMD_UPLOAD_SHADER
+  };
 
-    typedef foundation::Array<unsigned char> Buffer;
-  }
 
   typedef uint32_t TextureRef;
   typedef uint32_t BufferRef;
@@ -35,6 +32,6 @@ namespace graphics {
       virtual void pushState() = 0;
       virtual void popState() = 0;
 
-      virtual void executeBuffer(command::Buffer const& buffer) = 0;
+      virtual void executeBuffer(foundation::Stream const& buffer) = 0;
   };
 }

@@ -77,12 +77,8 @@ namespace graphics {
         }
       }
 
-      void executeBuffer(command::Buffer const& buffer)
+      void executeBuffer(Stream const& buffer)
       {
-        while (array::any(buffer))
-        {
-
-        }
       }
 
     public:

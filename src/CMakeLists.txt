@@ -34,6 +34,7 @@ SET(SOURCE
   foundation/string_stream.cpp
   foundation/scheduler.cpp
   foundation/freelist.cpp
+  foundation/stream.cpp
 
   loader/ImageUtils.cpp
   loader/CTMLoader.cpp
