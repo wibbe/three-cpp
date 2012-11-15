@@ -2,7 +2,9 @@
 #pragma once
 
 #include "graphics/Scene_types.h"
+#include "foundation/scheduler_types.h"
 #include "math/Vector3.h"
+#include "math/Matrix4.h"
 
 namespace three { namespace graphics {
 
@@ -17,6 +19,10 @@ namespace three { namespace graphics {
     Vector3 position;
     Vector3 rotation;
     Vector3 scale;
+
+    Matrix4 objectMatrix;
+    Matrix4 worldMatrix;
+
     AttachmentRef attachment;
   };
 
@@ -50,6 +56,8 @@ namespace three { namespace graphics {
 
     void link(Scene & scene, NodeRef parent, NodeRef child);
     NodeRef parent(Scene & scene, NodeRef child);
+
+    foundation::TaskRef createUpdateWorldMatrixTask(Scene & scene);
   }
 
 }}

@@ -10,10 +10,11 @@ namespace foundation {
     void init(Allocator & allocator, uint32_t taskCount, uint32_t workThreadCount);
     void shutdown();
 
-    TaskRef addTask(TaskData const& data, Kernel kernel);
+    TaskRef createAndExecuteTask(TaskData const& data, Kernel kernel);
 
-    TaskRef addTaskBegin(TaskData const& data, Kernel kernel);
-    void addTaskDone(TaskRef task);
+    TaskRef createTask(TaskData const& data, Kernel kernel);
+    TaskRef createEmptyTask();
+    void add(TaskRef task);
 
     /// Link two tasks together. Parent task will wait until all of it's child tasks have executed
     void link(TaskRef parent, TaskRef child);

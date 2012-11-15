@@ -22,7 +22,7 @@ namespace foundation {
 
   struct TaskData
   {
-    void * kernelData;
+    void * data;
 
     union
     {

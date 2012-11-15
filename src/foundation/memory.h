@@ -3,6 +3,8 @@
 #include "types.h"
 #include "memory_types.h"
 
+#include <memory>
+
 namespace foundation
 {
 	/// Base class for memory allocators.
@@ -18,7 +20,7 @@ namespace foundation
 
 		Allocator() {}
 		virtual ~Allocator() {}
-		
+
 		/// Allocates the specified amount of memory aligned to the specified alignment.
 		virtual void *allocate(uint32_t size, uint32_t align = DEFAULT_ALIGN) = 0;
 
@@ -37,7 +39,7 @@ namespace foundation
 		/// An allocator that doesn't suppor it will return SIZE_NOT_TRACKED.
 		virtual uint32_t allocated_size(void *p) = 0;
 
-		/// Returns the total amount of memory allocated by this allocator. Note that the 
+		/// Returns the total amount of memory allocated by this allocator. Note that the
 		/// size returned can be bigger than the size of all individual allocations made,
 		/// because the allocator may keep additional structures.
 		///

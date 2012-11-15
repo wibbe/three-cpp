@@ -105,6 +105,11 @@ namespace three {
         return std::sqrt(x * x + y * y + z * z);
       }
 
+      inline float lengthSquared() const
+      {
+        return x * x + y * y + z * z;
+      }
+
       Vector3 const& normalize()
       {
         float len = 1.0f / length();

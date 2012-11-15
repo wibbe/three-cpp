@@ -224,14 +224,14 @@ namespace foundation {
       }
     }
 
-    TaskRef addTask(TaskData const& data, Kernel kernel)
+    TaskRef createAndExecuteTask(TaskData const& data, Kernel kernel)
     {
-      TaskRef task = addTaskBegin(data, kernel);
-      addTaskDone(task);
+      TaskRef task = createTask(data, kernel);
+      add(task);
       return task;
     }
 
-    TaskRef addTaskBegin(TaskData const& data, Kernel kernel)
+    TaskRef createTask(TaskData const& data, Kernel kernel)
     {
       Task * task = obtainTask();
       task->_kernel = kernel;
@@ -240,7 +240,14 @@ namespace foundation {
       return getTaskRef(task);
     }
 
-    void addTaskDone(TaskRef task)
+    TaskRef createEmptyTask()
+    {
+      Task * task = obtainTask();
+      task->_kernel = 0;
+      return getTaskRef(task);
+    }
+
+    void add(TaskRef task)
     {
       queueTask(getTaskFromOffset(task._offset));
     }
