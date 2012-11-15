@@ -99,6 +99,12 @@ namespace three { namespace graphics {
       return lookup(scene, child).parent;
     }
 
+    void setPosition(Scene & scene, NodeRef node, Vector3 const& position)
+    {
+      assert(has(scene, node));
+      lookup(scene, node).position = position;
+    }
+
     // -- Kernels --
 
     static void updateWorldMatrixKernel(foundation::TaskData const& data)
