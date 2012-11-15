@@ -31,6 +31,8 @@ SET(SOURCE
   foundation/memory.cpp
   foundation/murmur_hash.cpp
   foundation/string_stream.cpp
+  foundation/scheduler.cpp
+  foundation/freelist.cpp
 
   loader/ImageUtils.cpp
   loader/CTMLoader.cpp
@@ -51,6 +53,7 @@ SET(LIBRARIES
     parson
     GLEW
     glfw
+    pthread
 )
 
 ADD_LIBRARY(three ${SOURCE})
