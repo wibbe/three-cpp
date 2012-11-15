@@ -1,10 +1,10 @@
 
-#include "Context.h"
+#include "context.h"
 
-namespace three { namespace graphics {
+namespace three {
 
   Context::Context(foundation::Allocator & allocator)
   {
   }
 
-}}
+}

@@ -4,7 +4,7 @@
 #include "foundation/stream_types.h"
 #include "foundation/memory_types.h"
 
-namespace three { namespace graphics {
+namespace three {
 
   // -- Interface --
   enum Command
@@ -34,4 +34,4 @@ namespace three { namespace graphics {
 
       virtual void executeBuffer(foundation::Stream const& buffer) = 0;
   };
-}}
+}

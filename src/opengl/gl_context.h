@@ -1,8 +1,8 @@
 
 #pragma once
 
-#include "graphics/Context_types.h"
+#include "graphics/context_types.h"
 
-namespace three { namespace graphics {
+namespace three {
   Context * createGLContext(foundation::Allocator & allocator);
-}}
+}

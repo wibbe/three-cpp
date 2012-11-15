@@ -1,11 +1,11 @@
 
-#include "GLContext.h"
+#include "gl_context.h"
 
 #include "foundation/memory.h"
 #include "foundation/atomic.h"
 #include "foundation/array.h"
 
-namespace three { namespace graphics {
+namespace three {
   using namespace foundation;
 
   struct State
@@ -96,4 +96,4 @@ namespace three { namespace graphics {
     return MAKE_NEW(allocator, GLContext, allocator);
   }
 
-}}
+}

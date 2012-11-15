@@ -26,8 +26,8 @@ SET(SOURCE
   material/DefaultMaterials.cpp
   material/DefaultGLShaders.cpp
 
-  graphics/Scene.cpp
-  graphics/Context.cpp
+  graphics/scene.cpp
+  graphics/context.cpp
 
   foundation/memory.cpp
   foundation/murmur_hash.cpp
@@ -46,7 +46,7 @@ SET(SOURCE
   opengl/GLMaterial.cpp
   opengl/GLTexture.cpp
   opengl/GLBuffer.cpp
-  opengl/GLContext.cpp
+  opengl/gl_context.cpp
 )
 
 SET(LIBRARIES

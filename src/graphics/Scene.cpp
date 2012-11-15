@@ -1,12 +1,12 @@
 
-#include "graphics/Scene.h"
+#include "graphics/scene.h"
 #include "foundation/scheduler.h"
 
 #include <limits>
 #include <algorithm>
 #include <cassert>
 
-namespace three { namespace graphics {
+namespace three {
 
   bool nodeCompare(Node const& node1, Node const& node2)
   {
@@ -141,4 +141,4 @@ namespace three { namespace graphics {
     }
   }
 
-}}
+}

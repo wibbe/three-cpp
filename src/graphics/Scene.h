@@ -1,12 +1,12 @@
 
 #pragma once
 
-#include "graphics/Scene_types.h"
+#include "graphics/scene_types.h"
 #include "foundation/scheduler_types.h"
 #include "math/Vector3.h"
 #include "math/Matrix4.h"
 
-namespace three { namespace graphics {
+namespace three {
 
   #define MAX_NODES 64 * 1024
   #define INDEX_MASK 0xFFFF
@@ -62,4 +62,4 @@ namespace three { namespace graphics {
     foundation::TaskRef createUpdateWorldMatrixTask(Scene & scene);
   }
 
-}}
+}
