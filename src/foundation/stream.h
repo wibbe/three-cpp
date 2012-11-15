@@ -33,41 +33,49 @@ namespace foundation {
   inline Stream & operator << (Stream & s, int8_t value)
   {
     push(s, &value, 1);
+    return s;
   }
 
   inline Stream & operator << (Stream & s, uint8_t value)
   {
     push(s, &value, 1);
+    return s;
   }
 
   inline Stream & operator << (Stream & s, int16_t value)
   {
     push(s, &value, 1);
+    return s;
   }
 
   inline Stream & operator << (Stream & s, uint16_t value)
   {
     push(s, &value, 1);
+    return s;
   }
 
   inline Stream & operator << (Stream & s, int32_t value)
   {
     push(s, &value, 1);
+    return s;
   }
 
   inline Stream & operator << (Stream & s, uint32_t value)
   {
     push(s, &value, 1);
+    return s;
   }
 
   inline Stream & operator << (Stream & s, float value)
   {
     push(s, &value, 1);
+    return s;
   }
 
   inline Stream & operator << (Stream & s, double value)
   {
     push(s, &value, 1);
+    return s;
   }
 
   template <typename T> inline Stream & push(Stream & s, T * data, uint32_t num)

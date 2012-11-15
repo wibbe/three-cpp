@@ -136,7 +136,13 @@ namespace foundation {
       if (task)
         workOnTask(task);
       else
-        pthread_yield();
+      {
+        #ifdef __APPLE__
+          pthread_yield_np();
+        #else
+          pthread_yield();
+        #endif
+      }
     }
 
     static void workOnTask(Task * task)
