@@ -4,6 +4,7 @@
 #include "memory.h"
 
 #include <memory>
+#include <string.h>
 
 namespace foundation {
 	namespace array
@@ -14,13 +15,13 @@ namespace foundation {
 		template<typename T> bool any(const Array<T> &a);
 		/// Returns true if the array is empty.
 		template<typename T> bool empty(const Array<T> &a);
-		
+
 		/// Used to iterate over the array.
 		template<typename T> T* begin(Array<T> &a);
 		template<typename T> const T* begin(const Array<T> &a);
 		template<typename T> T* end(Array<T> &a);
 		template<typename T> const T* end(const Array<T> &a);
-		
+
 		/// Returns the first/last element of the array. Don't use these on an
 		/// empty array.
 		template<typename T> T& front(Array<T> &a);
@@ -55,12 +56,12 @@ namespace foundation {
 		template<typename T> inline uint32_t size(const Array<T> &a) 		{return a._size;}
 		template<typename T> inline bool any(const Array<T> &a) 			{return a._size != 0;}
 		template<typename T> inline bool empty(const Array<T> &a) 			{return a._size == 0;}
-		
+
 		template<typename T> inline T* begin(Array<T> &a) 					{return a._data;}
 		template<typename T> inline const T* begin(const Array<T> &a) 		{return a._data;}
 		template<typename T> inline T* end(Array<T> &a) 					{return a._data + a._size;}
 		template<typename T> inline const T* end(const Array<T> &a) 		{return a._data + a._size;}
-		
+
 		template<typename T> inline T& front(Array<T> &a) 					{return a._data[0];}
 		template<typename T> inline const T& front(const Array<T> &a) 		{return a._data[0];}
 		template<typename T> inline T& back(Array<T> &a) 					{return a._data[a._size-1];}

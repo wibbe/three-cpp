@@ -27,10 +27,14 @@ SET(SOURCE
   material/DefaultGLShaders.cpp
 
   graphics/Scene.cpp
+  graphics/Context.cpp
 
   foundation/memory.cpp
   foundation/murmur_hash.cpp
   foundation/string_stream.cpp
+  foundation/scheduler.cpp
+  foundation/freelist.cpp
+  foundation/stream.cpp
 
   loader/ImageUtils.cpp
   loader/CTMLoader.cpp
@@ -42,6 +46,7 @@ SET(SOURCE
   opengl/GLMaterial.cpp
   opengl/GLTexture.cpp
   opengl/GLBuffer.cpp
+  opengl/GLContext.cpp
 )
 
 SET(LIBRARIES
@@ -51,6 +56,7 @@ SET(LIBRARIES
     parson
     GLEW
     glfw
+    pthread
 )
 
 ADD_LIBRARY(three ${SOURCE})

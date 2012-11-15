@@ -1,5 +1,6 @@
 
 #include "graphics/Scene.h"
+#include "foundation/scheduler.h"
 
 #include <limits>
 #include <algorithm>
@@ -23,7 +24,7 @@ namespace three { namespace graphics {
       _indices[i].next = i + 1;
       _indices[i].index = max;
       _nodes[i].id = i;
-      _nodes[i].parent = ROOT_NODE;
+      _nodes[i].parent = scene::ROOT_NODE;
     }
 
     _freeListDequeue = 1;
@@ -31,6 +32,7 @@ namespace three { namespace graphics {
   }
 
   namespace scene {
+
     inline Node & lookup(Scene & scene, NodeRef node)
     {
       return scene._nodes[scene._indices[node & INDEX_MASK].index];
@@ -101,6 +103,41 @@ namespace three { namespace graphics {
     {
       assert(has(scene, node));
       lookup(scene, node).position = position;
+    }
+
+    // -- Kernels --
+
+    static void updateWorldMatrixKernel(foundation::TaskData const& data)
+    {
+      Scene * scene = static_cast<Scene *>(data.data);
+      Node * nodes = static_cast<Node *>(data.streamingData.inputStreams[0]);
+
+      for (int i = 0; i < data.streamingData.elementCount; ++i)
+      {
+        Node & node = nodes[i];
+
+        node.objectMatrix.identity();
+        node.objectMatrix.setPosition(node.position);
+        node.objectMatrix.setRotationFromEuler(node.rotation);
+
+        if (!equal(node.scale.lengthSquared(), 1.0f))
+          node.objectMatrix.scale(node.scale);
+
+        if (node.parent == ROOT_NODE)
+          node.worldMatrix.identity();
+        else
+          node.worldMatrix = lookup(*scene, node.parent).worldMatrix * node.objectMatrix;
+      }
+    }
+
+    foundation::TaskRef createUpdateWorldMatrixTask(Scene & scene)
+    {
+      foundation::TaskData data;
+      data.data = &scene;
+      data.streamingData.elementCount = scene._nodeCount;
+      data.streamingData.inputStreams[0] = scene._nodes;
+
+      return foundation::scheduler::createTask(data, updateWorldMatrixKernel);
     }
   }
 
