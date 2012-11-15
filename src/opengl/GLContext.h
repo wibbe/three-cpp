@@ -3,6 +3,6 @@
 
 #include "graphics/Context_types.h"
 
-namespace graphics {
+namespace three { namespace graphics {
   Context * createGLContext(foundation::Allocator & allocator);
-}
+}}

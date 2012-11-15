@@ -5,7 +5,7 @@
 #include "foundation/atomic.h"
 #include "foundation/array.h"
 
-namespace graphics {
+namespace three { namespace graphics {
   using namespace foundation;
 
   struct State
@@ -96,4 +96,4 @@ namespace graphics {
     return MAKE_NEW(allocator, GLContext, allocator);
   }
 
-}
+}}
