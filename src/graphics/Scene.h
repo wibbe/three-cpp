@@ -50,6 +50,8 @@ namespace three { namespace graphics {
 
     void link(Scene & scene, NodeRef parent, NodeRef child);
     NodeRef parent(Scene & scene, NodeRef child);
+
+    void setPosition(Scene & scene, NodeRef node, Vector3 const& position);
   }
 
 }}

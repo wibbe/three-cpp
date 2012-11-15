@@ -96,6 +96,12 @@ namespace three { namespace graphics {
       assert(has(scene, child));
       return lookup(scene, child).parent;
     }
+
+    void setPosition(Scene & scene, NodeRef node, Vector3 const& position)
+    {
+      assert(has(scene, node));
+      lookup(scene, node).position = position;
+    }
   }
 
 }}
