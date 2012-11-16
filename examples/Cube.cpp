@@ -29,17 +29,23 @@ class CubeDemo : public Window
       camera = new PerspectiveCamera(70, 1024.0 / 768.0, 1, 1000);
       camera->position.z = -5;
       camera->position.y = 2;
+      camera->position.x = 1;
       camera->lookAt(Vector3(0, 0, 0));
       scene->add(camera);
 
       Geometry * geometry = new CubeGeometry(2, 2, 2);
-      MeshBasicMaterial * material = new MeshBasicMaterial();
-      material->map = ImageUtils::loadTexture("assets/textures/crate.png");
-      material->diffuse = Color(1, 1, 1);
-      material->useTextureMap = true;
-      material->gammaCorrection = true;
 
-      mesh = new Mesh(geometry, material);
+      colorMaterial = new MeshBasicMaterial();
+      colorMaterial->diffuse = Color("#4680AA");
+      colorMaterial->gammaCorrection = true;
+
+      textureMaterial = new MeshBasicMaterial();
+      textureMaterial->map = ImageUtils::loadTexture("assets/textures/crate.png");
+      textureMaterial->diffuse = Color(1, 1, 1);
+      textureMaterial->useTextureMap = true;
+      textureMaterial->gammaCorrection = true;
+
+      mesh = new Mesh(geometry, textureMaterial);
       scene->add(mesh);
 
       renderer = new GLRenderer();
@@ -58,6 +64,11 @@ class CubeDemo : public Window
       mesh->rotation.y += dt * 0.1;
       mesh->matrixWorldNeedsUpdate = true;
 
+      if (isKeyDown('1'))
+        mesh->material = textureMaterial;
+      else if (isKeyDown('2'))
+        mesh->material = colorMaterial;
+
       return !isKeyDown(Key::Esc);
     }
 
@@ -71,6 +82,9 @@ class CubeDemo : public Window
     Scene * scene;
     PerspectiveCamera * camera;
     Mesh * mesh;
+
+    MeshBasicMaterial * colorMaterial;
+    MeshBasicMaterial * textureMaterial;
 };
 
 
