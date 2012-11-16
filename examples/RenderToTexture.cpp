@@ -37,8 +37,10 @@ class RenderToTexture : public Window
       Geometry * geometry = new CubeGeometry(2, 2, 2);
 
       colorMaterial = new MeshBasicMaterial();
-      colorMaterial->diffuse = Color("#7AD1E4");
+      colorMaterial->map = ImageUtils::loadTexture("assets/textures/crate.png");
+      colorMaterial->diffuse = Color("#A81515");
       colorMaterial->gammaCorrection = true;
+      colorMaterial->useTextureMap = true;
 
       textureMaterial = new MeshBasicMaterial();
       textureMaterial->map = target->colorTexture;
@@ -75,7 +77,7 @@ class RenderToTexture : public Window
       renderer->render(scene, camera, target);
 
       mesh->material = textureMaterial;
-      renderer->setClearColor(Color("#000000"));
+      renderer->setClearColor(Color("#BEE7FF"));
       renderer->render(scene, camera);
     }
 

@@ -30,6 +30,44 @@
 
 namespace three {
 
+  static const char * glErrorStr(GLenum error)
+  {
+    switch (error)
+    {
+      case GL_NO_ERROR:
+        return "No error has been recorded";
+
+      case GL_INVALID_ENUM:
+        return "An unacceptable value is specified for an enumerated argument.";
+
+      case GL_INVALID_VALUE:
+        return "A numeric argument is out of range.";
+
+      case GL_INVALID_OPERATION:
+        return "The specified operation is not allowed in the current state.";
+
+      case GL_STACK_OVERFLOW:
+        return "This command would cause a stack overflow.";
+
+      case GL_STACK_UNDERFLOW:
+        return "This command would cause a stack underflow.";
+
+      case GL_OUT_OF_MEMORY:
+        return "There is not enough memory left to execute the command.";
+
+      case GL_TABLE_TOO_LARGE:
+        return "The specified table exceeds the implementation’s maximum supported table size.";
+    }
+
+    return "Unknown Error";
+  }
+
+  #ifdef DEBUG
+    #define CHECK_GL() do { if (GLenum code = glGetError() != GL_NO_ERROR) fprintf(stderr, "%s:%d: (%d)%s\n", __FILE__, __LINE__, code, glErrorStr(code)); } while (0)
+  #else
+    #define CHECK_GL()
+  #endif
+
   static inline bool painterSort(BackendObject * obj1, BackendObject * obj2)
   {
     return static_cast<GLObject *>(obj1)->z > static_cast<GLObject *>(obj2)->z;
@@ -171,6 +209,8 @@ namespace three {
       //std::cout << "Compiled shader:" << std::endl << "----------------------------" << std::endl << code << std::endl << "----------------------------" << std::endl;
     }
 
+    CHECK_GL();
+
     return shader;
   }
 
@@ -186,6 +226,8 @@ namespace three {
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrappingToGL(texture->wrapS));
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrappingToGL(texture->wrapT));
 
+      if (!texture->generateMipmaps)
+        glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE);
 
       glTexImage2D(GL_TEXTURE_2D, 0,
                    formatToGL(texture->format),
@@ -210,6 +252,8 @@ namespace three {
       glGenerateMipmap(glTex->type);
 
     texture->needsUpdate = false;
+    glBindTexture(glTex->type, 0);
+    CHECK_GL();
   }
 
 
@@ -258,7 +302,6 @@ namespace three {
     glFrontFace(GL_CCW);
     glCullFace(GL_BACK);
     glEnable(GL_CULL_FACE);
-    //glDisable(GL_CULL_FACE);
 
     glEnable(GL_BLEND);
     glBlendEquation(GL_FUNC_ADD);
@@ -272,10 +315,8 @@ namespace three {
     _currentBlending = NormalBlending;
   }
 
-  void GLRenderer::setSize(int width_, int height_)
+  void GLRenderer::setSize(int width, int height)
   {
-    width = width_;
-    height = height_;
     setViewport(0, 0, width, height);
   }
 
@@ -285,7 +326,6 @@ namespace three {
     viewportY = y;
     viewportWidth = width;
     viewportHeight = height;
-
     glViewport(x, y, width, height);
   }
 
@@ -396,8 +436,8 @@ namespace three {
     {
       if (_currentFrameBuffer != 0)
       {
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-        setViewport(0, 0, width, height);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glViewport(viewportX, viewportY, viewportWidth, viewportHeight);
         _currentFrameBuffer = 0;
       }
 
@@ -406,11 +446,8 @@ namespace three {
 
     GLRenderTarget * glTarget = static_cast<GLRenderTarget *>(renderTarget->__renderTarget);
 
-    printf("Has gl: %d\n", glTarget);
-
     if (!glTarget)
     {
-      fprintf(stderr, "Constructing framebuffer\n");
       GLTexture * colorTex = renderTarget->colorTexture ? static_cast<GLTexture *>(renderTarget->colorTexture->__renderTexture) : 0;
       GLTexture * depthTex = renderTarget->depthTexture ? static_cast<GLTexture *>(renderTarget->depthTexture->__renderTexture) : 0;
 
@@ -420,8 +457,6 @@ namespace three {
         colorTex->type = GL_TEXTURE_2D;
         glGenTextures(1, &colorTex->id);
         setupTexture(renderTarget->colorTexture, colorTex);
-
-        fprintf(stderr, "Constructed color texture!\n");
       }
 
       if (renderTarget->depthTexture && !depthTex)
@@ -434,37 +469,50 @@ namespace three {
 
       glTarget = new GLRenderTarget(renderTarget);
       glGenFramebuffers(1, &glTarget->id);
-      glBindFramebuffer(GL_DRAW_FRAMEBUFFER, glTarget->id);
+      glBindFramebuffer(GL_FRAMEBUFFER, glTarget->id);
+
+      CHECK_GL();
 
       if (colorTex)
-        glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTex->id, 0);
+      {
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTex->id, 0);
+      }
       if (depthTex)
-        glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTex->id, 0);
+      {
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTex->id, 0);
+      }
+      else
       {
         uint32_t id;
         glGenRenderbuffers(1, &id);
         glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, renderTarget->width, renderTarget->height);
-        glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, id);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, id);
       }
 
-      GLenum error = glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
-      if (error != GL_FRAMEBUFFER_COMPLETE)
+      CHECK_GL();
+
+      if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
       {
         fprintf(stderr, "There was a problem costructing the RenderTarget\n");
         glDeleteFramebuffers(1, &glTarget->id);
         glTarget->id = 0;
       }
+
+      glBindFramebuffer(GL_FRAMEBUFFER, 0);
+      _currentFrameBuffer = 0;
     }
 
     if (_currentFrameBuffer != glTarget->id)
     {
       _currentFrameBuffer = glTarget->id;
-      glBindFramebuffer(GL_DRAW_FRAMEBUFFER, glTarget->id);
+      glBindFramebuffer(GL_FRAMEBUFFER, glTarget->id);
 
-      uint32_t attachments[1] = { GL_COLOR_ATTACHMENT0 };
-      glDrawBuffers(1, attachments);
+      //uint32_t attachments[1] = { GL_COLOR_ATTACHMENT0 };
+      //glDrawBuffers(1, attachments);
 
-      setViewport(0, 0, renderTarget->width, renderTarget->height);
+      glViewport(0, 0, renderTarget->width, renderTarget->height);
+
+      CHECK_GL();
     }
   }
 
@@ -487,7 +535,6 @@ namespace three {
 
     camera->matrixWorldInverse = camera->matrixWorld.inverse();
     camera->positionWorld = camera->matrixWorld * camera->position;
-    //projScreenMatrix = camera->projectionMatrix * camera->matrixWorldInverse;
     projScreenMatrix = camera->matrixWorldInverse * camera->projectionMatrix;
 
     if (autoUpdateObjects)

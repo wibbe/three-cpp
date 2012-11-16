@@ -98,8 +98,6 @@ namespace three {
       int viewportY;
       int viewportWidth;
       int viewportHeight;
-      int width;
-      int height;
 
       std::vector<RenderPlugin *> renderPluginsPre;
       std::vector<RenderPlugin *> renderPluginsPost;
