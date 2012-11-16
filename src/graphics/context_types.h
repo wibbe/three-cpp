@@ -7,12 +7,15 @@
 namespace three {
 
   // -- Interface --
-  enum Command
-  {
-    CMD_UPLOAD_TEXTURE,
-    CMD_UPLOAD_BUFFER,
-    CMD_UPLOAD_SHADER
-  };
+  namespace command {
+    enum Command
+    {
+      NOP,
+      UPLOAD_TEXTURE,
+      UPLOAD_BUFFER,
+      UPLOAD_SHADER
+    };
+  }
 
 
   typedef uint32_t TextureRef;
@@ -32,6 +35,6 @@ namespace three {
       virtual void pushState() = 0;
       virtual void popState() = 0;
 
-      virtual void executeBuffer(foundation::Stream const& buffer) = 0;
+      virtual void executeBuffer(foundation::Stream & buffer) = 0;
   };
 }

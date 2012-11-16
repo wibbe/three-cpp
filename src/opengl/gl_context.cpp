@@ -4,9 +4,14 @@
 #include "foundation/memory.h"
 #include "foundation/atomic.h"
 #include "foundation/array.h"
+#include "foundation/stream.h"
+
+#include <stdio.h>
 
 namespace three {
   using namespace foundation;
+
+  class GLContext;
 
   struct State
   {
@@ -21,6 +26,11 @@ namespace three {
     uint16_t width;
     uint16_t height;
   };
+
+  // -- Forward declarations --
+  static void uploadTexture(Stream & s, GLContext & context);
+
+  // -- OpenGL context --
 
   class GLContext : public Context
   {
@@ -77,8 +87,24 @@ namespace three {
         }
       }
 
-      void executeBuffer(Stream const& buffer)
+      void executeBuffer(Stream & buffer)
       {
+        while (!stream::eof(buffer))
+        {
+          uint32_t command = command::NOP;
+          buffer >> command;
+
+          switch (command)
+          {
+            case command::UPLOAD_TEXTURE:
+              uploadTexture(buffer, *this);
+              break;
+
+            default:
+              fprintf(stderr, "Unknown command: %d\n", command);
+              break;
+          }
+        }
       }
 
     public:
@@ -88,6 +114,16 @@ namespace three {
 
       Array<State> _stateStack;
   };
+
+  // -- Command implementations --
+
+  static void uploadTexture(Stream & s, GLContext & context)
+  {
+    TextureRef ref;
+    uint16_t width, height;
+    uint8_t format, type;
+    s >> ref >> width >> height >> format >> type;
+  }
 
   // -- Interface --
 

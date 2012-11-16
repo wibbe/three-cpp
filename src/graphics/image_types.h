@@ -1,7 +1,7 @@
 
 #pragma once
 
-namespace tree {
+namespace three {
   struct Image
   {
     uint16_t width;
