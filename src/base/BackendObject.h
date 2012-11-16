@@ -22,28 +22,23 @@
 
 #pragma once
 
-#include "Defines.h"
-
 namespace three {
 
   // Forward declarations
-  class Texture;
-  class RenderBuffer;
+  class Object;
 
-  class Buffer
+  class BackendObject
   {
     public:
-      Buffer(int width, int height,
-             Format colorFormat = RGBAFormat,
-             Type colorType = UnsignedByteType,
-             bool depthBuffer = true);
-      virtual ~Buffer();
+      BackendObject(Object * object)
+        : sourceObject(object)
+      { }
+
+      virtual ~BackendObject()
+      { }
 
     public:
-      Texture * colorTexture;
-      Texture * depthTexture;
-
-      RenderBuffer * __renderBuffer;
+      Object * sourceObject;
   };
 
 }

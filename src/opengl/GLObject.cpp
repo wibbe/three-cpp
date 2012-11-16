@@ -7,7 +7,7 @@
 namespace three {
 
   GLObject::GLObject(Object * source)
-    : RenderObject(source),
+    : BackendObject(source),
       geometry(0),
       material(0),
       render(false)

@@ -27,7 +27,7 @@
 namespace three {
 
   // Forward declarations
-  class RenderTexture;
+  class BackendTexture;
 
   class Texture
   {
@@ -54,7 +54,7 @@ namespace three {
       bool needsUpdate;
       bool generateMipmaps;
 
-      RenderTexture * __renderTexture;
+      BackendTexture * __renderTexture;
   };
 
 }

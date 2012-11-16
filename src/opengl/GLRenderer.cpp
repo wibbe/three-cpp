@@ -28,7 +28,7 @@
 
 namespace three {
 
-  static inline bool painterSort(RenderObject * obj1, RenderObject * obj2)
+  static inline bool painterSort(BackendObject * obj1, BackendObject * obj2)
   {
     return static_cast<GLObject *>(obj1)->z > static_cast<GLObject *>(obj2)->z;
   }
@@ -415,7 +415,7 @@ namespace three {
       clear(autoClearColor, autoClearDepth, autoClearStencil);
 
     // Setup matrices for regular objects
-    for (std::vector<RenderObject *>::iterator it = scene->__renderObjects.begin(), end = scene->__renderObjects.end(); it != end; ++it)
+    for (std::vector<BackendObject *>::iterator it = scene->__renderObjects.begin(), end = scene->__renderObjects.end(); it != end; ++it)
     {
       GLObject * glObject = static_cast<GLObject *>(*it);
       Object * object = glObject->sourceObject;
@@ -465,7 +465,7 @@ namespace three {
     setDepthWrite(true);
   }
 
-  void GLRenderer::renderObjects(std::vector<RenderObject *> const& renderList,
+  void GLRenderer::renderObjects(std::vector<BackendObject *> const& renderList,
                                  bool reverse,
                                  std::string materialType,
                                  Camera * camera,
@@ -476,7 +476,7 @@ namespace three {
   {
     if (reverse)
     {
-      for (std::vector<RenderObject *>::const_reverse_iterator it = renderList.rbegin(), end = renderList.rend(); it != end; ++it)
+      for (std::vector<BackendObject *>::const_reverse_iterator it = renderList.rbegin(), end = renderList.rend(); it != end; ++it)
       {
         GLObject * object = static_cast<GLObject *>(*it);
         Material * material = overrideMaterial ? overrideMaterial : object->material;
@@ -487,7 +487,7 @@ namespace three {
     }
     else
     {
-      for (std::vector<RenderObject *>::const_iterator it = renderList.begin(), end = renderList.end(); it != end; ++it)
+      for (std::vector<BackendObject *>::const_iterator it = renderList.begin(), end = renderList.end(); it != end; ++it)
       {
         GLObject * object = static_cast<GLObject *>(*it);
         Material * material = overrideMaterial ? overrideMaterial : object->material;
@@ -659,7 +659,7 @@ namespace three {
     scene->objectsAdded.clear();
     scene->objectsRemoved.clear();
 
-    for (std::vector<RenderObject *>::iterator it = scene->__renderObjects.begin(), end = scene->__renderObjects.end(); it != end; ++it)
+    for (std::vector<BackendObject *>::iterator it = scene->__renderObjects.begin(), end = scene->__renderObjects.end(); it != end; ++it)
       updateObject((*it)->sourceObject);
   }
 

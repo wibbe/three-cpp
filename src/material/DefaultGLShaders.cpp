@@ -1,6 +1,6 @@
 
 #include "base/Code.h"
-#include "base/RenderMaterial.h"
+#include "base/BackendMaterial.h"
 #include "base/StringHash.h"
 #include "base/Renderer.h"
 #include <cassert>

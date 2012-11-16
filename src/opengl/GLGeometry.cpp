@@ -5,7 +5,7 @@
 namespace three {
 
   GLGeometry::GLGeometry(Geometry * source)
-    : RenderGeometry(source),
+    : BackendGeometry(source),
       vertexBuffer(0),
       normalBuffer(0),
       colorBuffer(0),

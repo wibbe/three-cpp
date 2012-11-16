@@ -31,7 +31,7 @@
 namespace three {
 
   // Forward declarations
-  class RenderMaterial;
+  class BackendMaterial;
   class Renderer;
   class Texture;
 
@@ -68,7 +68,7 @@ namespace three {
       bool needsUpdate;
 
       // Only for internal use by the renderer
-      RenderMaterial * __renderMaterial;
+      BackendMaterial * __renderMaterial;
   };
 
 }

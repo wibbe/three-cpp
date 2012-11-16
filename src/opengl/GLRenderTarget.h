@@ -22,24 +22,21 @@
 
 #pragma once
 
+#include "base/BackendRenderTarget.h"
+ #include <stdint.h>
+
 namespace three {
 
   // Forward declarations
-  class Buffer;
+  class RenderTarget;
 
-  class RenderBuffer
+  class GLRenderTarget : public BackendRenderTarget
   {
     public:
-      RenderBuffer(Buffer * object)
-        : sourceBuffer(object)
-      { }
-
-      virtual ~RenderBuffer()
-      { }
+      GLRenderTarget(RenderTarget * buffer);
 
     public:
-      Buffer * sourceBuffer;
+      uint32_t frameBufferObject;
   };
 
 }
-

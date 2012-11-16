@@ -22,21 +22,30 @@
 
 #pragma once
 
-#include "base/RenderBuffer.h"
  #include <stdint.h>
 
 namespace three {
 
   // Forward declarations
-  class Buffer;
+  class Material;
+  class Vector3;
+  class Vector4;
+  class Color;
 
-  class GLBuffer : public RenderBuffer
+  class BackendMaterial
   {
     public:
-      GLBuffer(Buffer * buffer);
+      BackendMaterial()
+      { }
 
-    public:
-      uint32_t frameBufferObject;
+      virtual ~BackendMaterial()
+      { }
+
+      virtual void uniform(uint32_t id, float value) = 0;
+      virtual void uniform(uint32_t id, Vector3 const& value) = 0;
+      virtual void uniform(uint32_t id, Vector4 const& value) = 0;
+      virtual void uniform(uint32_t id, Color const& value) = 0;
   };
 
 }
+

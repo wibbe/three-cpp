@@ -27,14 +27,14 @@ namespace three {
   // Forward declarations
   class Texture;
 
-  class RenderTexture
+  class BackendTexture
   {
     public:
-      RenderTexture(Texture * object)
+      BackendTexture(Texture * object)
         : sourceTexture(object)
       { }
 
-      virtual ~RenderTexture()
+      virtual ~BackendTexture()
       { }
 
     public:

@@ -20,7 +20,7 @@ SET(SOURCE
   base/Vector3.cpp
   base/Matrix4.cpp
   base/Quaternion.cpp
-  base/Buffer.cpp
+  base/RenderTarget.cpp
 
   material/DefaultMaterials.cpp
   material/DefaultGLShaders.cpp
@@ -34,7 +34,7 @@ SET(SOURCE
   opengl/GLRenderer.cpp
   opengl/GLMaterial.cpp
   opengl/GLTexture.cpp
-  opengl/GLBuffer.cpp
+  opengl/GLRenderTarget.cpp
 )
 
 SET(LIBRARIES

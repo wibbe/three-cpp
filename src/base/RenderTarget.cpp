@@ -1,13 +1,13 @@
 
-#include "Buffer.h"
+#include "RenderTarget.h"
 #include "Texture.h"
 
 namespace three {
 
-  Buffer::Buffer(int width, int height,
-                 Format colorFormat,
-                 Type colorType,
-                 bool depthBuffer)
+  RenderTarget::RenderTarget(int width, int height,
+                             Format colorFormat,
+                             Type colorType,
+                             bool depthBuffer)
     : colorTexture(0),
       depthTexture(0),
       __renderBuffer(0)

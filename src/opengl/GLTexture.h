@@ -22,12 +22,12 @@
 
 #pragma once
 
-#include "base/RenderTexture.h"
+#include "base/BackendTexture.h"
 #include <stdint.h>
 
 namespace three {
 
-  class GLTexture : public RenderTexture
+  class GLTexture : public BackendTexture
   {
     public:
       GLTexture(Texture * source);

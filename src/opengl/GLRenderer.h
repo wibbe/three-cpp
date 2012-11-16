@@ -23,7 +23,7 @@
 #pragma once
 
 #include "base/Renderer.h"
-#include "base/RenderObject.h"
+#include "base/BackendObject.h"
 #include "base/Matrix4.h"
 #include <vector>
 #include <string>
@@ -58,7 +58,7 @@ namespace three {
       void setDefaultGLState();
       void resetCache();
 
-      void renderObjects(std::vector<RenderObject *> const& renderList,
+      void renderObjects(std::vector<BackendObject *> const& renderList,
                          bool reverse,
                          std::string materialType,
                          Camera * camera,

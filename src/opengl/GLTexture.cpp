@@ -5,7 +5,7 @@
 namespace three {
 
   GLTexture::GLTexture(Texture * source)
-    : RenderTexture(source),
+    : BackendTexture(source),
       id(0),
       type(0)
   {

@@ -23,12 +23,12 @@
 #pragma once
 
 #include "base/Matrix4.h"
-#include "base/RenderGeometry.h"
+#include "base/BackendGeometry.h"
  #include <stdint.h>
 
 namespace three {
 
-  class GLGeometry : public RenderGeometry
+  class GLGeometry : public BackendGeometry
   {
     public:
       GLGeometry(Geometry * source);
