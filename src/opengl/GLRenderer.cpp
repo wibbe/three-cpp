@@ -272,8 +272,10 @@ namespace three {
     _currentBlending = NormalBlending;
   }
 
-  void GLRenderer::setSize(int width, int height)
+  void GLRenderer::setSize(int width_, int height_)
   {
+    width = width_;
+    height = height_;
     setViewport(0, 0, width, height);
   }
 
@@ -395,6 +397,7 @@ namespace three {
       if (_currentFrameBuffer != 0)
       {
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+        setViewport(0, 0, width, height);
         _currentFrameBuffer = 0;
       }
 
@@ -403,8 +406,11 @@ namespace three {
 
     GLRenderTarget * glTarget = static_cast<GLRenderTarget *>(renderTarget->__renderTarget);
 
+    printf("Has gl: %d\n", glTarget);
+
     if (!glTarget)
     {
+      fprintf(stderr, "Constructing framebuffer\n");
       GLTexture * colorTex = renderTarget->colorTexture ? static_cast<GLTexture *>(renderTarget->colorTexture->__renderTexture) : 0;
       GLTexture * depthTex = renderTarget->depthTexture ? static_cast<GLTexture *>(renderTarget->depthTexture->__renderTexture) : 0;
 
@@ -414,6 +420,8 @@ namespace three {
         colorTex->type = GL_TEXTURE_2D;
         glGenTextures(1, &colorTex->id);
         setupTexture(renderTarget->colorTexture, colorTex);
+
+        fprintf(stderr, "Constructed color texture!\n");
       }
 
       if (renderTarget->depthTexture && !depthTex)
@@ -429,14 +437,22 @@ namespace three {
       glBindFramebuffer(GL_DRAW_FRAMEBUFFER, glTarget->id);
 
       if (colorTex)
-        glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, colorTex->id, 0);
+        glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTex->id, 0);
       if (depthTex)
-        glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthTex->id, 0);
+        glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTex->id, 0);
       {
         uint32_t id;
         glGenRenderbuffers(1, &id);
         glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, renderTarget->width, renderTarget->height);
         glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, id);
+      }
+
+      GLenum error = glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
+      if (error != GL_FRAMEBUFFER_COMPLETE)
+      {
+        fprintf(stderr, "There was a problem costructing the RenderTarget\n");
+        glDeleteFramebuffers(1, &glTarget->id);
+        glTarget->id = 0;
       }
     }
 
@@ -447,6 +463,8 @@ namespace three {
 
       uint32_t attachments[1] = { GL_COLOR_ATTACHMENT0 };
       glDrawBuffers(1, attachments);
+
+      setViewport(0, 0, renderTarget->width, renderTarget->height);
     }
   }
 
@@ -469,7 +487,8 @@ namespace three {
 
     camera->matrixWorldInverse = camera->matrixWorld.inverse();
     camera->positionWorld = camera->matrixWorld * camera->position;
-    projScreenMatrix = camera->projectionMatrix * camera->matrixWorldInverse;
+    //projScreenMatrix = camera->projectionMatrix * camera->matrixWorldInverse;
+    projScreenMatrix = camera->matrixWorldInverse * camera->projectionMatrix;
 
     if (autoUpdateObjects)
       updateGLObjects(scene);
@@ -546,7 +565,7 @@ namespace three {
       for (std::vector<BackendObject *>::const_reverse_iterator it = renderList.rbegin(), end = renderList.rend(); it != end; ++it)
       {
         GLObject * object = static_cast<GLObject *>(*it);
-        Material * material = overrideMaterial ? overrideMaterial : object->material;
+        Material * material = overrideMaterial ? overrideMaterial : *object->material;
 
         if (object->render && material->transparent)
           renderObject(camera, lights, material, object->geometry, object, useBlending);
@@ -557,7 +576,7 @@ namespace three {
       for (std::vector<BackendObject *>::const_iterator it = renderList.begin(), end = renderList.end(); it != end; ++it)
       {
         GLObject * object = static_cast<GLObject *>(*it);
-        Material * material = overrideMaterial ? overrideMaterial : object->material;
+        Material * material = overrideMaterial ? overrideMaterial : *object->material;
 
         if (object->render && !material->transparent)
           renderObject(camera, lights, material, object->geometry, object, useBlending);
@@ -763,7 +782,7 @@ namespace three {
       Geometry * geom = mesh->geometry;
       GLObject * glObject = static_cast<GLObject *>(mesh->__renderObject);
 
-      glObject->material = mesh->material;
+      glObject->material = &mesh->material;
 
       // Has the geometry buffer changed?
       if (!geom->__renderGeometry || geom->__renderGeometry != glObject->geometry)
@@ -826,8 +845,7 @@ namespace three {
   {
     GLObject * glObject = static_cast<GLObject *>(object->__renderObject);
 
-    glObject->modelViewMatrix = object->matrixWorld * camera->matrixWorldInverse;
-    //glObject->modelViewMatrix = camera->matrixWorldInverse * object->matrixWorld;
+    glObject->modelViewMatrix = camera->matrixWorldInverse * object->matrixWorld;
     glObject->normalMatrix = glObject->modelViewMatrix.inverse();
     glObject->normalMatrix.transpose();
   }

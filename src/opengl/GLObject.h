@@ -41,7 +41,7 @@ namespace three {
       Matrix4 normalMatrix;
 
       GLGeometry * geometry;
-      Material * material;
+      Material ** material;
 
       float z;
 

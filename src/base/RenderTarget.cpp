@@ -34,4 +34,8 @@ namespace three {
     }
   }
 
+  RenderTarget::~RenderTarget()
+  {
+  }
+
 }

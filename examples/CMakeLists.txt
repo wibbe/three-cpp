@@ -11,7 +11,9 @@ SET(LIBRARIES
 ADD_EXECUTABLE(cube Cube.cpp)
 ADD_EXECUTABLE(triangle Triangle.cpp)
 ADD_EXECUTABLE(camaro Camaro.cpp)
+ADD_EXECUTABLE(render_to_texture RenderToTexture.cpp)
 
 TARGET_LINK_LIBRARIES(cube ${LIBRARIES})
 TARGET_LINK_LIBRARIES(triangle ${LIBRARIES})
 TARGET_LINK_LIBRARIES(camaro ${LIBRARIES})
+TARGET_LINK_LIBRARIES(render_to_texture ${LIBRARIES})

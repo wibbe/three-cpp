@@ -18,7 +18,7 @@ namespace three {
       generateMipmaps(true),
       __renderTexture(0)
   {
-    memset(images, 0, sizeof(void *));
+    memset(images, 0, sizeof(void *) * 6);
   }
 
 }
