@@ -31,14 +31,14 @@ namespace three {
   {
     public:
       BackendRenderTarget(RenderTarget * object)
-        : sourceBuffer(object)
+        : sourceTarget(object)
       { }
 
       virtual ~BackendRenderTarget()
       { }
 
     public:
-      RenderTarget * sourceBuffer;
+      RenderTarget * sourceTarget;
   };
 
 }

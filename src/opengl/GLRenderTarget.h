@@ -36,7 +36,7 @@ namespace three {
       GLRenderTarget(RenderTarget * buffer);
 
     public:
-      uint32_t frameBufferObject;
+      uint32_t id;
   };
 
 }

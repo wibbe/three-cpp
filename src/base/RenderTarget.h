@@ -40,10 +40,12 @@ namespace three {
       virtual ~RenderTarget();
 
     public:
+      int width;
+      int height;
       Texture * colorTexture;
       Texture * depthTexture;
 
-      BackendRenderTarget * __renderBuffer;
+      BackendRenderTarget * __renderTarget;
   };
 
 }

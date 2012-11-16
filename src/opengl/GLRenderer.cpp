@@ -1,5 +1,6 @@
 
 #include "opengl/GLRenderer.h"
+#include "opengl/GLRenderTarget.h"
 
 #include "base/Scene.h"
 #include "base/Camera.h"
@@ -8,6 +9,7 @@
 #include "base/Mesh.h"
 #include "base/Geometry.h"
 #include "base/Texture.h"
+#include "base/RenderTarget.h"
 #include "base/Code.h"
 #include "base/MurmurHash.h"
 #include "material/DefaultGLShaders.h"
@@ -117,6 +119,8 @@ namespace three {
         return GL_LUMINANCE;
       case LuminanceAlphaFormat:
         return GL_LUMINANCE_ALPHA;
+      case DepthFormat:
+        return GL_DEPTH_COMPONENT;
     }
 
     return 0;
@@ -170,11 +174,51 @@ namespace three {
     return shader;
   }
 
+  static void setupTexture(Texture * texture, GLTexture * glTex, int slot = 0)
+  {
+    glActiveTexture(GL_TEXTURE0 + slot);
+    glBindTexture(glTex->type, glTex->id);
+
+    if (texture->type == Texture2D)
+    {
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterToGL(texture->minFilter));
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterToGL(texture->magFilter));
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrappingToGL(texture->wrapS));
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrappingToGL(texture->wrapT));
+
+
+      glTexImage2D(GL_TEXTURE_2D, 0,
+                   formatToGL(texture->format),
+                   texture->width, texture->height, 0,
+                   formatToGL(texture->format),
+                   typeToGL(texture->imageDataType), texture->images[0]);
+    }
+    else // CubeMap
+    {
+      GLenum format = formatToGL(texture->format);
+      GLenum type = typeToGL(texture->imageDataType);
+
+      for (int i = 0; i < 6; ++i)
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0,
+                     format, texture->width, texture->height, 0,
+                     format, type, texture->images[i]);
+    }
+
+    bool isImagePowerOfTwo = isPowerOfTwo(texture->width) && isPowerOfTwo(texture->height);
+
+    if (texture->generateMipmaps && isImagePowerOfTwo)
+      glGenerateMipmap(glTex->type);
+
+    texture->needsUpdate = false;
+  }
+
+
   GLRenderer::GLRenderer(int windowWidth, int windowHeight, bool fullscreen)
     : Renderer(),
       _currentDepthTest(true),
       _currentDepthWrite(true),
       _currentBlending(NormalBlending),
+      _currentFrameBuffer(0),
       _currentProgram(0),
       _currentVertexBuffer(0),
       _currentNormalBuffer(0),
@@ -333,54 +377,77 @@ namespace three {
         glGenTextures(1, &glTex->id);
       }
 
+      setupTexture(texture, glTex, slot);
+    }
+
+    if (_currentTexture[slot] != glTex->id)
+    {
       glActiveTexture(GL_TEXTURE0 + slot);
       glBindTexture(glTex->type, glTex->id);
-
-      if (texture->type == Texture2D)
-      {
-    	  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterToGL(texture->minFilter));
-    	  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterToGL(texture->magFilter));
-    	  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrappingToGL(texture->wrapS));
-    	  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrappingToGL(texture->wrapT));
-
-
-    	  glTexImage2D(GL_TEXTURE_2D, 0,
-    	               formatToGL(texture->format),
-    	               texture->width, texture->height, 0,
-    	               formatToGL(texture->format),
-    	               typeToGL(texture->imageDataType), texture->images[0]);
-      }
-      else // CubeMap
-      {
-        GLenum format = formatToGL(texture->format);
-        GLenum type = typeToGL(texture->imageDataType);
-
-        for (int i = 0; i < 6; ++i)
-          glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0,
-                       format, texture->width, texture->height, 0,
-                       format, type, texture->images[i]);
-      }
-
-      bool isImagePowerOfTwo = isPowerOfTwo(texture->width) && isPowerOfTwo(texture->height);
-
-      if (texture->generateMipmaps && isImagePowerOfTwo)
-        glGenerateMipmap(glTex->type);
-
-      texture->needsUpdate = false;
-    }
-    else
-    {
-      if (_currentTexture[slot] != glTex->id)
-      {
-        glActiveTexture(GL_TEXTURE0 + slot);
-        glBindTexture(glTex->type, glTex->id);
-        _currentTexture[slot] = glTex->id;
-      }
+      _currentTexture[slot] = glTex->id;
     }
   }
 
   void GLRenderer::setRenderTarget(RenderTarget * renderTarget)
   {
+    if (!renderTarget)
+    {
+      if (_currentFrameBuffer != 0)
+      {
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+        _currentFrameBuffer = 0;
+      }
+
+      return;
+    }
+
+    GLRenderTarget * glTarget = static_cast<GLRenderTarget *>(renderTarget->__renderTarget);
+
+    if (!glTarget)
+    {
+      GLTexture * colorTex = renderTarget->colorTexture ? static_cast<GLTexture *>(renderTarget->colorTexture->__renderTexture) : 0;
+      GLTexture * depthTex = renderTarget->depthTexture ? static_cast<GLTexture *>(renderTarget->depthTexture->__renderTexture) : 0;
+
+      if (renderTarget->colorTexture && !colorTex)
+      {
+        colorTex = new GLTexture(renderTarget->colorTexture);
+        colorTex->type = GL_TEXTURE_2D;
+        glGenTextures(1, &colorTex->id);
+        setupTexture(renderTarget->colorTexture, colorTex);
+      }
+
+      if (renderTarget->depthTexture && !depthTex)
+      {
+        depthTex = new GLTexture(renderTarget->depthTexture);
+        depthTex->type = GL_TEXTURE_2D;
+        glGenTextures(1, &depthTex->id);
+        setupTexture(renderTarget->depthTexture, depthTex);
+      }
+
+      glTarget = new GLRenderTarget(renderTarget);
+      glGenFramebuffers(1, &glTarget->id);
+      glBindFramebuffer(GL_DRAW_FRAMEBUFFER, glTarget->id);
+
+      if (colorTex)
+        glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, colorTex->id, 0);
+      if (depthTex)
+        glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthTex->id, 0);
+      {
+        uint32_t id;
+        glGenRenderbuffers(1, &id);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, renderTarget->width, renderTarget->height);
+        glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, id);
+      }
+    }
+
+    if (_currentFrameBuffer != glTarget->id)
+    {
+      _currentFrameBuffer = glTarget->id;
+      glBindFramebuffer(GL_DRAW_FRAMEBUFFER, glTarget->id);
+
+      uint32_t attachments[1] = { GL_COLOR_ATTACHMENT0 };
+      glDrawBuffers(1, attachments);
+    }
   }
 
   void GLRenderer::clear(bool color, bool depth, bool stencil)

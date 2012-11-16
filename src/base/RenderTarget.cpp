@@ -4,29 +4,33 @@
 
 namespace three {
 
-  RenderTarget::RenderTarget(int width, int height,
+  RenderTarget::RenderTarget(int width_, int height_,
                              Format colorFormat,
                              Type colorType,
                              bool depthBuffer)
-    : colorTexture(0),
+    : width(width_),
+      height(height_),
+      colorTexture(0),
       depthTexture(0),
-      __renderBuffer(0)
+      __renderTarget(0)
   {
     colorTexture = new Texture();
     colorTexture->width = width;
     colorTexture->height = height;
-    colorTexture->type = TextureTarget;
+    colorTexture->type = Texture2D;
     colorTexture->format = colorFormat;
     colorTexture->imageDataType = colorType;
+    colorTexture->generateMipmaps = false;
 
     if (depthBuffer)
     {
       depthTexture = new Texture();
       depthTexture->width = width;
       depthTexture->height = height;
-      depthTexture->type = TextureTarget;
+      depthTexture->type = Texture2D;
       depthTexture->format = DepthFormat;
       depthTexture->imageDataType = FloatType;
+      depthTexture->generateMipmaps = false;
     }
   }
 

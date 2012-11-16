@@ -35,8 +35,7 @@ namespace three {
   enum TextureType
   {
     Texture2D,
-    TextureCube,
-    TextureTarget
+    TextureCube
   };
 
   enum Blending

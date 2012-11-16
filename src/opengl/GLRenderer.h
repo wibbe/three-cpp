@@ -110,6 +110,7 @@ namespace three {
 
       Blending _currentBlending;
 
+      uint32_t _currentFrameBuffer;
       uint32_t _currentProgram;
       uint32_t _currentVertexBuffer;
       uint32_t _currentNormalBuffer;

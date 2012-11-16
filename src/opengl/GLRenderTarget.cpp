@@ -6,9 +6,9 @@ namespace three {
 
   GLRenderTarget::GLRenderTarget(RenderTarget * buffer)
     : BackendRenderTarget(buffer),
-      frameBufferObject(0)
+      id(0)
   {
-    buffer->__renderBuffer = this;
+    buffer->__renderTarget = this;
   }
 
 }
