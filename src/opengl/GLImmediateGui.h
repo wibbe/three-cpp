@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2012 Daniel Wiberg
+ * Copyright (c) 2013 Daniel Wiberg
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,20 +20,19 @@
  * THE SOFTWARE.
  */
 
-
 #pragma once
+
+#include "base/RenderPlugin.h"
 
 namespace three {
 
-  class Scene;
-  class Camera;
-  class Renderer;
-
-  class RenderPlugin
+  class GLImmediateGui : public RenderPlugin
   {
     public:
-      virtual void init(Renderer * renderer) = 0;
-      virtual void render(Scene * scene, Camera * camera, int viewportWidth, int viewportHeight) = 0;
-  };
-}
+      GLImmediateGui();
 
+      void init(Renderer * renderer);
+      void render(Scene * scene, Camera * camera, int viewportWidth, int viewportHeight);
+  };
+
+}
