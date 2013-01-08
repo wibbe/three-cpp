@@ -33,6 +33,11 @@ namespace three {
 
       void init(Renderer * renderer);
       void render(Scene * scene, Camera * camera, int viewportWidth, int viewportHeight);
+
+      void begin(int mouseX, int mouseY, int mouseButton, int mouseScroll);
+      void end();
+
+      bool button(const char * text, bool enabled = true);
   };
 
 }

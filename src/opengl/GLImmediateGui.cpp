@@ -18,5 +18,19 @@ namespace three {
 
   }
 
+  void GLImmediateGui::begin(int mouseX, int mouseY, int mouseButton, int mouseScroll)
+  {
+
+  }
+
+  void GLImmediateGui::end()
+  {
+
+  }
+
+  bool GLImmediateGui::button(const char * text, bool enabled)
+  {
+    return false;
+  }
 
 }
