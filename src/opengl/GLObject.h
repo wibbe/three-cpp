@@ -46,6 +46,9 @@ namespace three {
       float z;
 
       bool render;
+
+      /// Contains all information we need for sorting the object
+      uint64_t sortKey;
   };
 
 }

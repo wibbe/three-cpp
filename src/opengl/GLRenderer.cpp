@@ -68,9 +68,9 @@ namespace three {
     #define CHECK_GL()
   #endif
 
-  static inline bool painterSort(BackendObject * obj1, BackendObject * obj2)
+  static inline bool painterSort(GLObject * obj1, GLObject * obj2)
   {
-    return static_cast<GLObject *>(obj1)->z > static_cast<GLObject *>(obj2)->z;
+    return obj1->z > obj2->z;
   }
 
   enum SHADER_ATTRIB_LOCATION
@@ -547,19 +547,19 @@ namespace three {
     if (autoClear || forceClear)
       clear(autoClearColor, autoClearDepth, autoClearStencil);
 
+    _renderObjects.clear();
+    _renderObject.reserver(scene->renderObjects.size());
+
     // Setup matrices for regular objects
     for (std::vector<BackendObject *>::iterator it = scene->__renderObjects.begin(), end = scene->__renderObjects.end(); it != end; ++it)
     {
       GLObject * glObject = static_cast<GLObject *>(*it);
       Object * object = glObject->sourceObject;
 
-      updateMatrices(object, camera);
-
-      glObject->render = false;
-
       if (object->visible)
       {
-        glObject->render = true;
+        updateMatrices(object, camera);
+        _renderObjects.push_back(glObject);
 
         if (sortObjects)
         {
@@ -571,7 +571,7 @@ namespace three {
 
     // Sort objects according to depth
     if (sortObjects)
-      std::sort(scene->__renderObjects.begin(), scene->__renderObjects.end(), painterSort);
+      std::sort(_renderObjects.begin(), _renderObjects.end(), painterSort);
 
     // Draw all objects
     if (overrideMaterial)
@@ -580,16 +580,16 @@ namespace three {
       setDepthTest(overrideMaterial->depthTest);
       setDepthWrite(overrideMaterial->depthWrite);
 
-      renderObjects(scene->__renderObjects, false, "", camera, scene->lights, /* fog, */ true, overrideMaterial);
+      renderObjects(_renderObjects, false, "", camera, scene->lights, /* fog, */ true, overrideMaterial);
     }
     else
     {
       // opaque pass (front-to-back order)
       setBlending(NormalBlending);
-      renderObjects(scene->__renderObjects, false, "opaque", camera, scene->lights, /* fog, */ false, 0);
+      renderObjects(_renderObjects, false, "opaque", camera, scene->lights, /* fog, */ false, 0);
 
       // transparent pass (back-to-front order)
-      renderObjects(scene->__renderObjects, true, "transparent", camera, scene->lights, /* fog, */ true, 0);
+      renderObjects(_renderObjects, true, "transparent", camera, scene->lights, /* fog, */ true, 0);
     }
 
     renderPlugins(renderPluginsPost, scene, camera);

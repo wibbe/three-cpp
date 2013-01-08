@@ -105,6 +105,8 @@ namespace three {
       Matrix4 projScreenMatrix;
       Matrix4 projScreenMatrixPS;
 
+      std::vector<GLObject *> _renderObjects;
+
       bool _currentDepthTest;
       bool _currentDepthWrite;
 
