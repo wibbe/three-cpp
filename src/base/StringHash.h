@@ -26,6 +26,7 @@
 
 namespace three {
 
+  /// Compile time implementation of the FNV-1a hash algorithm
   template <unsigned int N, unsigned int I>
   struct FnvHash
   {
@@ -43,6 +44,20 @@ namespace three {
       return (2166136261u ^ str[0]) * 16777619u;
     }
   };
+
+  /// Simple implementation of the FNV-1a hash algorithm
+  inline uint32_t calculateFNV(const char * str)
+  {
+    const size_t length = strlen(str) + 1;
+    uint32_t hash = 2166136261u;
+    for (size_t i = 0; i < length; ++i)
+    {
+      hash ^= *str++;
+      hash *= 16777619u;
+    }
+   
+    return hash;
+  }
 
   class StringHash
   {
