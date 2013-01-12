@@ -34,10 +34,37 @@ namespace three {
       void init(Renderer * renderer);
       void render(Scene * scene, Camera * camera, int viewportWidth, int viewportHeight);
 
-      void begin(int mouseX, int mouseY, int mouseButton, int mouseScroll);
+      void begin(int mouseX, int mouseY, bool mouseButton, int mouseScroll);
       void end();
 
       bool button(const char * text, bool enabled = true);
+
+    private:
+      void clearInput();
+      void clearActive();
+
+    private:
+      int _mouseX;
+      int _mouseY;
+      int _mouseScroll;
+      int _widgetX;
+      int _widgetY;
+      int _widgetWidth;
+
+      unsigned int _active;
+      unsigned int _hot;
+      unsigned int _toBeHot;
+
+      unsigned int _areaId;
+      unsigned int _widgetId;
+
+      bool _wentActive;
+      bool _isActive;
+      bool _isHot;
+
+      bool _left;
+      bool _leftPressed;
+      bool _leftReleased;
   };
 
 }
