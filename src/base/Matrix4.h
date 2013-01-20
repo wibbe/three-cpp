@@ -51,6 +51,7 @@ namespace three {
 
       void setRotationFromEuler(Vector3 const& rotation);
       void makePerspective(float fov, float aspect, float near, float far);
+      void makeOrthographic(float left, float right, float top, float bottom, float near, float far);
 
       Matrix4 & scale(Vector3 const& scale);
 

@@ -157,6 +157,20 @@ namespace three {
     m[3]  = 0; m[7]  = 0; m[11] = -1; m[15] = 0;
   }
 
+  void Matrix4::makeOrthographic(float left, float right, float top, float bottom, float near, float far)
+  {
+    float w = right - left;
+    float h = top - bottom;
+    float p = far - near;
+    float x = (right + left) / w;
+    float y = (top + bottom) / h;
+    float z = (far + near) / p;
+
+    m[0] = 2 / w; m[4] = 0;     m[8] = 0;       m[12] = -x;
+    m[1] = 0;     m[5] = 2 / h; m[9] = 0;       m[13] = -y;
+    m[2] = 0;     m[6] = 0;     m[10] = -2 / p; m[14] = -z;
+    m[3] = 0;     m[7] = 0;     m[11] = 0;      m[15] = 1;
+  }
 
   void Matrix4::setRotationFromEuler(Vector3 const& rotation)
   {

@@ -4,6 +4,7 @@ SET(SOURCE
   base/Scene.cpp
   base/Camera.cpp
   base/PerspectiveCamera.cpp
+  base/OrthographicCamera.cpp
   base/Renderer.cpp
   base/Mesh.cpp
   base/Texture.cpp
