@@ -32,8 +32,6 @@ void addRectangle(float x, float y, float w, float h, Color const& color, Materi
   Geometry * geom = new Geometry();
   addRectangle(geom, Vector2(x, y), Vector2(w, h), color);
 
-  std::cout << "Vertex: " << geom->vertices.size() << " Face: " << geom->faces.size() << std::endl;
-
   Mesh * mesh = new Mesh(geom, material);
   scene->add(mesh);
 }

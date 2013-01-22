@@ -30,7 +30,7 @@ define 'DefaultMaterials', ['three'] do
     option :doubleSided, :DOUBLE_SIDED, false
     option :useVertexColor, :USE_COLOR, false
     option :gammaCorrection, :USE_GAMMA, false
-    option :useReflectivity, :USE_REFLECTIVITY, true
+    option :useReflectivity, :USE_REFLECTIVITY, false
 
     texture :map
     texture :lightMap
