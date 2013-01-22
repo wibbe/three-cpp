@@ -1,16 +1,16 @@
 /**
- * Copyright (c) 2012 Daniel Wiberg
- *
+ * Copyright (c) 2013 Daniel Wiberg
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * 
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -22,55 +22,63 @@
 
 #pragma once
 
+#include "base/Object.h"
 #include "base/Vector2.h"
-#include "base/Vector3.h"
-#include "base/Color.h"
-#include "base/Face.h"
-
-#include <vector>
-#include <stdint.h>
 
 namespace three {
 
-  // Forward declarations
-  class BackendGeometry;
+  class Mesh;
+  class Font;
 
-  class Geometry
+  class UIPanel : public Object
   {
     public:
-      typedef std::vector<Vector3> VertexArray;
-      typedef std::vector<Color> ColorArray;
-      typedef std::vector<Face> FaceArray;
-      typedef std::vector<Vector2> TexCoordArray;
+      static uint32_t Type;
 
     public:
-      Geometry();
+      UIPanel(Font * font);
 
-      void clear();
-      void computeBoundingSphere();
+      uint32_t type() const { return UIPanel::Type; }
+
+      void begin(Vector2 const& mousePos, bool mouseDown, float mouseScroll);
+      void end();
+
+      void label(const char * str);
+
+      void indent();
+      void unindent();
+      void separator();
+      void separatorLine();
 
     public:
-      VertexArray vertices;
-      VertexArray normals;
-      ColorArray colors;
-      TexCoordArray texCoord0;
+      Vector2 size;
+      Font * font;
 
-      FaceArray faces;
-      uint32_t faceCount;
+      Mesh * _faceMesh;
+      Mesh * _fontMesh;
 
-      bool hasTangents;
-      bool dynamic;
+      struct State
+      {
+        bool mouseDown;
+        bool mousePressed;
+        bool mouseReleased;
+        Vector2 mousePos;
+        Vector2 mouseDrag;
+        float mouseScroll;
 
-      bool verticesNeedUpdate;
-      bool normalsNeedUpdate;
-      bool colorsNeedUpdate;
-      bool texCoord0NeedUpdate;
-      bool elementsNeedUpdate;
+        uint32_t active;
+        uint32_t hot;
+        uint32_t toBeHot;
 
-      float boundingSphereRadius;
+        int32_t widgetId;
+        int32_t areaId;
 
-      // Only for internal use by the renderer
-      BackendGeometry * __renderGeometry;
+        bool isHot;
+        bool isActive;
+        bool wentActive;
+
+        float widgetX, widgetY, widgetW;
+      } _state;
   };
 
 }

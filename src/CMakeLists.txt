@@ -4,6 +4,7 @@ SET(SOURCE
   base/Scene.cpp
   base/Camera.cpp
   base/PerspectiveCamera.cpp
+  base/OrthographicCamera.cpp
   base/Renderer.cpp
   base/Mesh.cpp
   base/Texture.cpp
@@ -21,6 +22,11 @@ SET(SOURCE
   base/Matrix4.cpp
   base/Quaternion.cpp
   base/RenderTarget.cpp
+  base/Font.cpp
+  base/File.cpp
+  base/UIPanel.cpp
+
+  util/GeometryHelper.cpp
 
   material/DefaultMaterials.cpp
   material/DefaultGLShaders.cpp
@@ -28,6 +34,7 @@ SET(SOURCE
   loader/ImageUtils.cpp
   loader/CTMLoader.cpp
   loader/JSONLoader.cpp
+  loader/FontLoader.cpp
 
   opengl/GLObject.cpp
   opengl/GLGeometry.cpp
@@ -35,7 +42,6 @@ SET(SOURCE
   opengl/GLMaterial.cpp
   opengl/GLTexture.cpp
   opengl/GLRenderTarget.cpp
-  opengl/GLImmediateGui.cpp
 )
 
 SET(LIBRARIES

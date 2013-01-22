@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2012 Daniel Wiberg
+ * Copyright (c) 2013 Daniel Wiberg
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,55 +22,18 @@
 
 #pragma once
 
-#include "base/Vector2.h"
-#include "base/Vector3.h"
-#include "base/Color.h"
-#include "base/Face.h"
-
-#include <vector>
-#include <stdint.h>
+#include "base/Defines.h"
+#include <string>
 
 namespace three {
 
-  // Forward declarations
-  class BackendGeometry;
+  // Forward declaration
+  class Font;
 
-  class Geometry
+  class FontLoader
   {
     public:
-      typedef std::vector<Vector3> VertexArray;
-      typedef std::vector<Color> ColorArray;
-      typedef std::vector<Face> FaceArray;
-      typedef std::vector<Vector2> TexCoordArray;
-
-    public:
-      Geometry();
-
-      void clear();
-      void computeBoundingSphere();
-
-    public:
-      VertexArray vertices;
-      VertexArray normals;
-      ColorArray colors;
-      TexCoordArray texCoord0;
-
-      FaceArray faces;
-      uint32_t faceCount;
-
-      bool hasTangents;
-      bool dynamic;
-
-      bool verticesNeedUpdate;
-      bool normalsNeedUpdate;
-      bool colorsNeedUpdate;
-      bool texCoord0NeedUpdate;
-      bool elementsNeedUpdate;
-
-      float boundingSphereRadius;
-
-      // Only for internal use by the renderer
-      BackendGeometry * __renderGeometry;
+      static Font * loadFont(const char * path, float fontSize, int textureWidth, int textureHeight);
   };
 
 }

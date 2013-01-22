@@ -1,6 +1,7 @@
 
 #pragma once
 
+#include <stdint.h>
 #include "base/Vector3.h"
 
 namespace three {
@@ -11,14 +12,14 @@ namespace three {
       Face()
       { }
 
-      Face(unsigned short _a, unsigned short _b, unsigned short _c)
+      Face(uint16_t _a, uint16_t _b, uint16_t _c)
         : a(_a),
           b(_b),
           c(_c)
       { }
 
     public:
-      unsigned short a, b, c;
+      uint16_t a, b, c;
   };
 
 }
