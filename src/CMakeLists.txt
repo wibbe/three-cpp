@@ -23,6 +23,7 @@ SET(SOURCE
   base/Quaternion.cpp
   base/RenderTarget.cpp
   base/Font.cpp
+  base/File.cpp
 
   material/DefaultMaterials.cpp
   material/DefaultGLShaders.cpp

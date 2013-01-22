@@ -22,19 +22,9 @@
 
 #pragma once
 
-#include "base/Defines.h"
-#include <string>
-
 namespace three {
 
-  // Forward declaration
-  class Font;
-
-  class FontLoader
-  {
-    public:
-      static Font * loadFont(const char * path, float fontSize, int textureWidth, int textureHeight);
-  };
+  bool fileContent(const char * filename, unsigned char ** data, int & length);
 
 }
 
