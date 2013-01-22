@@ -24,18 +24,26 @@ namespace three {
     if (fileContent(path, &data, length))
     {
       font = new Font();
-      unsigned char * image = new unsigned char[textureWidth * textureHeight];
+      unsigned char * alpha = new unsigned char[textureWidth * textureHeight];
 
       stbtt_bakedchar charDef[96];
-      stbtt_BakeFontBitmap(data, 0, fontSize, image, textureWidth, textureHeight, 32, 96, charDef);
+      stbtt_BakeFontBitmap(data, 0, fontSize, alpha, textureWidth, textureHeight, 32, 96, charDef);
       delete[] data;
+
+      // Construct an luminance-alpha texture
+      unsigned char * image = new unsigned char[textureWidth * textureHeight * 2];
+      for (int i = 0, len = textureWidth * textureHeight; i < len; ++i)
+      {
+        image[i * 2 + 0] = 255;
+        image[i * 2 + 1] = alpha[i];
+      }
 
       // Create the texture
       Texture * texture = new Texture();
       texture->images[0] = image;
       texture->width = textureWidth;
       texture->height = textureHeight;
-      texture->format = AlphaFormat;
+      texture->format = LuminanceAlphaFormat;
       texture->imageDataType = UnsignedByteType;
       texture->type = Texture2D;
       font->texture = texture;
