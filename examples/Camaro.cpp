@@ -140,11 +140,11 @@ class CamaroDemo : public Window
 
       // Build ui
       panel->begin(Vector2(mouseX, mouseY), false, 0);
-      panel->label("Hello World!");
+      panel->label("Camaro Demo");
       panel->indent();
-      panel->label("This is Daniel speaking!");
+      panel->label("Indented label");
       panel->unindent();
-      panel->label("Another label!");
+      panel->label("Another label");
       panel->separatorLine();
       panel->label("This is cool!");
       panel->end();
