@@ -28,6 +28,7 @@
 namespace three {
 
   class Mesh;
+  class Font;
 
   class UIPanel : public Object
   {
@@ -35,15 +36,23 @@ namespace three {
       static uint32_t Type;
 
     public:
-      UIPanel();
+      UIPanel(Font * font);
 
       uint32_t type() const { return UIPanel::Type; }
 
       void begin(Vector2 const& mousePos, bool mouseDown, float mouseScroll);
       void end();
 
+      void label(const char * str);
+
+      void indent();
+      void unindent();
+      void separator();
+      void separatorLine();
+
     public:
       Vector2 size;
+      Font * font;
 
       Mesh * _faceMesh;
       Mesh * _fontMesh;

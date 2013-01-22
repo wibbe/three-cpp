@@ -2,10 +2,9 @@
 
 #include "base/Window.h"
 #include "base/Scene.h"
-#include "base/Camera.h"
 #include "base/Mesh.h"
-#include "base/Camera.h"
 #include "base/PerspectiveCamera.h"
+#include "base/OrthographicCamera.h"
 #include "material/DefaultMaterials.h"
 #include "base/Texture.h"
 #include "loader/ImageUtils.h"
@@ -15,6 +14,8 @@
 #include "base/Code.h"
 #include "loader/CTMLoader.h"
 #include "base/MathUtils.h"
+#include "loader/FontLoader.h"
+#include "base/UIPanel.h"
 
 #include <iostream>
 #include <cassert>
@@ -65,8 +66,20 @@ class CamaroDemo : public Window
       Mesh * ground = new Mesh(new PlaneGeometry(30, 30, 4, 4), groundMaterial);
       scene->add(ground);
 
+      // UI
+
+      uiScene = new Scene();
+
+      uiCamera = new OrthographicCamera(0, 1024, 0, 768, 1, 1000);
+      uiScene->add(uiCamera);
+
+      panel = new UIPanel(FontLoader::loadFont("assets/fonts/UbuntuLight.ttf", 16, 256, 256));
+      panel->position = Vector3(5, 5, -1);
+      uiScene->add(panel);
+
       renderer = new GLRenderer();
       renderer->setClearColor(Color("#587CEC"));
+      renderer->autoClear = false;
 
       drag = false;
       mouseX = 0;
@@ -80,6 +93,10 @@ class CamaroDemo : public Window
       renderer->setSize(width, height);
       camera->aspect = width / (float)height;
       camera->updateProjectionMatrix();
+
+      uiCamera->right = width;
+      uiCamera->bottom = height;
+      uiCamera->updateProjectionMatrix();
     }
 
     void mousePressed(int button)
@@ -121,12 +138,24 @@ class CamaroDemo : public Window
 
       angle += angleSpeed * dt;
 
+      // Build ui
+      panel->begin(Vector2(mouseX, mouseY), false, 0);
+      panel->label("Hello World!");
+      panel->indent();
+      panel->label("This is Daniel speaking!");
+      panel->unindent();
+      panel->label("Another label!");
+      panel->separatorLine();
+      panel->label("This is cool!");
+      panel->end();
+
       return !isKeyDown(Key::Esc);
     }
 
     void paint()
     {
-      renderer->render(scene, camera);
+      renderer->render(scene, camera, 0, true);
+      renderer->render(uiScene, uiCamera);
     }
 
     Object * createCar()
@@ -197,7 +226,10 @@ class CamaroDemo : public Window
   private:
     Renderer * renderer;
     Scene * scene;
+    Scene * uiScene;
+    UIPanel * panel;
     PerspectiveCamera * camera;
+    OrthographicCamera * uiCamera;
     Object * camaro;
     Object * pivot;
     Texture * skyMap;

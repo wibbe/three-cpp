@@ -16,6 +16,20 @@ namespace three {
   {
   }
 
+  void Geometry::clear()
+  {
+    vertices.clear();
+    normals.clear();
+    colors.clear();
+    texCoord0.clear();
+    faces.clear();
+
+    verticesNeedUpdate = true;
+    normalsNeedUpdate = true;
+    texCoord0NeedUpdate = true;
+    elementsNeedUpdate = true;
+  }
+
   void Geometry::computeBoundingSphere()
   {
     boundingSphereRadius = 0.0f;

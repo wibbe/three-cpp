@@ -46,6 +46,7 @@ namespace three {
     public:
       Geometry();
 
+      void clear();
       void computeBoundingSphere();
 
     public:
