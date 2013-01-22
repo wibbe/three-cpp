@@ -42,7 +42,7 @@ namespace three {
 
   UIPanel::UIPanel(Font * font_)
     : Object(),
-      size(200, 400),
+      size(250, 350),
       font(font_),
       _faceMesh(0),
       _fontMesh(0)
@@ -68,7 +68,9 @@ namespace three {
     _faceMesh = new Mesh(new Geometry(), faceMat);
     _faceMesh->geometry->dynamic = true;
 
+    // Create text mesh, this is always slightly above the face mesh
     _fontMesh = new Mesh(new Geometry(), fontMat);
+    _fontMesh->position.z = -0.1;
     _fontMesh->geometry->dynamic = true;
 
     add(_faceMesh);
