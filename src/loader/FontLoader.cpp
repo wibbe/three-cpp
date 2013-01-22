@@ -23,7 +23,7 @@ namespace three {
       unsigned char * image = new unsigned char[textureWidth * textureHeight];
 
       stbtt_bakedchar charDef[96];
-      stbtt_BakeFontBitmap(data, 0, 32.0, image, textureWidth, textureHeight, 32, 96, charDef);
+      stbtt_BakeFontBitmap(data, 0, fontSize, image, textureWidth, textureHeight, 32, 96, charDef);
       delete[] data;
 
       // Create the texture
@@ -45,7 +45,9 @@ namespace three {
 
         stbtt_GetBakedQuad(charDef, textureWidth, textureHeight, i, &x, &y, &quad, 1);
 
-        glyph.size = Vector2(quad.x1 - quad.x0, quad.y1 - quad.y0);
+        float offsetX = quad.x0 < 0.0f ? -quad.x0 : 0.0f;
+        glyph.topLeft = Vector2(quad.x0 + offsetX, quad.y0);
+        glyph.bottomRight = Vector2(quad.x1 + offsetX, quad.y1);
         glyph.uvTopLeft = Vector2(quad.s0, quad.t0);
         glyph.uvBottomRight = Vector2(quad.s1, quad.t1);
         glyph.advance = x;

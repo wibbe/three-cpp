@@ -25,6 +25,8 @@ SET(SOURCE
   base/Font.cpp
   base/File.cpp
 
+  util/GeometryHelper.cpp
+
   material/DefaultMaterials.cpp
   material/DefaultGLShaders.cpp
 

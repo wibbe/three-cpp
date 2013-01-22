@@ -2,6 +2,7 @@
 #include "Font.h"
 #include "MathUtils.h"
 #include "Geometry.h"
+#include "util/GeometryHelper.h"
 
 namespace three {
 
@@ -10,13 +11,12 @@ namespace three {
   {
   }
 
-  Vector2 Font::textSize(const char * str)
+  float Font::textLength(const char * str)
   {
     if (!texture)
-      return Vector2(0, 0);
+      return 0.0f;
 
-    Vector2 size(0, 0);
-
+    float length = 0.0f;
     for (; *str; ++str)
     {
       int character = *str - 32;
@@ -25,21 +25,30 @@ namespace three {
       {
         Glyph & glyph = glyphs[character];
 
-        size.x += glyph.advance;
-        size.y = max(size.y, glyph.size.y);
+        length += glyph.advance;
       }
     }
 
-    return size;
+    return length;
   }
 
-  void Font::buildTextGeometry(const char * str, Geometry * geom, Color const& textColor)
+  void Font::buildTextGeometry(const char * str, Vector2 const& offset, Geometry * geom, Color const& textColor)
   {
     if (!texture)
       return;
 
+    Vector2 pos = offset;
+
     for (; *str; ++str)
     {
+      int character = *str - 32;
+
+      if (character >= 0 && character < 96)
+      {
+        Glyph & glyph = glyphs[character];
+        addQuad(geom, glyph.topLeft + pos, glyph.bottomRight + pos, glyph.uvTopLeft, glyph.uvBottomRight, textColor);
+        pos.x += glyph.advance;
+      }
     }
   }
 

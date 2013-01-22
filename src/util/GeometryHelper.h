@@ -28,31 +28,9 @@
 namespace three {
 
   // Forward declaration
-  class Texture;
   class Geometry;
 
-  class Font
-  {
-    public:
-      struct Glyph
-      {
-        Vector2 topLeft;
-        Vector2 bottomRight;
-        Vector2 uvTopLeft;
-        Vector2 uvBottomRight;
-        float advance;
-      };
-
-    public:
-      Font();
-
-      float textLength(const char * str);
-      void buildTextGeometry(const char * str, Vector2 const& offset, Geometry * geom, Color const& textColor);
-
-    public:
-      Texture * texture;
-      Glyph glyphs[96];
-  };
+  void addQuad(Geometry * geom, Vector2 const& topLeft, Vector2 const& bottomRight, Vector2 const& uvTopLeft, Vector2 const& uvBottomRight, Color const& color);
 
 }
 
