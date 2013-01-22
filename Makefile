@@ -9,7 +9,8 @@ configure:
 
 configure-debug:
 	mkdir -p build
-	(cd build && cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_DEBUG=Yes ..)
+	(cd build/bin && ln -s ../../examples/assets)
+	(cd build && cmake -DCMAKE_BUILD_TYPE=Debug ..)
 
 compile: 
 	make -C build

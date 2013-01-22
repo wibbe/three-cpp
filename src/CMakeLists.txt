@@ -24,6 +24,7 @@ SET(SOURCE
   base/RenderTarget.cpp
   base/Font.cpp
   base/File.cpp
+  base/UIPanel.cpp
 
   util/GeometryHelper.cpp
 
