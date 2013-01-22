@@ -42,7 +42,6 @@ SET(SOURCE
   opengl/GLMaterial.cpp
   opengl/GLTexture.cpp
   opengl/GLRenderTarget.cpp
-  opengl/GLImmediateGui.cpp
 )
 
 SET(LIBRARIES
