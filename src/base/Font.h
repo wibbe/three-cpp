@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2012 Daniel Wiberg
+ * Copyright (c) 2013 Daniel Wiberg
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,54 +22,37 @@
 
 #pragma once
 
- #include <stdint.h>
- #include <string.h>
+#include "base/Vector2.h"
+#include "base/Color.h"
 
 namespace three {
 
-  /// Compile time implementation of the FNV-1a hash algorithm
-  template <unsigned int N, unsigned int I>
-  struct FnvHash
-  {
-    inline static uint32_t hash(const char (&str)[N])
-    {
-      return (FnvHash<N, I - 1>::hash(str) ^ str[I - 1]) * 16777619u;
-    }
-  };
+  // Forward declaration
+  class Texture;
+  class Geometry;
 
-  template <unsigned int N>
-  struct FnvHash<N, 1>
-  {
-    inline static uint32_t hash(const char (&str)[N])
-    {
-      return (2166136261u ^ str[0]) * 16777619u;
-    }
-  };
-
-  /// Simple implementation of the FNV-1a hash algorithm
-  inline uint32_t calculateFNV(const char * str)
-  {
-    const size_t length = strlen(str) + 1;
-    uint32_t hash = 2166136261u;
-    for (size_t i = 0; i < length; ++i)
-    {
-      hash ^= *str++;
-      hash *= 16777619u;
-    }
-
-    return hash;
-  }
-
-  class StringHash
+  class Font
   {
     public:
-      template <unsigned int N>
-      StringHash(const char (&str)[N])
-        : hash(FnvHash<N, N>::hash(str))
-      { }
+      struct Glyph
+      {
+        Vector2 size;
+        Vector2 uvTopLeft;
+        Vector2 uvBottomRight;
+        float advance;
+      };
 
     public:
-      uint32_t hash;
+      Font();
+
+      Vector2 textSize(const char * str);
+
+      void buildTextGeometry(const char * str, Geometry * geom, Color const& textColor);
+
+    public:
+      Texture * texture;
+      Glyph glyphs[96];
   };
 
 }
+

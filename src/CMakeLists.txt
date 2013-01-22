@@ -22,6 +22,7 @@ SET(SOURCE
   base/Matrix4.cpp
   base/Quaternion.cpp
   base/RenderTarget.cpp
+  base/Font.cpp
 
   material/DefaultMaterials.cpp
   material/DefaultGLShaders.cpp
@@ -29,6 +30,7 @@ SET(SOURCE
   loader/ImageUtils.cpp
   loader/CTMLoader.cpp
   loader/JSONLoader.cpp
+  loader/FontLoader.cpp
 
   opengl/GLObject.cpp
   opengl/GLGeometry.cpp
