@@ -11,6 +11,7 @@
 #include "loader/FontLoader.h"
 #include "opengl/GLRenderer.h"
 #include "base/Code.h"
+
 #include <iostream>
 
 using namespace three;
@@ -23,6 +24,17 @@ void addTextString(float x, float y, const char * text, Color const& color, Font
   Mesh * mesh = new Mesh(geom, material);
   mesh->position.x = x;
   mesh->position.y = y;
+  scene->add(mesh);
+}
+
+void addRectangle(float x, float y, float w, float h, Color const& color, Material * material, Scene * scene)
+{
+  Geometry * geom = new Geometry();
+  addRectangle(geom, Vector2(x, y), Vector2(w, h), color);
+
+  std::cout << "Vertex: " << geom->vertices.size() << " Face: " << geom->faces.size() << std::endl;
+
+  Mesh * mesh = new Mesh(geom, material);
   scene->add(mesh);
 }
 
@@ -50,8 +62,18 @@ class TextDemo : public Window
       fontMaterial->useTextureMap = true;
       fontMaterial->gammaCorrection = true;
       fontMaterial->transparent = true;
+      fontMaterial->useVertexColor = true;
+      fontMaterial->doubleSided = true;
+
+      colorMaterial = new MeshBasicMaterial();
+      colorMaterial->diffuse = Color(1, 1, 1);
+      colorMaterial->gammaCorrection = true;
+      colorMaterial->useVertexColor = true;
 
       addTextString(10, 32, "Hello World", Color(1, 0, 1), font, fontMaterial, scene);
+
+      addRectangle(100, 100, 200, 200, Color("#28B528"), colorMaterial, scene);
+      addRectangle(300, 100, 200, 200, Color(1, 0, 0), colorMaterial, scene);
 
       renderer = new GLRenderer();
       renderer->setClearColor(Color("#85B3B7"));
@@ -83,6 +105,7 @@ class TextDemo : public Window
     OrthographicCamera * camera;
 
     MeshBasicMaterial * fontMaterial;
+    MeshBasicMaterial * colorMaterial;
 };
 
 

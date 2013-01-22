@@ -41,4 +41,54 @@ namespace three {
     geom->elementsNeedUpdate = true;
   }
 
+  // Implementation borrows heavily from imguigl.cpp in
+
+  static void addPolygons(Geometry * geom, float * vertices, int count, float feather, Color const& color)
+  {
+    Color transparent = color;
+    transparent.a = 0.0;
+
+    uint16_t index = geom->vertices.size();
+
+    // Fill
+    for (int i = 0; i < count; ++i)
+    {
+      geom->vertices.push_back(Vector3(vertices[i * 2 + 0], vertices[i * 2 + 1], 0));
+      geom->colors.push_back(color);
+    }
+
+    for (int i = 2; i < count; ++i)
+      geom->faces.push_back(Face(index, index + i, index + i - 1));
+
+    geom->verticesNeedUpdate = true;
+    geom->colorsNeedUpdate = true;
+    geom->elementsNeedUpdate = true;
+  }
+
+  void addRectangle(Geometry * geom, Vector2 const& pos, Vector2 const& size, Color const& color)
+  {
+    float vertices[] = {
+      pos.x, pos.y,
+      pos.x + size.x, pos.y,
+      pos.x + size.x, pos.y + size.y,
+      pos.x, pos.y + size.y
+    };
+
+    addPolygons(geom, vertices, 4, 1.0f, color);
+  }
+
+  void addRoundedRect(Geometry * geom, Vector2 const& pos, Vector2 const& size, float radius, Color const& color)
+  {
+
+/*
+    Color transparent = color;
+    transparent.a = 0.0;
+
+    // Center vertex, everything will be constructed around this vertex
+    geom->vertices.push_back(Vector3(pos.x + size.x * 0.5, pos.y + size.y * 0.5, 0.0));
+    geom->colors.push_back(color);
+*/
+
+  }
+
 }
