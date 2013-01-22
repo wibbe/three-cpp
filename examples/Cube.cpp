@@ -7,7 +7,9 @@
 #include "base/PerspectiveCamera.h"
 #include "material/DefaultMaterials.h"
 #include "base/Texture.h"
+#include "base/Font.h"
 #include "loader/ImageUtils.h"
+#include "loader/FontLoader.h"
 #include "base/CubeGeometry.h"
 #include "opengl/GLRenderer.h"
 #include "base/Code.h"
@@ -33,6 +35,8 @@ class CubeDemo : public Window
       camera->lookAt(Vector3(0, 0, 0));
       scene->add(camera);
 
+      Font * font = FontLoader::loadFont("assets/fonts/UbuntuLight.ttf", 32.0, 256, 256);
+
       Geometry * geometry = new CubeGeometry(2, 2, 2);
 
       colorMaterial = new MeshBasicMaterial();
@@ -40,15 +44,18 @@ class CubeDemo : public Window
       colorMaterial->gammaCorrection = true;
 
       textureMaterial = new MeshBasicMaterial();
-      textureMaterial->map = ImageUtils::loadTexture("assets/textures/crate.png");
+      //textureMaterial->map = ImageUtils::loadTexture("assets/textures/crate.png");
+      textureMaterial->map = font->texture;
       textureMaterial->diffuse = Color(1, 1, 1);
       textureMaterial->useTextureMap = true;
       textureMaterial->gammaCorrection = true;
+      textureMaterial->transparent = true;
 
       mesh = new Mesh(geometry, textureMaterial);
       scene->add(mesh);
 
       renderer = new GLRenderer();
+      renderer->setClearColor(Color("#85B3B7"));
     }
 
     void resize(int width, int height)

@@ -46,7 +46,6 @@ namespace three {
       Font();
 
       Vector2 textSize(const char * str);
-
       void buildTextGeometry(const char * str, Geometry * geom, Color const& textColor);
 
     public:
