@@ -96,6 +96,11 @@ namespace three {
         return std::sqrt(x * x + y * y);
       }
 
+      inline float lengthSqrt() const
+      {
+        return x * x + y * y;
+      }
+
       Vector2 const& normalize()
       {
         float len = 1.0f / length();
@@ -111,6 +116,10 @@ namespace three {
         return Vector2(x * len, y * len);
       }
 
+      Vector2 perpendicular() const
+      {
+        return Vector2(y, -x);
+      }
 
       /// Returns the largest of the three elements
       float max() const

@@ -33,7 +33,7 @@ namespace three {
   void addQuad(Geometry * geom, Vector2 const& topLeft, Vector2 const& bottomRight, Vector2 const& uvTopLeft, Vector2 const& uvBottomRight, Color const& color);
 
   void addRectangle(Geometry * geom, Vector2 const& pos, Vector2 const& size, Color const& color);
-  void addRoundedRect(Geometry * geom, Vector2 const& pos, Vector2 const& size, float radius, Color const& color);
+  void addRoundedRectangle(Geometry * geom, Vector2 const& pos, Vector2 const& size, float radius, Color const& color);
 
 }
 

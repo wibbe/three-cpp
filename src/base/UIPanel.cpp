@@ -55,6 +55,7 @@ namespace three {
     faceMat->depthTest = false;
     faceMat->depthWrite = false;
     faceMat->transparent = true;
+    faceMat->doubleSided = true;
 
     MeshBasicMaterial * fontMat = new MeshBasicMaterial();
     fontMat->useTextureMap = true;
@@ -100,7 +101,7 @@ namespace three {
     _state.widgetId = 1;
 
     // Change to rounded rect
-    addRectangle(_faceMesh->geometry, Vector2(0, 0), Vector2(size.x, size.y), Color(0, 0, 0, 0.75));
+    addRoundedRectangle(_faceMesh->geometry, Vector2(0, 0), size, 8.0f, Color(0, 0, 0, 0.75));
   }
 
   void UIPanel::end()
