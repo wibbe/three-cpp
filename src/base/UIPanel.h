@@ -45,6 +45,8 @@ namespace three {
 
       void label(const char * str);
       bool button(const char * str, bool enabled = true);
+      bool checkbox(const char * str, bool checked, bool enabled = true);
+      bool slider(const char * text, float * value, float valueMin, float valueMax, float valueInc, bool enabled = true);
 
       void indent();
       void unindent();
@@ -66,6 +68,9 @@ namespace three {
         Vector2 mousePos;
         Vector2 mouseDrag;
         float mouseScroll;
+
+        float dragOrigin;
+        float scroll;
 
         uint32_t active;
         uint32_t hot;

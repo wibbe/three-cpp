@@ -23,6 +23,7 @@
 #pragma once
 
 #include <string>
+#include "base/Vector2.h"
 
 namespace three {
 
@@ -103,6 +104,16 @@ namespace three {
     };
   };
 
+  struct Mouse
+  {
+    enum Values
+    {
+      Left = 0,
+      Middle = 1,
+      Right = 2
+    };
+  };
+
   /// Used to construct a window with a valid OpenGL context.
   /// Note that there can only exists one window at the time.
   class Window
@@ -123,9 +134,13 @@ namespace three {
       virtual void mousePressed(int button) { }
       virtual void mouseReleased(int button) { }
 
+      Vector2 getMousePosition() const;
+      float getMouseScoll() const;
+
       double time() const { return m_totalTime; }
 
       bool isKeyDown(int key) const;
+      bool isMouseDown(int button) const;
 
     private:
       double m_lastTimeStamp;

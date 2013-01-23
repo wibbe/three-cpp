@@ -75,6 +75,7 @@ class CamaroDemo : public Window
 
       panel = new UIPanel(FontLoader::loadFont("assets/fonts/UbuntuMono.ttf", 14, 256, 256));
       panel->position = Vector3(5, 5, -1);
+      panel->size.y = 200;
       uiScene->add(panel);
 
       renderer = new GLRenderer();
@@ -139,22 +140,35 @@ class CamaroDemo : public Window
       angle += angleSpeed * dt;
 
       // Build ui
-      hitPanel = panel->begin(Vector2(mouseX, mouseY), drag, 0);
+      hitPanel = panel->begin(getMousePosition(), isMouseDown(Mouse::Left), getMouseScoll());
       panel->label("Camaro Demo");
-      panel->indent();
-      panel->label("Indented label");
-      panel->unindent();
-      panel->label("Another label");
+      panel->label("Camaro Demo");
+      panel->label("Camaro Demo");
+      panel->label("Camaro Demo");
+      panel->label("Camaro Demo");
       panel->separatorLine();
-      panel->label("This is cool!");
-      if (panel->button("Click Me"))
+
+      if (panel->checkbox("Reflection", bodyMaterial->reflectivity > 0.1, true))
       {
-        std::cout << "Click!" << std::endl;
+        bodyMaterial->reflectivity = bodyMaterial->reflectivity > 0.1 ? 0.0 : 0.2;
+        bodyMaterial->needsUpdate = true;
       }
-      panel->button("Disabled", false);
+
+      panel->separatorLine();
+      panel->label("Body Color");
+      panel->indent();
+
+      panel->slider("Red", &bodyMaterial->diffuse.r, 0.0f, 1.0f, 0.01f, true);
+      panel->slider("Green", &bodyMaterial->diffuse.g, 0.0f, 1.0f, 0.01f, true);
+      panel->slider("Blue", &bodyMaterial->diffuse.b, 0.0f, 1.0f, 0.01f, true);
+
+      panel->unindent();
+
+      panel->separatorLine();
+      bool quit = panel->button("Quit");
       panel->end();
 
-      return !isKeyDown(Key::Esc);
+      return !(isKeyDown(Key::Esc) || quit);
     }
 
     void paint()
@@ -176,7 +190,7 @@ class CamaroDemo : public Window
       Mesh * window = CTMLoader::loadMesh("assets/models/camaro/window.ctm");
       assert(body && black && black2 && crome && intake && interior && tire && tireRim && window && "Could not Camaro model");
 
-      MeshBasicMaterial * bodyMaterial = new MeshBasicMaterial();
+      bodyMaterial = new MeshBasicMaterial();
       bodyMaterial->name = "body";
       bodyMaterial->useEnvMap = true;
       bodyMaterial->diffuse = Color("#CE6618");
@@ -238,6 +252,8 @@ class CamaroDemo : public Window
     Object * camaro;
     Object * pivot;
     Texture * skyMap;
+
+    MeshBasicMaterial * bodyMaterial;
 
     bool hitPanel;
     bool drag;
