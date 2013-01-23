@@ -73,7 +73,7 @@ class CamaroDemo : public Window
       uiCamera = new OrthographicCamera(0, 1024, 0, 768, 1, 1000);
       uiScene->add(uiCamera);
 
-      panel = new UIPanel(FontLoader::loadFont("assets/fonts/UbuntuLight.ttf", 16, 256, 256));
+      panel = new UIPanel(FontLoader::loadFont("assets/fonts/UbuntuMono.ttf", 14, 256, 256));
       panel->position = Vector3(5, 5, -1);
       uiScene->add(panel);
 
@@ -116,7 +116,7 @@ class CamaroDemo : public Window
       mouseX = x;
       mouseY = y;
 
-      if (drag)
+      if (drag && !hitPanel)
         angle -= diffX * 0.003f;
     }
 
@@ -127,7 +127,7 @@ class CamaroDemo : public Window
       pivot->rotation.y = angle;
       pivot->matrixWorldNeedsUpdate = true;
 
-      if (drag)
+      if (drag && !hitPanel)
       {
         angleSpeed = max(0.0f, angleSpeed - (float)dt * 1.0f);
       }
@@ -139,7 +139,7 @@ class CamaroDemo : public Window
       angle += angleSpeed * dt;
 
       // Build ui
-      panel->begin(Vector2(mouseX, mouseY), false, 0);
+      hitPanel = panel->begin(Vector2(mouseX, mouseY), drag, 0);
       panel->label("Camaro Demo");
       panel->indent();
       panel->label("Indented label");
@@ -147,6 +147,11 @@ class CamaroDemo : public Window
       panel->label("Another label");
       panel->separatorLine();
       panel->label("This is cool!");
+      if (panel->button("Click Me"))
+      {
+        std::cout << "Click!" << std::endl;
+      }
+      panel->button("Disabled", false);
       panel->end();
 
       return !isKeyDown(Key::Esc);
@@ -234,6 +239,7 @@ class CamaroDemo : public Window
     Object * pivot;
     Texture * skyMap;
 
+    bool hitPanel;
     bool drag;
     int mouseX, mouseY;
     float angle, angleSpeed;
