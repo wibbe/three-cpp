@@ -36,6 +36,8 @@ SET(SOURCE
   loader/JSONLoader.cpp
   loader/FontLoader.cpp
 
+  extras/LSystem.cpp
+
   opengl/GLObject.cpp
   opengl/GLGeometry.cpp
   opengl/GLRenderer.cpp
