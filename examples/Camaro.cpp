@@ -142,10 +142,6 @@ class CamaroDemo : public Window
       // Build ui
       hitPanel = panel->begin(getMousePosition(), isMouseDown(Mouse::Left), getMouseScoll());
       panel->label("Camaro Demo");
-      panel->label("Camaro Demo");
-      panel->label("Camaro Demo");
-      panel->label("Camaro Demo");
-      panel->label("Camaro Demo");
       panel->separatorLine();
 
       if (panel->checkbox("Reflection", bodyMaterial->reflectivity > 0.1, true))

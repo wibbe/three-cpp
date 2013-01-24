@@ -178,9 +178,7 @@ namespace three {
 
     _state.widgetId = 1;
 
-    // Change to rounded rect
     addRoundedRectangle(_faceMesh->geometry, Vector2(0, 0), size, 8.0f, Color(0, 0, 0, 0.75));
-
     return _state.insidePanel;
   }
 
