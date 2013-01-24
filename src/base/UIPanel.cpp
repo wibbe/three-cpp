@@ -362,7 +362,7 @@ namespace three {
         if (u < 0) u = 0;
         if (u > 1) u = 1;
         *value = valueMin + u * (valueMax - valueMin);
-        *value = floorf(*value / valueInc + 0.5f) * valueInc; // Snap to vinc
+        *value = std::floor(*value / valueInc + 0.5f) * valueInc;
         m = u * range;
         valueChanged = true;
       }
@@ -385,18 +385,6 @@ namespace three {
     font->buildTextGeometry(text, Vector2(x + SLIDER_HEIGHT * 0.5f, y + SLIDER_HEIGHT * 0.5f + TEXT_HEIGHT * 0.5f), _fontMesh->geometry, fontColor);
     font->buildTextGeometry(valueStr, Vector2(x + w - valueLength - SLIDER_HEIGHT * 0.5f, y + SLIDER_HEIGHT * 0.5f + TEXT_HEIGHT * 0.5f), _fontMesh->geometry, fontColor);
 
-/*
-    if (enabled)
-    {
-      addGfxCmdText(x+SLIDER_HEIGHT/2, y+SLIDER_HEIGHT/2-TEXT_HEIGHT/2, IMGUI_ALIGN_LEFT, text, isHot(id) ? imguiRGBA(255,196,0,255) : imguiRGBA(255,255,255,200));
-      addGfxCmdText(x+w-SLIDER_HEIGHT/2, y+SLIDER_HEIGHT/2-TEXT_HEIGHT/2, IMGUI_ALIGN_RIGHT, msg, isHot(id) ? imguiRGBA(255,196,0,255) : imguiRGBA(255,255,255,200));
-    }
-    else
-    {
-      addGfxCmdText(x+SLIDER_HEIGHT/2, y+SLIDER_HEIGHT/2-TEXT_HEIGHT/2, IMGUI_ALIGN_LEFT, text, imguiRGBA(128,128,128,200));
-      addGfxCmdText(x+w-SLIDER_HEIGHT/2, y+SLIDER_HEIGHT/2-TEXT_HEIGHT/2, IMGUI_ALIGN_RIGHT, msg, imguiRGBA(128,128,128,200));
-    }
-*/
     return result || valueChanged;
   }
 
