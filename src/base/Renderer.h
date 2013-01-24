@@ -48,6 +48,7 @@ namespace three {
 
       virtual void setSize(int width, int height) = 0;
       virtual void setViewport(int x, int y, int width, int height) = 0;
+      virtual void setScissor(bool enabled, int x = 0, int y = 0, int width = 0, int height = 0) = 0;
       virtual void setRenderTarget(RenderTarget * renderTarget) = 0;
       virtual void setDepthTest(bool enabled) = 0;
       virtual void setDepthWrite(bool enabled) = 0;

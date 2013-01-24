@@ -115,5 +115,13 @@ namespace three {
       (*it)->updateWorldMatrix(force);
   }
 
+  void Object::onPreRender(Renderer * renderer)
+  {
+  }
+
+  void Object::onPostRender(Renderer * renderer)
+  {
+  }
+
 }
 

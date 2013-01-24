@@ -33,6 +33,7 @@ namespace three {
 
   // Forward declarations
   class BackendObject;
+  class Renderer;
 
   /**
    * Base class for all objects in Three++
@@ -54,6 +55,9 @@ namespace three {
       void updateWorldMatrix(bool force = false);
 
       virtual uint32_t type() const { return Object::Type; }
+
+      virtual void onPreRender(Renderer * renderer);
+      virtual void onPostRender(Renderer * renderer);
 
     public:
       Object * parent;

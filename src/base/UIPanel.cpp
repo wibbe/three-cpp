@@ -6,6 +6,7 @@
 #include "material/DefaultMaterials.h"
 #include "base/StringHash.h"
 #include "base/MathUtils.h"
+#include "base/Renderer.h"
 #include "util/GeometryHelper.h"
 
 #include <cassert>
@@ -112,6 +113,30 @@ namespace three {
     return result;
   }
 
+  // -- UIPanelMesh --
+
+  class UIPanelMesh : public Mesh
+  {
+    public:
+      UIPanelMesh(Geometry * geometry, Material * material, UIPanel * panel_)
+        : Mesh(geometry, material),
+          panel(panel_)
+      { }
+
+      void onPreRender(Renderer * renderer)
+      {
+        renderer->setScissor(true, panel->position.x, panel->position.y, panel->size.x, panel->size.y);
+      }
+
+      void onPostRender(Renderer * renderer)
+      {
+        renderer->setScissor(false);
+      }
+
+      UIPanel * panel;
+  };
+
+  // -- UIPanel --
 
   UIPanel::UIPanel(Font * font_)
     : Object(),
@@ -139,11 +164,11 @@ namespace three {
     fontMat->depthWrite = false;
     fontMat->transparent = true;
 
-    _faceMesh = new Mesh(new Geometry(), faceMat);
+    _faceMesh = new UIPanelMesh(new Geometry(), faceMat, this);
     _faceMesh->geometry->dynamic = true;
 
     // Create text mesh, this is always slightly above the face mesh
-    _fontMesh = new Mesh(new Geometry(), fontMat);
+    _fontMesh = new UIPanelMesh(new Geometry(), fontMat, this);
     _fontMesh->position.z = -0.1;
     _fontMesh->geometry->dynamic = true;
 

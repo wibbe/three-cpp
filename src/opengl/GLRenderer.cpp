@@ -296,6 +296,8 @@ namespace three {
     glClearDepth(1.0);
     glClearStencil(0);
 
+    glDisable(GL_SCISSOR_TEST);
+
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
 
@@ -327,6 +329,17 @@ namespace three {
     viewportWidth = width;
     viewportHeight = height;
     glViewport(x, y, width, height);
+  }
+
+  void GLRenderer::setScissor(bool enabled, int x, int y, int width, int height)
+  {
+    if (enabled)
+    {
+      glEnable(GL_SCISSOR_TEST);
+      glScissor(x, viewportHeight - y - height, width, height);
+    }
+    else
+      glDisable(GL_SCISSOR_TEST);
   }
 
   void GLRenderer::setDepthTest(bool enabled)
@@ -707,11 +720,15 @@ namespace three {
       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _currentIndexBuffer);
     }
 
+    object->sourceObject->onPreRender(this);
+
     // Render buffer
     if (_currentIndexBuffer)
       glDrawElements(GL_TRIANGLES, geometry->faceCount, GL_UNSIGNED_SHORT, (void *)0);
     else
       glDrawArrays(GL_TRIANGLES, 0, geometry->faceCount);
+
+    object->sourceObject->onPostRender(this);
   }
 
   void GLRenderer::setMaterial(Camera * camera,
