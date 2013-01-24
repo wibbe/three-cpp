@@ -22,14 +22,19 @@
 
 #pragma once
 
+#include <string>
+
 namespace three {
 
-  /// Simple implementation of the l-system described on this page: http://prideout.net/blog/?p=72
+  class Geometry;
+
+  /// Simple implementation of the l-system described here: http://prideout.net/blog/?p=72
   class LSystem
   {
     public:
       LSystem();
-      
+
+      static Geometry * generate(std::string const& text);
   };
 
 }
