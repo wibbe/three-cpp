@@ -23,6 +23,7 @@
 #pragma once
 
 #include "base/Defines.h"
+#include "base/RenderStats.h"
 #include <vector>
 
 namespace three {
@@ -73,6 +74,8 @@ namespace three {
       bool sortObjects;
 
       Material * overrideMaterial;
+
+      RenderStats stats;
 
     protected:
       virtual void resetCache() = 0;

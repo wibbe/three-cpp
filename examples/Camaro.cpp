@@ -144,6 +144,14 @@ class CamaroDemo : public Window
       panel->label("Camaro Demo");
       panel->separatorLine();
 
+      panel->value("Batches: %d", renderer->stats.batchCount);
+      panel->value("Polygons: %d", renderer->stats.polygonCount);
+      panel->value("Texture changes: %d", renderer->stats.textureChanges);
+      panel->value("Shader changes: %d", renderer->stats.shaderChanges);
+      panel->value("Render Target changes: %d", renderer->stats.renderTargetChanges);
+
+      panel->separatorLine();
+
       if (panel->checkbox("Reflection", bodyMaterial->reflectivity > 0.1, true))
       {
         bodyMaterial->reflectivity = bodyMaterial->reflectivity > 0.1 ? 0.0 : 0.2;
@@ -169,6 +177,7 @@ class CamaroDemo : public Window
 
     void paint()
     {
+      renderer->stats.reset();
       renderer->render(scene, camera, 0, true);
       renderer->render(uiScene, uiCamera);
     }

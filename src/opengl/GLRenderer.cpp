@@ -64,9 +64,14 @@ namespace three {
 
   #ifdef DEBUG
     #define CHECK_GL() do { if (GLenum code = glGetError() != GL_NO_ERROR) fprintf(stderr, "%s:%d: (%d)%s\n", __FILE__, __LINE__, code, glErrorStr(code)); } while (0)
+    #define STATS_INC(x) stats.x++
+    #define STATS_ADD(x, y) stats.x += (y)
   #else
+    #define STATS_INC(x)
+    #define STATS_ADD(x, y)
     #define CHECK_GL()
   #endif
+
 
   static inline bool painterSort(BackendObject * obj1, BackendObject * obj2)
   {
@@ -417,6 +422,8 @@ namespace three {
         _currentTexture[slot] = 0;
         glActiveTexture(GL_TEXTURE0 + slot);
         glBindTexture(GL_TEXTURE_2D, 0);
+
+        STATS_INC(textureChanges);
       }
       return;
     }
@@ -440,6 +447,8 @@ namespace three {
       glActiveTexture(GL_TEXTURE0 + slot);
       glBindTexture(glTex->type, glTex->id);
       _currentTexture[slot] = glTex->id;
+
+      STATS_INC(textureChanges);
     }
   }
 
@@ -452,6 +461,8 @@ namespace three {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glViewport(viewportX, viewportY, viewportWidth, viewportHeight);
         _currentFrameBuffer = 0;
+
+        STATS_INC(renderTargetChanges);
       }
 
       return;
@@ -525,6 +536,7 @@ namespace three {
 
       glViewport(0, 0, renderTarget->width, renderTarget->height);
 
+      STATS_INC(renderTargetChanges);
       CHECK_GL();
     }
   }
@@ -722,6 +734,9 @@ namespace three {
 
     object->sourceObject->onPreRender(this);
 
+    STATS_INC(batchCount);
+    STATS_ADD(polygonCount, geometry->faceCount / 3);
+
     // Render buffer
     if (_currentIndexBuffer)
       glDrawElements(GL_TRIANGLES, geometry->faceCount, GL_UNSIGNED_SHORT, (void *)0);
@@ -773,6 +788,8 @@ namespace three {
       {
         _currentProgram = glMat->program;
         glUseProgram(_currentProgram);
+
+        STATS_INC(shaderChanges);
       }
 
       // Set default uniforms

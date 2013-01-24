@@ -44,6 +44,7 @@ namespace three {
       void end();
 
       void label(const char * str);
+      void value(const char * str, ...);
       bool button(const char * str, bool enabled = true);
       bool checkbox(const char * str, bool checked, bool enabled = true);
       bool slider(const char * text, float * value, float valueMin, float valueMax, float valueInc, bool enabled = true);

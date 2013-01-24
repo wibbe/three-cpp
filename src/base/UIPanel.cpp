@@ -11,6 +11,7 @@
 
 #include <cassert>
 #include <stdio.h>
+#include <stdarg.h>
 
 namespace three {
 
@@ -242,6 +243,23 @@ namespace three {
     _state.widgetY += BUTTON_HEIGHT;
 
     font->buildTextGeometry(str, Vector2(x, y), _fontMesh->geometry, Color(1, 1, 1));
+  }
+
+  void UIPanel::value(const char * str, ...)
+  {
+    assert(font);
+
+    float x = _state.widgetX;
+    float y = _state.widgetY + BUTTON_HEIGHT * 0.5f;
+    _state.widgetY += BUTTON_HEIGHT;
+
+    char text[512];
+    va_list argptr;
+    va_start(argptr, str);
+    vsnprintf(text, 512, str, argptr);
+    va_end(argptr);
+
+    font->buildTextGeometry(text, Vector2(x, y), _fontMesh->geometry, Color(1, 1, 1));
   }
 
   bool UIPanel::button(const char * str, bool enabled)
