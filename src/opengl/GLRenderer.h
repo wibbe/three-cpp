@@ -76,9 +76,9 @@ namespace three {
                         GLObject * object,
                         bool useBlending);
 
-      void updateGLObjects(Scene * scene);
+      void updateGLObjects(Scene * scene, Camera * camera);
       void updateGeometry(Geometry * geometry);
-      void updateObject(Object * object);
+      void updateObject(Object * object, Camera * camera);
       void updateMatrices(Object * object, Camera * camera);
 
       void addObject(Object * object, Scene * scene);

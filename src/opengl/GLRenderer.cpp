@@ -563,7 +563,7 @@ namespace three {
     projScreenMatrix = camera->matrixWorldInverse * camera->projectionMatrix;
 
     if (autoUpdateObjects)
-      updateGLObjects(scene);
+      updateGLObjects(scene, camera);
 
     renderPlugins(renderPluginsPre, scene, camera);
 
@@ -815,7 +815,7 @@ namespace three {
     setDepthWrite(material->depthWrite);
   }
 
-  void GLRenderer::updateGLObjects(Scene * scene)
+  void GLRenderer::updateGLObjects(Scene * scene, Camera * camera)
   {
     for (std::vector<Object *>::iterator it = scene->objectsAdded.begin(), end = scene->objectsAdded.end(); it != end; ++it)
       addObject(*it, scene);
@@ -827,7 +827,7 @@ namespace three {
     scene->objectsRemoved.clear();
 
     for (std::vector<BackendObject *>::iterator it = scene->__renderObjects.begin(), end = scene->__renderObjects.end(); it != end; ++it)
-      updateObject((*it)->sourceObject);
+      updateObject((*it)->sourceObject, camera);
   }
 
   void GLRenderer::addObject(Object * object, Scene * scene)
@@ -853,8 +853,10 @@ namespace three {
     object->__renderObject = 0;
   }
 
-  void GLRenderer::updateObject(Object * object)
+  void GLRenderer::updateObject(Object * object, Camera * camera)
   {
+    object->onUpdate(camera);
+
     if (object->type() == Mesh::Type)
     {
       Mesh * mesh = dynamic_cast<Mesh *>(object);
