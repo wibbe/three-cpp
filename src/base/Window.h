@@ -119,7 +119,7 @@ namespace three {
   class Window
   {
     public:
-      Window(int width, int height);
+      Window(double frameTime, int width, int height);
       virtual ~Window();
 
       void run();
@@ -137,14 +137,14 @@ namespace three {
       Vector2 getMousePosition() const;
       float getMouseScoll() const;
 
-      double time() const { return m_totalTime; }
+      double time() const { return m_simulationTime; }
 
       bool isKeyDown(int key) const;
       bool isMouseDown(int button) const;
 
     private:
-      double m_lastTimeStamp;
-      double m_totalTime;
+      double m_simulationTime;
+      double m_frameTime;
   };
 
 }

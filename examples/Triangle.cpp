@@ -20,7 +20,7 @@ class TriangleDemo : public Window
 {
   public:
     TriangleDemo()
-      : Window(1024, 768)
+      : Window(1.0 / 60.0, 1024, 768)
     {
       setTitle("Triangle Example");
 

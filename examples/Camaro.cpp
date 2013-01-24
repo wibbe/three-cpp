@@ -26,7 +26,7 @@ class CamaroDemo : public Window
 {
   public:
     CamaroDemo()
-      : Window(1024, 768)
+      : Window(1.0 / 60.0, 1024, 768)
     {
       const char * sky[6] = {
         "assets/sky/teide_posx.jpg",

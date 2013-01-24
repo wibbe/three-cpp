@@ -40,7 +40,7 @@ class TextDemo : public Window
 {
   public:
     TextDemo()
-      : Window(1024, 768)
+      : Window(1.0 / 60.0, 1024, 768)
     {
       setTitle("Text Demo");
 

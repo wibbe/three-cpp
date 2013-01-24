@@ -20,7 +20,7 @@ class RenderToTexture : public Window
 {
   public:
     RenderToTexture()
-      : Window(512, 512)
+      : Window(1.0 / 60.0, 512, 512)
     {
       setTitle("Cube Example");
 

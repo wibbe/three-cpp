@@ -22,7 +22,7 @@ class CubeDemo : public Window
 {
   public:
     CubeDemo()
-      : Window(1024, 768)
+      : Window(1.0 / 6.0, 1024, 768)
     {
       setTitle("Cube Example");
 

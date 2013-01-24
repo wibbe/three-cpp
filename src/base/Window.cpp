@@ -36,7 +36,9 @@ namespace three {
 
   // -- Window --
 
-  Window::Window(int width, int height)
+  Window::Window(double frameTime, int width, int height)
+    : m_simulationTime(0.0),
+      m_frameTime(frameTime)
   {
     assert(!currentWindow && "We may only have one window active at all times");
     currentWindow = this;
@@ -65,8 +67,7 @@ namespace three {
   void Window::run()
   {
     glfwSetTime(0.0);
-    m_lastTimeStamp = 0.0;
-    m_totalTime = 0.0;
+    m_simulationTime = 0.0;
 
     // Call resize before we start
     {
@@ -84,13 +85,14 @@ namespace three {
 
   bool Window::step()
   {
-    double timeStamp = glfwGetTime();
-    double dt = timeStamp - m_lastTimeStamp;
-    m_lastTimeStamp = timeStamp;
+    double realTime = glfwGetTime();
 
-    m_totalTime += dt;
-
-    bool continueOn = update(dt);
+    bool continueOn = true;
+    while (m_simulationTime < realTime)
+    {
+      m_simulationTime += m_frameTime;
+      continueOn &= update(m_frameTime);
+    }
 
     paint();
 
