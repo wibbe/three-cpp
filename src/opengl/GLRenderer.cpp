@@ -203,9 +203,38 @@ namespace three {
     glGetShaderiv(shader, GL_COMPILE_STATUS, &ok);
     if (!ok)
     {
-      fprintf(stderr, "Failed to compile shader:\n");
+      fprintf(stderr, "Failed to compile %s shader:\n", type == GL_VERTEX_SHADER ? "vertex" : "fragment");
       showLogInfo(shader, glGetShaderiv, glGetShaderInfoLog);
-      fprintf(stderr, "----------------------------\n%s----------------------------", code.c_str());
+      fprintf(stderr, "\n----------------------------\n");
+
+      // Print every line in the code
+      char * str = new char[code.size() + 1];
+      memcpy(str, code.c_str(), code.size() + 1);
+
+      char * it = str;
+      int line = 1;
+      while (true)
+      {
+        char * next = strstr(it, "\n");
+
+        if (next)
+        {
+          *next = '\0';
+          next++;
+        }
+
+        fprintf(stderr, "%03d  %s\n", line, it);
+
+        if (!next)
+          break;
+
+        line++;
+        it = next;
+      }
+
+      delete[] str;
+
+      printf("\n");
       glDeleteShader(shader);
       return 0;
     }

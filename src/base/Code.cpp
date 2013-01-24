@@ -36,6 +36,9 @@ namespace three {
         if (codeSnipet)
         {
           //ss << "#line 0 \"" << snipet << "\"" << std::endl;
+#ifdef DEBUG
+          ss << "// " << snipet << std::endl;
+#endif
           generateCode(codeSnipet, ss);
           //ss << "#line " << i << " \"" << code->name << "\"" << std::endl;
         }
