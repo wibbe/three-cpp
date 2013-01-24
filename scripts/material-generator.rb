@@ -35,7 +35,7 @@ def parse_args
     opts.separator ""
     opts.separator "Options:"
 
-    opts.on('-p', '--path PATH', 'Where the generated code goes (src/ and include/ paths will be appended to the specified path)') do |v|
+    opts.on('-p', '--path PATH', 'Where the generated code goes') do |v|
       options[:path] = v
       start += 2
     end
@@ -290,8 +290,8 @@ class CodeLib
   end
 
   def generate_code(base_path)
-    header_file = File.join(base_path, 'include', @target_name + ".h")
-    source_file = File.join(base_path, 'src', @target_name + ".cpp")
+    header_file = File.join(base_path, @target_name + ".h")
+    source_file = File.join(base_path, @target_name + ".cpp")
 
     if not @materials.empty? or not @snipets.empty? or not @shaders.empty?
       File.open(header_file, "w") do |file|
@@ -331,7 +331,7 @@ class CodeLib
     file.puts ""
     file.puts "#include \"#{File.basename(header_file)}\"" if not @materials.empty?
     file.puts '#include "base/Code.h"'
-    file.puts '#include "base/RenderMaterial.h"'
+    file.puts '#include "base/BackendMaterial.h"'
     file.puts '#include "base/StringHash.h"'
     file.puts '#include "base/Renderer.h"'
     file.puts '#include <cassert>'

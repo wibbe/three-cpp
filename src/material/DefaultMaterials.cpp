@@ -29,7 +29,7 @@ namespace three {
     doubleSided = false;
     useVertexColor = false;
     gammaCorrection = false;
-    useReflectivity = true;
+    useReflectivity = false;
   }
 
   void MeshBasicMaterial::apply(Renderer * renderer)
@@ -122,6 +122,58 @@ namespace three {
         return "reflectivity";
       case 6:
         return "refractionRatio";
+      default:
+        return 0;
+    }
+  }
+
+
+  uint32_t MeshPhongMaterial::Type = three::StringHash("MeshPhongMaterial").hash;
+
+  MeshPhongMaterial::MeshPhongMaterial()
+  {
+    map = 0;
+    lightMap = 0;
+  }
+
+  void MeshPhongMaterial::apply(Renderer * renderer)
+  {
+    assert(__renderMaterial && renderer);
+    renderer->setTexture(map, 0);
+    renderer->setTexture(lightMap, 1);
+  }
+
+  std::string MeshPhongMaterial::vertexShaderCode() const
+  {
+    std::vector<std::string> defines;
+
+    return three::Code::generate("basicVertexShader", defines);
+  }
+
+  std::string MeshPhongMaterial::fragmentShaderCode() const
+  {
+    std::vector<std::string> defines;
+
+    return three::Code::generate("basicFragmentShader", defines);
+  }
+
+  const char * MeshPhongMaterial::textureName(uint32_t slot) const
+  {
+    switch (slot)
+    {
+      case 0:
+        return "map";
+      case 1:
+        return "lightMap";
+      default:
+        return 0;
+    }
+  }
+
+  const char * MeshPhongMaterial::uniformName(uint32_t slot) const
+  {
+    switch (slot)
+    {
       default:
         return 0;
     }

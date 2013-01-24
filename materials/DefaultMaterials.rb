@@ -44,4 +44,12 @@ define 'DefaultMaterials', ['three'] do
     float :reflectivity, 1.0
     float :refractionRatio, 0.98
   end
+
+  material 'MeshPhongMaterial' do
+    vertex_shader :basicVertexShader
+    fragment_shader :basicFragmentShader
+
+    texture :map
+    texture :lightMap
+  end
 end
