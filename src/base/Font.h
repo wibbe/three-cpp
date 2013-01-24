@@ -50,6 +50,7 @@ namespace three {
       void buildTextGeometry(const char * str, Vector2 const& offset, Geometry * geom, Color const& textColor);
 
     public:
+      float size;
       Texture * texture;
       Glyph glyphs[96];
   };

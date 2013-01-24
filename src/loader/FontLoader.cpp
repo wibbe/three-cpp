@@ -24,6 +24,7 @@ namespace three {
     if (fileContent(path, &data, length))
     {
       font = new Font();
+      font->size = fontSize;
       unsigned char * alpha = new unsigned char[textureWidth * textureHeight];
 
       stbtt_bakedchar charDef[96];

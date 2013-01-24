@@ -7,7 +7,8 @@
 namespace three {
 
   Font::Font()
-    : texture(0)
+    : size(0.0f),
+      texture(0)
   {
   }
 
