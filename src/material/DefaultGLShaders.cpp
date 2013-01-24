@@ -7,71 +7,14 @@
 
 namespace three {
 
-  static const char * _text_lightMapFragment[] = {
-    "#ifdef USE_LIGHTMAP\n",
-    "  gl_FragColor = gl_FragColor * texture2D(lightMap, vUv2);\n",
-    "#endif\n",
-  };
-
-  static const char * _text_prefixFragment[] = {
-    "uniform mat4 viewMatrix;\n",
-    "uniform vec3 cameraPosition;\n",
-  };
-
-  static const char * _text_colorVertexParams[] = {
-    "#ifdef USE_COLOR\n",
-    "  varying vec4 vColor;\n",
-    "#endif\n",
-  };
-
-  static const char * _text_mapVertex[] = {
-    "#ifdef USE_MAP\n",
-    "  vUv0 = uv0 * offsetRepeat.zw + offsetRepeat.xy;\n",
-    "#endif\n",
-  };
-
-  static const char * _text_envMapVertexParams[] = {
-    "#ifdef USE_ENVMAP\n",
-    "  varying vec3 vReflect;\n",
-    "  uniform float refractionRatio;\n",
-    "  uniform bool useRefract;\n",
-    "#endif\n",
-  };
-
-  static const char * _text_defaultVertex[] = {
-    "gl_Position = projectionMatrix * mvPosition;\n",
-  };
-
-  static const char * _text_colorVertex[] = {
-    "#ifdef USE_COLOR\n",
-    "  #ifdef USE_GAMMA\n",
-    "    vColor = color * color;\n",
-    "  #else\n",
-    "    vColor = color;\n",
-    "  #endif\n",
-    "#endif\n",
-  };
-
-  static const char * _text_mapFragment[] = {
-    "#ifdef USE_MAP\n",
-    "  #ifdef USE_GAMMA\n",
-    "    vec4 texelColor = texture2D(map, vUv0);\n",
-    "    texelColor.xyz *= texelColor.xyz;\n",
-    "    gl_FragColor = gl_FragColor * texelColor;\n",
-    "  #else\n",
-    "    gl_FragColor = gl_FragColor * texture2D(map, vUv0);\n",
-    "  #endif\n",
-    "#endif\n",
-  };
-
   static const char * _text_envMapFragmentParams[] = {
     "#ifdef USE_ENVMAP\n",
     "  varying vec3 vReflect;\n",
-    "  #if USE_REFLECTIVITY\n",
-    "  uniform float reflectivity;\n",
-    "#endif\n",
-    "uniform samplerCube envMap;\n",
-    "uniform float flipEnvMap;\n",
+    "  #ifdef USE_REFLECTIVITY\n",
+    "    uniform float reflectivity;\n",
+    "  #endif\n",
+    "  uniform samplerCube envMap;\n",
+    "  uniform float flipEnvMap;\n",
     "#endif\n",
   };
 
@@ -209,14 +152,63 @@ namespace three {
     "#endif\n",
   };
 
-  three::Code _code_lightMapFragment("@lightMapFragment", _text_lightMapFragment, 3);
-  three::Code _code_prefixFragment("@prefixFragment", _text_prefixFragment, 2);
-  three::Code _code_colorVertexParams("@colorVertexParams", _text_colorVertexParams, 3);
-  three::Code _code_mapVertex("@mapVertex", _text_mapVertex, 3);
-  three::Code _code_envMapVertexParams("@envMapVertexParams", _text_envMapVertexParams, 5);
-  three::Code _code_defaultVertex("@defaultVertex", _text_defaultVertex, 1);
-  three::Code _code_colorVertex("@colorVertex", _text_colorVertex, 7);
-  three::Code _code_mapFragment("@mapFragment", _text_mapFragment, 9);
+  static const char * _text_lightMapFragment[] = {
+    "#ifdef USE_LIGHTMAP\n",
+    "  gl_FragColor = gl_FragColor * texture2D(lightMap, vUv2);\n",
+    "#endif\n",
+  };
+
+  static const char * _text_prefixFragment[] = {
+    "uniform mat4 viewMatrix;\n",
+    "uniform vec3 cameraPosition;\n",
+  };
+
+  static const char * _text_colorVertexParams[] = {
+    "#ifdef USE_COLOR\n",
+    "  varying vec4 vColor;\n",
+    "#endif\n",
+  };
+
+  static const char * _text_mapVertex[] = {
+    "#ifdef USE_MAP\n",
+    "  vUv0 = uv0 * offsetRepeat.zw + offsetRepeat.xy;\n",
+    "#endif\n",
+  };
+
+  static const char * _text_envMapVertexParams[] = {
+    "#ifdef USE_ENVMAP\n",
+    "  varying vec3 vReflect;\n",
+    "  uniform float refractionRatio;\n",
+    "  uniform bool useRefract;\n",
+    "#endif\n",
+  };
+
+  static const char * _text_defaultVertex[] = {
+    "gl_Position = projectionMatrix * mvPosition;\n",
+  };
+
+  static const char * _text_colorVertex[] = {
+    "#ifdef USE_COLOR\n",
+    "  #ifdef USE_GAMMA\n",
+    "    vColor = color * color;\n",
+    "  #else\n",
+    "    vColor = color;\n",
+    "  #endif\n",
+    "#endif\n",
+  };
+
+  static const char * _text_mapFragment[] = {
+    "#ifdef USE_MAP\n",
+    "  #ifdef USE_GAMMA\n",
+    "    vec4 texelColor = texture2D(map, vUv0);\n",
+    "    texelColor.xyz *= texelColor.xyz;\n",
+    "    gl_FragColor = gl_FragColor * texelColor;\n",
+    "  #else\n",
+    "    gl_FragColor = gl_FragColor * texture2D(map, vUv0);\n",
+    "  #endif\n",
+    "#endif\n",
+  };
+
   three::Code _code_envMapFragmentParams("@envMapFragmentParams", _text_envMapFragmentParams, 8);
   three::Code _code_fogFragementParams("@fogFragementParams", _text_fogFragementParams, 9);
   three::Code _code_colorFragment("@colorFragment", _text_colorFragment, 3);
@@ -232,6 +224,14 @@ namespace three {
   three::Code _code_prefixVertex("@prefixVertex", _text_prefixVertex, 14);
   three::Code _code_colorFragmentParams("@colorFragmentParams", _text_colorFragmentParams, 3);
   three::Code _code_mapFragmentParams("@mapFragmentParams", _text_mapFragmentParams, 4);
+  three::Code _code_lightMapFragment("@lightMapFragment", _text_lightMapFragment, 3);
+  three::Code _code_prefixFragment("@prefixFragment", _text_prefixFragment, 2);
+  three::Code _code_colorVertexParams("@colorVertexParams", _text_colorVertexParams, 3);
+  three::Code _code_mapVertex("@mapVertex", _text_mapVertex, 3);
+  three::Code _code_envMapVertexParams("@envMapVertexParams", _text_envMapVertexParams, 5);
+  three::Code _code_defaultVertex("@defaultVertex", _text_defaultVertex, 1);
+  three::Code _code_colorVertex("@colorVertex", _text_colorVertex, 7);
+  three::Code _code_mapFragment("@mapFragment", _text_mapFragment, 9);
 
   static const char * _text_basicVertexShader[] = {
     "@prefixVertex",

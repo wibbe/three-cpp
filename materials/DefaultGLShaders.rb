@@ -147,7 +147,7 @@ define 'DefaultGLShaders', ['three'] do
     "#ifdef USE_ENVMAP",
       "varying vec3 vReflect;",
 
-      "#if USE_REFLECTIVITY",
+      "#ifdef USE_REFLECTIVITY",
         "uniform float reflectivity;",
       "#endif",
       "uniform samplerCube envMap;",

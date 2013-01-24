@@ -29,7 +29,7 @@ namespace three {
     doubleSided = false;
     useVertexColor = false;
     gammaCorrection = false;
-    useReflectivity = false;
+    useReflectivity = true;
   }
 
   void MeshBasicMaterial::apply(Renderer * renderer)
