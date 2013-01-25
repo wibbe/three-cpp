@@ -1,6 +1,6 @@
 
 - Resource
-    type - constant (SHADER, TEXTURE, MESH, RENDER_TARGET, LAYER, GENERATOR, ...)
+    type - constant (SHADER, TEXTURE, MESH, MATERIAL, RENDER_TARGET, LAYER, GENERATOR, ...)
     id - hashed resource name
     data - void pointer
     size - size of the data

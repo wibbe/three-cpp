@@ -59,9 +59,7 @@ namespace three {
       void setDefaultGLState();
       void resetCache();
 
-      void renderObjects(std::vector<BackendObject *> const& renderList,
-                         bool reverse,
-                         std::string materialType,
+      void renderObjects(std::vector<GLObject *> const& renderList,
                          Camera * camera,
                          std::vector<Object *> const& lights,
                          /* fog, */
@@ -105,6 +103,9 @@ namespace three {
 
       Matrix4 projScreenMatrix;
       Matrix4 projScreenMatrixPS;
+
+      std::vector<GLObject *> _opaqueObjects;
+      std::vector<GLObject *> _transparentObjects;
 
       bool _currentDepthTest;
       bool _currentDepthWrite;

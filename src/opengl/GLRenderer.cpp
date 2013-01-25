@@ -73,9 +73,14 @@ namespace three {
   #endif
 
 
-  static inline bool painterSort(BackendObject * obj1, BackendObject * obj2)
+  static inline bool painterSortClosestFirst(GLObject * obj1, GLObject * obj2)
   {
-    return static_cast<GLObject *>(obj1)->z > static_cast<GLObject *>(obj2)->z;
+    return obj1->z < obj2->z;
+  }
+
+  static inline bool painterSortClosestLast(GLObject * obj1, GLObject * obj2)
+  {
+    return obj1->z > obj2->z;
   }
 
   enum SHADER_ATTRIB_LOCATION
@@ -589,7 +594,7 @@ namespace three {
 
     camera->matrixWorldInverse = camera->matrixWorld.inverse();
     camera->positionWorld = camera->matrixWorld * camera->position;
-    projScreenMatrix = camera->matrixWorldInverse * camera->projectionMatrix;
+    projScreenMatrix = camera->matrixWorldInverse;
 
     if (autoUpdateObjects)
       updateGLObjects(scene, camera);
@@ -601,6 +606,9 @@ namespace three {
     if (autoClear || forceClear)
       clear(autoClearColor, autoClearDepth, autoClearStencil);
 
+    _opaqueObjects.clear();
+    _transparentObjects.clear();
+
     // Setup matrices for regular objects
     for (std::vector<BackendObject *>::iterator it = scene->__renderObjects.begin(), end = scene->__renderObjects.end(); it != end; ++it)
     {
@@ -611,9 +619,12 @@ namespace three {
 
       glObject->render = false;
 
+      std::vector<GLObject *> & targetVector = (glObject->material && (*glObject->material)->transparent) ? _transparentObjects : _opaqueObjects;
+
       if (object->visible)
       {
-        glObject->render = true;
+        targetVector.push_back(glObject);
+        //glObject->render = true;
 
         if (sortObjects)
         {
@@ -625,7 +636,10 @@ namespace three {
 
     // Sort objects according to depth
     if (sortObjects)
-      std::sort(scene->__renderObjects.begin(), scene->__renderObjects.end(), painterSort);
+    {
+      std::sort(_opaqueObjects.begin(), _opaqueObjects.end(), painterSortClosestFirst);
+      std::sort(_transparentObjects.begin(), _transparentObjects.end(), painterSortClosestLast);
+    }
 
     // Draw all objects
     if (overrideMaterial)
@@ -634,16 +648,17 @@ namespace three {
       setDepthTest(overrideMaterial->depthTest);
       setDepthWrite(overrideMaterial->depthWrite);
 
-      renderObjects(scene->__renderObjects, false, "", camera, scene->lights, /* fog, */ true, overrideMaterial);
+      renderObjects(_opaqueObjects, camera, scene->lights, /* fog, */ false, overrideMaterial);
+      renderObjects(_transparentObjects, camera, scene->lights, /* fog, */ true, overrideMaterial);
     }
     else
     {
       // opaque pass (front-to-back order)
       setBlending(NormalBlending);
-      renderObjects(scene->__renderObjects, false, "opaque", camera, scene->lights, /* fog, */ false, 0);
+      renderObjects(_opaqueObjects, camera, scene->lights, /* fog, */ false, 0);
 
       // transparent pass (back-to-front order)
-      renderObjects(scene->__renderObjects, true, "transparent", camera, scene->lights, /* fog, */ true, 0);
+      renderObjects(_transparentObjects, camera, scene->lights, /* fog, */ true, 0);
     }
 
     renderPlugins(renderPluginsPost, scene, camera);
@@ -652,36 +667,19 @@ namespace three {
     setDepthWrite(true);
   }
 
-  void GLRenderer::renderObjects(std::vector<BackendObject *> const& renderList,
-                                 bool reverse,
-                                 std::string materialType,
+  void GLRenderer::renderObjects(std::vector<GLObject *> const& renderList,
                                  Camera * camera,
                                  std::vector<Object *> const& lights,
                                  /* fog, */
                                  bool useBlending,
                                  Material * overrideMaterial)
   {
-    if (reverse)
+    for (std::vector<GLObject *>::const_iterator it = renderList.begin(), end = renderList.end(); it != end; ++it)
     {
-      for (std::vector<BackendObject *>::const_reverse_iterator it = renderList.rbegin(), end = renderList.rend(); it != end; ++it)
-      {
-        GLObject * object = static_cast<GLObject *>(*it);
-        Material * material = overrideMaterial ? overrideMaterial : *object->material;
+      GLObject * object = *it;
+      Material * material = overrideMaterial ? overrideMaterial : *object->material;
 
-        if (object->render && material->transparent)
-          renderObject(camera, lights, material, object->geometry, object, useBlending);
-      }
-    }
-    else
-    {
-      for (std::vector<BackendObject *>::const_iterator it = renderList.begin(), end = renderList.end(); it != end; ++it)
-      {
-        GLObject * object = static_cast<GLObject *>(*it);
-        Material * material = overrideMaterial ? overrideMaterial : *object->material;
-
-        if (object->render && !material->transparent)
-          renderObject(camera, lights, material, object->geometry, object, useBlending);
-      }
+      renderObject(camera, lights, material, object->geometry, object, useBlending);
     }
   }
 
