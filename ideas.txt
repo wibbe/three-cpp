@@ -1,0 +1,20 @@
+
+- Resource
+    type - constant (SHADER, TEXTURE, MESH, RENDER_TARGET, LAYER, GENERATOR, ...)
+    id - hashed resource name
+    data - void pointer
+    size - size of the data
+
+- ResourceSystem
+    Handles loading/unloading of resources, all loading is performed in the background
+    Every resource needs to be compiled before it can be used in the system.
+    Can reload and swap out already loaded resources at will.
+
+- Engine
+    One executable that drives everything, scriptable through lua or javascript.
+
+- RenderSystem
+    Divided into a number of different parts, design inspired by BitSquid engine.
+    GPU Resource - The different render targets
+    Layer - A name, resource target and possibly a generator
+    Generator - A simpel function that performs an operation on input data
