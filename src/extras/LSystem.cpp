@@ -3,6 +3,7 @@
 #include "base/Geometry.h"
 
 #include <stdio.h>
+#include <memory.h>
 #include "third-party/rapidxml/rapidxml.hpp"
 
 namespace three {

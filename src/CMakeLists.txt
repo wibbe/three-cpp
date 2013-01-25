@@ -37,6 +37,7 @@ SET(SOURCE
   loader/FontLoader.cpp
 
   extras/LSystem.cpp
+  extras/PoissonSet.cpp
 
   opengl/GLObject.cpp
   opengl/GLGeometry.cpp
