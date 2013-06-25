@@ -47,5 +47,6 @@ ADD_SUBDIRECTORY(src/third-party/open-ctm)
 ADD_SUBDIRECTORY(src/third-party/convert-ctm)
 
 ADD_SUBDIRECTORY(src)
+ADD_SUBDIRECTORY(test)
 ADD_SUBDIRECTORY(examples)
 

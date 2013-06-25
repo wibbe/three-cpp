@@ -149,6 +149,7 @@ class CamaroDemo : public Window
       panel->value("Texture changes: %d", renderer->stats.textureChanges);
       panel->value("Shader changes: %d", renderer->stats.shaderChanges);
       panel->value("Render Target changes: %d", renderer->stats.renderTargetChanges);
+      panel->value("Object Culled: %d", renderer->stats.objectCulled);
 
       panel->separatorLine();
 

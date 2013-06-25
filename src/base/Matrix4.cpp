@@ -107,9 +107,9 @@ namespace three {
 
     Vector3 y = cross(z, x);
 
-    m[_00] = x.x; m[_10] = y.x; m[_20] = z.x;
-    m[_01] = x.y; m[_11] = y.y; m[_21] = z.y;
-    m[_02] = x.z; m[_12] = y.z; m[_22] = z.z;
+    m[0] = x.x; m[4] = y.x; m[8] = z.x;
+    m[1] = x.y; m[5] = y.y; m[9] = z.y;
+    m[2] = x.z; m[6] = y.z; m[10] = z.z;
   }
 
   void Matrix4::setPosition(Vector3 const& pos)

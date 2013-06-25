@@ -1,16 +1,16 @@
 /*
  Copyright (c) 2012 Krzysztof Gabis
- 
+
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
  in the Software without restriction, including without limitation the rights
  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  copies of the Software, and to permit persons to whom the Software is
  furnished to do so, subject to the following conditions:
- 
+
  The above copyright notice and this permission notice shall be included in
  all copies or substantial portions of the Software.
- 
+
  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -124,8 +124,8 @@ static int json_object_add(JSON_Object *object, const char *name, JSON_Value *va
         if (!reallocated_ptr) { return 0;}
         object->values = (JSON_Value**)reallocated_ptr;
         object->capacity = new_capacity;
-    }    
-    if (json_object_get_value(object, name) != NULL) { return 0; }    
+    }
+    if (json_object_get_value(object, name) != NULL) { return 0; }
     index = object->count;
     object->names[index] = parson_strdup(name);
     if (!object->names[index]) { return 0; }
@@ -260,7 +260,7 @@ static char * copy_and_remove_whitespaces(const char *string) {
     char current_char;
     if (!output_string) { return NULL; }
     while (*string_ptr) {
-        current_char = *string_ptr;        
+        current_char = *string_ptr;
         switch (current_char) {
             case ' ': case '\r': case '\n': case '\t':
                 string_ptr++;
@@ -345,9 +345,9 @@ static const char * parse_escaped_characters(const char *string) {
                     break;
             }
         } else if (iscntrl(current_char)) { /* no control characters allowed */
-            parson_free(output_string); 
+            parson_free(output_string);
             return NULL;
-        }                   
+        }
         *output_string_ptr = current_char;
         output_string_ptr++;
         string_ptr++;
@@ -365,7 +365,7 @@ static const char * parse_escaped_characters(const char *string) {
 static const char * get_string(const char **string) {
     char *quote_contents;
     const char *parsed_string;
-    const char *after_closing_quote_ptr = skip_string(*string);    
+    const char *after_closing_quote_ptr = skip_string(*string);
     if (!after_closing_quote_ptr) { return NULL; }
     quote_contents = parson_strndup(*string + 1, after_closing_quote_ptr - *string - 2);
     if (!quote_contents) { return NULL; }
@@ -431,7 +431,7 @@ static JSON_Value * parse_object_value(const char **string, size_t nesting) {
             json_value_free(output_value);
             return NULL;
         }
-        parson_free(new_key);        
+        parson_free(new_key);
         if (**string != ',') { break; }
         (*string)++;
     }
@@ -461,7 +461,7 @@ static JSON_Value * parse_array_value(const char **string, size_t nesting) {
             return NULL;
         }
         if (**string != ',') { break; }
-        (*string)++; 
+        (*string)++;
     }
     if (**string != ']') {
         json_value_free(output_value);
@@ -479,8 +479,8 @@ static JSON_Value * parse_string_value(const char **string) {
 
 static JSON_Value * parse_boolean_value(const char **string) {
     size_t true_token_size = sizeof_token("true");
-    size_t false_token_size = sizeof_token("false");    
-    if (strncmp("true", *string, true_token_size) == 0) {        
+    size_t false_token_size = sizeof_token("false");
+    if (strncmp("true", *string, true_token_size) == 0) {
         *string += true_token_size;
         return json_value_init_boolean(1);
     } else if (strncmp("false", *string, false_token_size) == 0) {
@@ -504,7 +504,7 @@ static JSON_Value * parse_number_value(const char **string) {
         output_value = NULL;
     }
     free((void*)number_string);
-    return output_value;    
+    return output_value;
 }
 
 static JSON_Value * parse_null_value(const char **string) {
@@ -521,7 +521,7 @@ JSON_Value * json_parse_file(const char *filename) {
     FILE *fp = fopen(filename, "r");
     size_t file_size;
     char *file_contents;
-    JSON_Value *output_value;    
+    JSON_Value *output_value;
     if (!fp) { return NULL; }
     fseek(fp, 0L, SEEK_END);
     file_size = ftell(fp);

@@ -9,8 +9,7 @@ namespace three {
   GLObject::GLObject(Object * source)
     : BackendObject(source),
       geometry(0),
-      material(0),
-      render(false)
+      material(0)
   {
     source->__renderObject = this;
   }

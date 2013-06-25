@@ -25,6 +25,7 @@ SET(SOURCE
   base/Font.cpp
   base/File.cpp
   base/UIPanel.cpp
+  base/Frustum.cpp
 
   util/GeometryHelper.cpp
 

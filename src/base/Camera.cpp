@@ -4,7 +4,8 @@
 namespace three {
 
   Camera::Camera()
-    : Object()
+    : Object(),
+      cullObjects(true)
   {
   }
 

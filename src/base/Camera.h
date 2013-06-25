@@ -38,6 +38,8 @@ namespace three {
       Matrix4 projectionMatrix;
       Matrix4 projectionMatrixInverse;
       Vector3 positionWorld;
+
+      bool cullObjects;
   };
 
 }

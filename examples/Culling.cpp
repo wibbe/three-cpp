@@ -32,6 +32,7 @@ Mesh * createTree(Material * material)
   transform.setPosition(Vector3(0, height * 0.5, 0));
 
   addBox(mesh->geometry, transform, Vector3(0.15, height, 0.15), Color("#6D3926"));
+  mesh->geometry->computeBoundingSphere();
   return mesh;
 }
 
@@ -81,10 +82,10 @@ class CullingDemo : public Window
       scene = new Scene();
 
       camera = new PerspectiveCamera(70, 1024.0 / 768.0, 1, 1000);
-      camera->position.z = -5;
+      camera->position.z = 0;
       camera->position.y = 2;
       camera->position.x = 1;
-      camera->lookAt(Vector3(0, 0, 0));
+      camera->lookAt(Vector3(1, 2, 2));
       scene->add(camera);
 
       Geometry * geometry = new CubeGeometry(2, 2, 2);
@@ -96,11 +97,12 @@ class CullingDemo : public Window
       // -- Create UI --
       uiScene = new Scene();
       uiCamera = new OrthographicCamera(0, 1024, 0, 768, 1, 100);
+      uiCamera->cullObjects = false;
       uiScene->add(uiCamera);
 
       ui = new UIPanel(FontLoader::loadFont("assets/fonts/UbuntuLight.ttf", 14.0, 256, 256));
       ui->position = Vector3(5, 5, -1);
-      ui->size.y = 145;
+      ui->size.y = 165;
       uiScene->add(ui);
 
       renderer = new GLRenderer();
@@ -128,6 +130,7 @@ class CullingDemo : public Window
       ui->value("Texture changes: %d", renderer->stats.textureChanges);
       ui->value("Shader changes: %d", renderer->stats.shaderChanges);
       ui->value("Render Target changes: %d", renderer->stats.renderTargetChanges);
+      ui->value("Object Culled: %d", renderer->stats.objectCulled);
 
       ui->separatorLine();
 

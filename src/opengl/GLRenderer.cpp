@@ -12,6 +12,7 @@
 #include "base/RenderTarget.h"
 #include "base/Code.h"
 #include "base/MurmurHash.h"
+#include "base/Frustum.h"
 #include "material/DefaultGLShaders.h"
 
 #include "opengl/GLObject.h"
@@ -596,6 +597,8 @@ namespace three {
     camera->positionWorld = camera->matrixWorld * camera->position;
     projScreenMatrix = camera->matrixWorldInverse;
 
+    Frustum frustum(camera->projectionMatrix * camera->matrixWorldInverse);
+
     if (autoUpdateObjects)
       updateGLObjects(scene, camera);
 
@@ -617,14 +620,20 @@ namespace three {
 
       updateMatrices(object, camera);
 
-      glObject->render = false;
-
       std::vector<GLObject *> & targetVector = (glObject->material && (*glObject->material)->transparent) ? _transparentObjects : _opaqueObjects;
 
-      if (object->visible)
+      if (object->visible && (!camera->cullObjects || frustum.contains(object)))
       {
+        if (camera->cullObjects)
+        {
+          if (!frustum.contains(object))
+          {
+            STATS_INC(objectCulled);
+            continue;
+          }
+        }
+
         targetVector.push_back(glObject);
-        //glObject->render = true;
 
         if (sortObjects)
         {
@@ -901,6 +910,7 @@ namespace three {
         glObject->geometry = static_cast<GLGeometry *>(geom->__renderGeometry);
       }
 
+      object->boundRadius = geom->boundingSphereRadius;
       updateGeometry(geom);
     }
   }

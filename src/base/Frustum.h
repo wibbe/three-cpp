@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2012 Daniel Wiberg
+ * Copyright (c) 2013 Daniel Wiberg
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,29 +22,34 @@
 
 #pragma once
 
+#include "base/Vector3.h"
+#include "base/Vector4.h"
 #include "base/Matrix4.h"
-#include "base/BackendObject.h"
+#include "base/Object.h"
 
 namespace three {
 
-  // Forward declarations
-  class GLGeometry;
-  class Material;
-
-  class GLObject : public BackendObject
+  class Frustum
   {
     public:
-      GLObject(Object * source);
+      Frustum();
+      Frustum(Matrix4 const& modelViewProjection);
 
-    public:
-      Matrix4 modelViewMatrix;
-      Matrix4 normalMatrix;
+      void setFromMatrix(Matrix4 const& modelViewProjection);
 
-      GLGeometry * geometry;
-      Material ** material;
+      inline bool contains(Object * object)
+      {
+        const Vector3 pos = object->matrixWorld.getPosition();
+        const float radius = object->boundRadius * object->boundRadiusScale;
 
-      float z;
+        int count = 0;
+        for (int i = 0; i < 6; ++i)
+          count += (dot(planes[i], pos) + planes[i].w) <= radius ? 0 : 1;
+
+        return count == 6;
+      }
+
+      Vector4 planes[6];
   };
 
 }
-

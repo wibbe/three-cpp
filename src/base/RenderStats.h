@@ -39,6 +39,7 @@ namespace three {
         textureChanges = 0;
         shaderChanges = 0;
         renderTargetChanges = 0;
+        objectCulled = 0;
       }
 
       uint32_t batchCount;
@@ -47,6 +48,8 @@ namespace three {
       uint32_t textureChanges;
       uint32_t shaderChanges;
       uint32_t renderTargetChanges;
+
+      uint32_t objectCulled;
   };
 
 }
