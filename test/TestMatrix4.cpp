@@ -5,7 +5,7 @@
 
 using namespace three;
 
-TEST(Matrix4, Identity)
+TEST(Matrix4, identity)
 {
   Matrix4 mat;
 
@@ -27,7 +27,7 @@ TEST(Matrix4, Identity)
   CHECK_EQ(mat[15], 1.0);
 }
 
-TEST(Matrix4, Position)
+TEST(Matrix4, position)
 {
   Matrix4 mat;
   mat.setPosition(Vector3(1, 2, 3));
@@ -37,7 +37,7 @@ TEST(Matrix4, Position)
   CHECK_EQ(mat[14], 3.0);
 }
 
-TEST(Matrix4, Scale)
+TEST(Matrix4, scale)
 {
   Matrix4 mat;
   mat.scale(Vector3(1, 2, 3));
@@ -45,4 +45,25 @@ TEST(Matrix4, Scale)
   CHECK_EQ(mat[0], 1.0);
   CHECK_EQ(mat[5], 2.0);
   CHECK_EQ(mat[10], 3.0);
+}
+
+TEST(Matrix4, lookAt)
+{
+  Matrix4 mat;
+  mat.lookAt(Vector3(0, 0, 0), Vector3(0, 0, -1), Vector3(0, 1, 0));
+
+  // x-axis
+  CHECK_EQ(mat[0], 1.0);
+  CHECK_EQ(mat[1], 0.0);
+  CHECK_EQ(mat[2], 0.0);
+
+  // y-axis
+  CHECK_EQ(mat[4], 0.0);
+  CHECK_EQ(mat[5], 1.0);
+  CHECK_EQ(mat[6], 0.0);
+
+  // z-axis
+  CHECK_EQ(mat[8], 0.0);
+  CHECK_EQ(mat[9], 0.0);
+  CHECK_EQ(mat[10], 1.0);
 }

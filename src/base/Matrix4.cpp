@@ -107,8 +107,8 @@ namespace three {
 
     Vector3 y = cross(z, x);
 
-    m[0] = x.x; m[4] = y.x; m[8] = z.x;
-    m[1] = x.y; m[5] = y.y; m[9] = z.y;
+    m[0] = x.x; m[4] = y.x; m[8]  = z.x;
+    m[1] = x.y; m[5] = y.y; m[9]  = z.y;
     m[2] = x.z; m[6] = y.z; m[10] = z.z;
   }
 
